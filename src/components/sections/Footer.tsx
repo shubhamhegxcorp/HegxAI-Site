@@ -60,23 +60,29 @@ export default function Footer() {
         zIndex: 2,
       }}>
         <div>
-          <h3 style={{
-            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-            fontSize: "clamp(28px, 3vw, 44px)",
-            fontWeight: 400,
-            lineHeight: 1.2,
-            color: "var(--ink)",
-            marginBottom: "16px",
-          }}>
+          <h3
+            data-reveal
+            style={{
+              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+              fontSize: "clamp(28px, 3vw, 44px)",
+              fontWeight: 400,
+              lineHeight: 1.2,
+              color: "var(--ink)",
+              marginBottom: "16px",
+            }}
+          >
             Stay ahead with AI insights and industry updates
           </h3>
-          <p style={{
-            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-            fontSize: "15px",
-            fontWeight: 400,
-            lineHeight: 1.65,
-            color: "var(--muted)",
-          }}>
+          <p
+            data-reveal
+            style={{
+              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+              fontSize: "15px",
+              fontWeight: 400,
+              lineHeight: 1.65,
+              color: "var(--muted)",
+            }}
+          >
             Get the latest on AI automation, workflow optimization, and practical
             strategies to help your business grow.
           </p>
@@ -207,7 +213,7 @@ export default function Footer() {
                   fontSize: "13px",
                   color: "var(--muted)",
                   textDecoration: "none",
-                  transition: "all 0.2s ease",
+                  transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
                 onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}
@@ -320,7 +326,7 @@ export default function Footer() {
             textTransform: "uppercase",
             color: "var(--muted)",
             textDecoration: "none",
-            transition: "all 0.2s ease",
+            transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
           }}
           onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
           onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}

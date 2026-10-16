@@ -1,7 +1,8 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { SectionLabel } from "@/components/ui/shared";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
@@ -12,22 +13,19 @@ const CARDS = [
     tag: "(strategy)",
     num: "01",
     title: "Audit",
-    copy:
-      "We map your current workflows, identify the biggest automation opportunities, and define the exact scope of what to build.",
+    copy: "We map your current workflows, identify the biggest automation opportunities, and define the exact scope of what to build.",
   },
   {
     tag: "(development)",
     num: "02",
     title: "Build",
-    copy:
-      "We design and build your automation stack — AI agents, integrations, triggers — fully tested before going live.",
+    copy: "We design and build your automation stack — AI agents, integrations, triggers — fully tested before going live.",
   },
   {
     tag: "(deployment)",
     num: "03",
     title: "Run",
-    copy:
-      "We deploy, monitor, and maintain your systems. Your team gets a full handoff with documentation so you own everything.",
+    copy: "We deploy, monitor, and maintain your systems. Your team gets a full handoff with documentation so you own everything.",
   },
 ];
 
@@ -35,63 +33,133 @@ export default function Benefits() {
   const sectionRef = useRef<HTMLElement>(null);
   const leftRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const tagsRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const numsRef = useRef<(HTMLSpanElement | null)[]>([]);
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+  useGSAP(
+    () => {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isMobile = window.innerWidth < 768;
 
-    const isMobile = window.innerWidth < 768;
+      if (prefersReduced) return;
 
-    gsap.fromTo(
-      leftRef.current,
-      { opacity: 0, y: 40 },
-      {
-        opacity: 1, y: 0, duration: 0.9, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 85%", toggleActions: "play none none none" },
-      }
-    );
-
-    // Stacked cards scroll effect
-    if (!isMobile) {
-      cardsRef.current.forEach((card, i) => {
-        if (!card) return;
-
-        // Scale down earlier cards as later ones come in
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top 60%",
-          end: "bottom 20%",
-          onEnter: () => {
-            if (i > 0) {
-              cardsRef.current.slice(0, i).forEach((prev, pi) => {
-                if (!prev) return;
-                gsap.to(prev, {
-                  scale: 0.97 - (i - pi - 1) * 0.02,
-                  duration: 0.5,
-                  ease: "power3.out",
-                });
-              });
-            }
-            gsap.fromTo(card,
-              { opacity: 0, y: 60 },
-              { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }
-            );
+      // Left column entrance
+      gsap.fromTo(
+        leftRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: leftRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
           },
+        }
+      );
+
+      // On mobile: simple fades, no sticky stacking or parallax
+      if (isMobile) {
+        cardsRef.current.forEach((card) => {
+          if (!card) return;
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 90%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
         });
+        return;
+      }
+
+      // Desktop: 3 right cards stack with scrub
+      const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
+      const tags = tagsRef.current.filter(Boolean) as HTMLSpanElement[];
+      const nums = numsRef.current.filter(Boolean) as HTMLSpanElement[];
+
+      if (cards.length < 3) return;
+
+      // Card 0 tag & num start visible
+      gsap.set([tags[0], nums[0]], { opacity: 1, y: 0 });
+
+      // Card 1 arrives: Card 0 scales to 0.94 and dims to 0.6; Card 1 tag + num fade in
+      gsap.set([tags[1], nums[1]], { opacity: 0, y: 15 });
+      const tl1 = gsap.timeline({
+        scrollTrigger: {
+          trigger: cards[1],
+          start: "top 80%",
+          end: "top 25%",
+          scrub: 0.6,
+        },
       });
-    } else {
-      cardsRef.current.forEach((card) => {
-        if (!card) return;
-        gsap.fromTo(card,
-          { opacity: 0, y: 40 },
+
+      tl1.to(cards[0], {
+        scale: 0.94,
+        opacity: 0.6,
+        transformOrigin: "top center",
+        ease: "none",
+      }).to(
+        [tags[1], nums[1]],
+        {
+          opacity: 1,
+          y: 0,
+          stagger: 0.05,
+          ease: "none",
+        },
+        "<"
+      );
+
+      // Card 2 arrives: Card 1 scales to 0.94 and dims to 0.6 (Card 0 dims further to 0.4); Card 2 tag + num fade in
+      gsap.set([tags[2], nums[2]], { opacity: 0, y: 15 });
+      const tl2 = gsap.timeline({
+        scrollTrigger: {
+          trigger: cards[2],
+          start: "top 80%",
+          end: "top 25%",
+          scrub: 0.6,
+        },
+      });
+
+      tl2.to(cards[1], {
+        scale: 0.94,
+        opacity: 0.6,
+        transformOrigin: "top center",
+        ease: "none",
+      })
+        .to(
+          cards[0],
           {
-            opacity: 1, y: 0, duration: 0.7, ease: "power3.out",
-            scrollTrigger: { trigger: card, start: "top 90%", toggleActions: "play none none none" },
-          }
+            scale: 0.88,
+            opacity: 0.35,
+            transformOrigin: "top center",
+            ease: "none",
+          },
+          "<"
+        )
+        .to(
+          [tags[2], nums[2]],
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.05,
+            ease: "none",
+          },
+          "<"
         );
-      });
-    }
-  }, []);
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
@@ -99,40 +167,49 @@ export default function Benefits() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "0 24px 120px",
+        padding: "0 24px 140px",
         position: "relative",
-        overflow: "hidden",
       }}
     >
       {/* Background ASCII Halftone Matrix */}
       <AsciiHalftoneCanvas theme="light" density="sparse" interactive={true} />
+
       {/* Marquee above */}
-      <div style={{
-        borderTop: "1px solid var(--line)",
-        borderBottom: "1px solid var(--line)",
-        padding: "20px 0",
-        marginBottom: "0",
-        overflow: "hidden",
-      }}>
-        <div style={{
-          display: "flex",
-          gap: "60px",
-          animation: "marquee-scroll 20s linear infinite",
-          width: "max-content",
-        }}>
-          {Array(10).fill("SCALE YOUR TEAM").map((w, i) => (
-            <span key={i} style={{
-              fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-              fontSize: "clamp(32px, 4vw, 56px)",
-              fontWeight: 400,
-              letterSpacing: "0.02em",
-              textTransform: "uppercase",
-              color: i % 2 === 0 ? "var(--ink)" : "var(--line)",
-              whiteSpace: "nowrap",
-            }}>
-              {w}
-            </span>
-          ))}
+      <div
+        style={{
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
+          padding: "20px 0",
+          marginBottom: "0",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "60px",
+            animation: "marquee-scroll 20s linear infinite",
+            width: "max-content",
+          }}
+        >
+          {Array(10)
+            .fill("SCALE YOUR TEAM")
+            .map((w, i) => (
+              <span
+                key={i}
+                style={{
+                  fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                  fontSize: "clamp(32px, 4vw, 56px)",
+                  fontWeight: 400,
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                  color: i % 2 === 0 ? "var(--ink)" : "var(--line)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {w}
+              </span>
+            ))}
         </div>
       </div>
 
@@ -148,18 +225,26 @@ export default function Benefits() {
             alignItems: "start",
           }}
         >
-          {/* Left */}
-          <div ref={leftRef} style={{ opacity: 0 }}>
-            <span style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "var(--muted)",
-              display: "block",
-              marginBottom: "20px",
-            }}>
+          {/* Left: Sticky column */}
+          <div
+            ref={leftRef}
+            style={{
+              position: "sticky",
+              top: "120px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                display: "block",
+                marginBottom: "20px",
+              }}
+            >
               Scale your team
             </span>
 
@@ -209,70 +294,106 @@ export default function Benefits() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                transition: "all 0.3s ease",
+                transition: "background-color 0.3s ease, transform 0.3s ease",
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = "#2a2a2a"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.transform = "translateY(0)"; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#2a2a2a";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "var(--ink)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
             >
               Get Started →
             </a>
           </div>
 
           {/* Right: stacked cards */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0px" }}>
             {CARDS.map((card, i) => (
               <div
                 key={i}
-                ref={(el) => { cardsRef.current[i] = el; }}
+                ref={(el) => {
+                  cardsRef.current[i] = el;
+                }}
                 style={{
+                  position: "sticky",
+                  top: `${140 + i * 16}px`,
+                  marginBottom: i < CARDS.length - 1 ? "40vh" : "0",
                   background: i === 1 ? "var(--ink)" : "var(--surface)",
-                  border: `1px solid ${i === 1 ? "rgba(255,255,255,0.06)" : "var(--line)"}`,
+                  border: `1px solid ${
+                    i === 1 ? "rgba(255,255,255,0.06)" : "var(--line)"
+                  }`,
                   borderRadius: "24px",
                   padding: "28px 32px",
-                  boxShadow: "0 4px 24px rgba(20,20,20,0.06)",
-                  opacity: 0,
+                  boxShadow: "0 8px 32px rgba(20,20,20,0.08)",
                   transformOrigin: "top center",
+                  willChange: "transform, opacity",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "16px" }}>
-                  <span style={{
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    letterSpacing: "0.06em",
-                    color: i === 1 ? "var(--accent)" : "var(--muted)",
-                  }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <span
+                    ref={(el) => {
+                      tagsRef.current[i] = el;
+                    }}
+                    style={{
+                      fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      letterSpacing: "0.06em",
+                      color: i === 1 ? "var(--accent)" : "var(--muted)",
+                      display: "inline-block",
+                    }}
+                  >
                     {card.tag}
                   </span>
-                  <span style={{
-                    fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-                    fontSize: "48px",
-                    fontWeight: 400,
-                    lineHeight: 0.9,
-                    color: i === 1 ? "rgba(255,255,255,0.1)" : "var(--line)",
-                    letterSpacing: "0.02em",
-                  }}>
+                  <span
+                    ref={(el) => {
+                      numsRef.current[i] = el;
+                    }}
+                    style={{
+                      fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                      fontSize: "48px",
+                      fontWeight: 400,
+                      lineHeight: 0.9,
+                      color: i === 1 ? "rgba(255,255,255,0.1)" : "var(--line)",
+                      letterSpacing: "0.02em",
+                      display: "inline-block",
+                    }}
+                  >
                     {card.num}
                   </span>
                 </div>
-                <div style={{
-                  fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-                  fontSize: "32px",
-                  fontWeight: 400,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.02em",
-                  color: i === 1 ? "#fff" : "var(--ink)",
-                  marginBottom: "12px",
-                }}>
+                <div
+                  style={{
+                    fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                    fontSize: "32px",
+                    fontWeight: 400,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.02em",
+                    color: i === 1 ? "#fff" : "var(--ink)",
+                    marginBottom: "12px",
+                  }}
+                >
                   {card.title}
                 </div>
-                <p style={{
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "14px",
-                  fontWeight: 400,
-                  lineHeight: 1.65,
-                  color: i === 1 ? "rgba(255,255,255,0.5)" : "var(--muted)",
-                }}>
+                <p
+                  style={{
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    lineHeight: 1.65,
+                    color: i === 1 ? "rgba(255,255,255,0.5)" : "var(--muted)",
+                  }}
+                >
                   {card.copy}
                 </p>
               </div>

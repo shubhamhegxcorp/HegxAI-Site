@@ -165,7 +165,7 @@ export function PillButton({
     textTransform: "uppercase" as const,
     cursor: "pointer",
     textDecoration: "none",
-    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+    transition: "background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
     whiteSpace: "nowrap" as const,
     border: "none",
   };

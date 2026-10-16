@@ -151,6 +151,7 @@ export default function AgentShowcase() {
         >
           <div>
             <h2
+              data-reveal
               style={{
                 fontFamily: "var(--ff-display, 'Anton', sans-serif)",
                 fontSize: "clamp(36px, 4.5vw, 68px)",
@@ -168,6 +169,7 @@ export default function AgentShowcase() {
 
           <div>
             <p
+              data-reveal
               style={{
                 fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                 fontSize: "16px",
@@ -197,7 +199,7 @@ export default function AgentShowcase() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                transition: "all 0.25s ease",
+                transition: "background-color 0.25s ease, transform 0.25s ease",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#2a2a2a";

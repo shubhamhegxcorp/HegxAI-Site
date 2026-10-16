@@ -155,6 +155,7 @@ export default function About() {
           >
             <div>
               <p
+                data-reveal
                 style={{
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "15px",
@@ -170,6 +171,7 @@ export default function About() {
             </div>
             <div>
               <p
+                data-reveal
                 style={{
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "15px",

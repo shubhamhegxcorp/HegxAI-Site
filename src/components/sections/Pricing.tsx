@@ -111,6 +111,7 @@ export default function Pricing() {
           }}
         >
           <h2
+            data-reveal
             style={{
               fontFamily: "var(--ff-display, 'Anton', sans-serif)",
               fontSize: "clamp(36px, 4.5vw, 68px)",
@@ -381,7 +382,7 @@ export default function Pricing() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                transition: "all 0.25s ease",
+                transition: "background-color 0.25s ease, color 0.25s ease",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "var(--ink)";
@@ -601,7 +602,7 @@ export default function Pricing() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                transition: "all 0.25s ease",
+                transition: "background-color 0.25s ease, transform 0.25s ease",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#D7FD41";

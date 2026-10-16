@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useReveal } from "@/lib/useReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,6 +13,9 @@ export default function SmoothScrollProvider({
   children: React.ReactNode;
 }) {
   const lenisRef = useRef<Lenis | null>(null);
+
+  // Initialize line mask reveal for all [data-reveal] elements across sections
+  useReveal();
 
   useEffect(() => {
     // Respect reduced motion
@@ -39,6 +43,13 @@ export default function SmoothScrollProvider({
     });
 
     gsap.ticker.lagSmoothing(0);
+
+    // Refresh ScrollTrigger calculations after custom web fonts have fully loaded
+    if (typeof document !== "undefined" && document.fonts) {
+      document.fonts.ready.then(() => {
+        ScrollTrigger.refresh();
+      });
+    }
 
     return () => {
       gsap.ticker.remove(raf);

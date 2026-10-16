@@ -124,29 +124,35 @@ export default function FAQ() {
         }}>
           {/* Left: giant heading */}
           <div>
-            <h2 style={{
-              fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-              fontSize: "clamp(56px, 7vw, 100px)",
-              fontWeight: 400,
-              lineHeight: 0.9,
-              textTransform: "uppercase",
-              letterSpacing: "0.01em",
-              color: "var(--ink)",
-            }}>
+            <h2
+              data-reveal
+              style={{
+                fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                fontSize: "clamp(56px, 7vw, 100px)",
+                fontWeight: 400,
+                lineHeight: 0.9,
+                textTransform: "uppercase",
+                letterSpacing: "0.01em",
+                color: "var(--ink)",
+              }}
+            >
               FREQUENTLY
               <br />
               ASKED
             </h2>
 
-            <p style={{
-              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-              fontSize: "15px",
-              fontWeight: 400,
-              lineHeight: 1.7,
-              color: "var(--muted)",
-              marginTop: "28px",
-              maxWidth: "360px",
-            }}>
+            <p
+              data-reveal
+              style={{
+                fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                fontSize: "15px",
+                fontWeight: 400,
+                lineHeight: 1.7,
+                color: "var(--muted)",
+                marginTop: "28px",
+                maxWidth: "360px",
+              }}
+            >
               Questions about working with us? Here are the ones we hear most
               often — answered honestly.
             </p>

@@ -13,11 +13,6 @@
   --lime: #d7fd41;
   --lime-glow: rgba(215, 253, 65, 0.25);
 
-  /* Typography scale */
-  --font-display: 'Anton', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'IBM Plex Mono', monospace;
-
   /* Radius */
   --r-sm: 12px;
   --r-md: 20px;
@@ -51,8 +46,18 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+/* ─── OFFICIAL LENIS RECOMMENDED CSS ───────────────────────────────────── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
@@ -65,12 +70,11 @@ body {
 }
 
 /* ─── FONT VARIABLE BRIDGE ──────────────────────────────────────────────── */
-/* Next.js Google Fonts injects --ff-display etc. on <html> via className */
-/* These are the authoritative font vars used everywhere in the design */
+/* Reads directly from next/font CSS variables injected on <html> via className */
 :root {
-  --ff-display: var(--font-display, 'Anton', sans-serif);
-  --ff-body: var(--font-body, 'DM Sans', sans-serif);
-  --ff-mono: var(--font-mono, 'IBM Plex Mono', monospace);
+  --ff-display: var(--font-display);
+  --ff-body: var(--font-body);
+  --ff-mono: var(--font-mono);
 }
 
 /* ─── TYPOGRAPHY ────────────────────────────────────────────────────────── */
@@ -176,7 +180,7 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   border: none;
-  transition: all 0.3s var(--ease-out);
+  transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out), transform 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
   text-decoration: none;
   white-space: nowrap;
 }

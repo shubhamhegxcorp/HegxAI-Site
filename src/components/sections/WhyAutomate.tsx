@@ -1,8 +1,8 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionLabel } from "@/components/ui/shared";
+import { useGSAP } from "@gsap/react";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,33 +25,81 @@ const WHY_ITEMS = [
 export default function WhyAutomate() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+  useGSAP(
+    () => {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return;
 
-    gsap.fromTo(
-      headlineRef.current,
-      { opacity: 0, y: 60 },
-      {
-        opacity: 1, y: 0, duration: 1, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", toggleActions: "play none none none" },
+      // Headline entrance
+      if (headlineRef.current) {
+        gsap.fromTo(
+          headlineRef.current,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: headlineRef.current,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
       }
-    );
 
-    itemsRef.current.forEach((el, i) => {
-      if (!el) return;
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none none" },
-        }
-      );
-    });
-  }, []);
+      // The 3 big words reveal line by line with a mask (y 110% -> 0, stagger 0.1),
+      // and a thin line under each draws (scaleX 0 -> 1, origin left)
+      if (gridRef.current) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: gridRef.current,
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+        });
+
+        tl.fromTo(
+          ".why-phrase",
+          { y: "110%" },
+          {
+            y: "0%",
+            duration: 1,
+            ease: "power3.out",
+            stagger: 0.1,
+          }
+        )
+          .fromTo(
+            ".why-line",
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              transformOrigin: "left",
+              duration: 0.8,
+              ease: "power3.out",
+              stagger: 0.1,
+            },
+            "-=0.7"
+          )
+          .fromTo(
+            ".why-copy",
+            { opacity: 0, y: 20 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.1,
+            },
+            "-=0.6"
+          );
+      }
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
@@ -66,34 +114,41 @@ export default function WhyAutomate() {
     >
       {/* ─── DARK ASCII HALFTONE MATRIX BACKGROUND ─── */}
       <AsciiHalftoneCanvas theme="dark" density="normal" interactive={true} />
+
       {/* Full-width section label (dark version) */}
       <div style={{ padding: "0 24px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "14px 0",
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-            borderBottom: "1px solid rgba(255,255,255,0.08)",
-          }}>
-            <span style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.35)",
-            }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 0",
+              borderTop: "1px solid rgba(255,255,255,0.08)",
+              borderBottom: "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.35)",
+              }}
+            >
               WHY AUTOMATE
             </span>
-            <span style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              color: "rgba(255,255,255,0.35)",
-            }}>
+            <span
+              style={{
+                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                color: "rgba(255,255,255,0.35)",
+              }}
+            >
               003
             </span>
           </div>
@@ -102,7 +157,7 @@ export default function WhyAutomate() {
 
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "72px 24px 0" }}>
         {/* Headline */}
-        <div ref={headlineRef} style={{ marginBottom: "72px", opacity: 0 }}>
+        <div ref={headlineRef} style={{ marginBottom: "72px" }}>
           <h2
             style={{
               fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
@@ -119,6 +174,7 @@ export default function WhyAutomate() {
 
         {/* Three big Anton items */}
         <div
+          ref={gridRef}
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
@@ -129,28 +185,44 @@ export default function WhyAutomate() {
           {WHY_ITEMS.map((item, i) => (
             <div
               key={i}
-              ref={(el) => { itemsRef.current[i] = el; }}
               style={{
                 padding: "48px 32px",
                 borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                opacity: 0,
               }}
             >
+              {/* Masked big word */}
+              <div style={{ overflow: "hidden", marginBottom: "16px" }}>
+                <div
+                  className="why-phrase"
+                  style={{
+                    fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                    fontSize: "clamp(36px, 4vw, 56px)",
+                    fontWeight: 400,
+                    lineHeight: 0.95,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.01em",
+                    color: "#fff",
+                    transform: "translateY(110%)",
+                  }}
+                >
+                  {item.phrase}
+                </div>
+              </div>
+
+              {/* Drawing thin line */}
               <div
+                className="why-line"
                 style={{
-                  fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-                  fontSize: "clamp(36px, 4vw, 56px)",
-                  fontWeight: 400,
-                  lineHeight: 0.95,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.01em",
-                  color: "#fff",
+                  height: "1px",
+                  background: "rgba(255,255,255,0.12)",
+                  transform: "scaleX(0)",
+                  transformOrigin: "left",
                   marginBottom: "24px",
                 }}
-              >
-                {item.phrase}
-              </div>
+              />
+
               <p
+                className="why-copy"
                 style={{
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "14px",
@@ -184,13 +256,15 @@ export default function WhyAutomate() {
           >
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <span style={{ fontSize: "10px", lineHeight: 1 }}>■</span>
-              <span style={{
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-              }}>
+              <span
+                style={{
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
                 BOOK A CALL
               </span>
             </div>
@@ -215,10 +289,16 @@ export default function WhyAutomate() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               textDecoration: "none",
-              transition: "all 0.3s ease",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(255,255,255,0.2)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(255,255,255,0.2)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
           >
             Schedule Consultation →
           </a>

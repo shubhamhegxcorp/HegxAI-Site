@@ -1,7 +1,8 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,23 +34,249 @@ const SERVICES = [
   },
 ];
 
+interface ServiceRowProps {
+  service: typeof SERVICES[0];
+  onRegisterRow: (el: HTMLDivElement | null) => void;
+}
+
+function ServiceRow({ service, onRegisterRow }: ServiceRowProps) {
+  const rowRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLSpanElement>(null);
+  const arrowRef = useRef<HTMLSpanElement>(null);
+  const tagsRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (bgRef.current) {
+      gsap.to(bgRef.current, {
+        scaleY: 1,
+        transformOrigin: "bottom",
+        duration: 0.5,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+    if (nameRef.current) {
+      gsap.to(nameRef.current, {
+        color: "var(--bg)",
+        duration: 0.35,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+    if (arrowRef.current) {
+      gsap.to(arrowRef.current, {
+        rotation: 45,
+        color: "var(--accent)",
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+    if (tagsRef.current) {
+      const chips = tagsRef.current.children;
+      gsap.fromTo(
+        chips,
+        { x: 25, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          duration: 0.35,
+          ease: "power3.out",
+          stagger: 0.05,
+          overwrite: "auto",
+        }
+      );
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (bgRef.current) {
+      gsap.to(bgRef.current, {
+        scaleY: 0,
+        transformOrigin: "bottom",
+        duration: 0.4,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+    if (nameRef.current) {
+      gsap.to(nameRef.current, {
+        color: "var(--ink)",
+        duration: 0.35,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+    if (arrowRef.current) {
+      gsap.to(arrowRef.current, {
+        rotation: 0,
+        color: "var(--line)",
+        duration: 0.35,
+        ease: "power3.out",
+        overwrite: "auto",
+      });
+    }
+    if (tagsRef.current) {
+      const chips = tagsRef.current.children;
+      gsap.to(chips, {
+        x: 25,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        overwrite: "auto",
+      });
+    }
+  };
+
+  return (
+    <div
+      ref={(el) => {
+        rowRef.current = el;
+        onRegisterRow(el);
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "32px 24px",
+        borderBottom: "1px solid var(--line)",
+        cursor: "pointer",
+        overflow: "hidden",
+        borderRadius: "16px",
+      }}
+    >
+      {/* Ink background wipe element */}
+      <div
+        ref={bgRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "var(--ink)",
+          transform: "scaleY(0)",
+          transformOrigin: "bottom",
+          borderRadius: "16px",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: "32px",
+          flex: 1,
+        }}
+      >
+        {/* Arrow (rotates 45deg on hover) */}
+        <span
+          ref={arrowRef}
+          style={{
+            fontFamily: "sans-serif",
+            fontSize: "18px",
+            color: "var(--line)",
+            display: "inline-block",
+            flexShrink: 0,
+            transformOrigin: "center center",
+          }}
+        >
+          →
+        </span>
+
+        {/* Service name (turns cream on hover) */}
+        <span
+          ref={nameRef}
+          style={{
+            fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+            fontSize: "clamp(28px, 3.5vw, 52px)",
+            fontWeight: 400,
+            letterSpacing: "0.01em",
+            textTransform: "uppercase",
+            color: "var(--ink)",
+          }}
+        >
+          {service.name}
+        </span>
+      </div>
+
+      {/* Tags chips (slide in from the right with stagger 0.05 on hover) */}
+      <div
+        ref={tagsRef}
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          gap: "8px",
+          overflow: "hidden",
+          flexShrink: 0,
+          marginLeft: "24px",
+        }}
+      >
+        {service.tags.map((tag) => (
+          <span
+            key={tag}
+            style={{
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: "9999px",
+              padding: "6px 14px",
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              color: "rgba(255,255,255,0.85)",
+              whiteSpace: "nowrap",
+              opacity: 0,
+              transform: "translateX(25px)",
+              display: "inline-block",
+            }}
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Services() {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const rowsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+  useGSAP(
+    () => {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return;
 
-    gsap.fromTo(
-      sectionRef.current,
-      { opacity: 0 },
-      {
-        opacity: 1, duration: 0.8, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 85%", toggleActions: "play none none none" },
-      }
-    );
-  }, []);
+      const rows = rowsRef.current.filter(Boolean) as HTMLDivElement[];
+      if (!rows.length) return;
+
+      // Rows reveal with stagger 0.1 on enter
+      gsap.fromTo(
+        rows,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
@@ -58,64 +285,78 @@ export default function Services() {
       style={{
         background: "var(--bg)",
         padding: "0 24px 100px",
-        opacity: 0,
       }}
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         {/* Marquee strip above */}
-        <div style={{
-          overflow: "hidden",
-          borderTop: "1px solid var(--line)",
-          borderBottom: "1px solid var(--line)",
-          padding: "14px 0",
-          marginBottom: "0",
-        }}>
-          <div style={{
-            display: "flex",
-            gap: "48px",
-            animation: "marquee-scroll 22s linear infinite",
-            width: "max-content",
-            whiteSpace: "nowrap",
-          }}>
-            {Array(10).fill("BEST FOR GROWING TEAMS  •  BUILT TO SCALE  •  AI-FIRST APPROACH").map((w, i) => (
-              <span key={i} style={{
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "11px",
-                fontWeight: 500,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-              }}>
-                {w}
-              </span>
-            ))}
+        <div
+          style={{
+            overflow: "hidden",
+            borderTop: "1px solid var(--line)",
+            borderBottom: "1px solid var(--line)",
+            padding: "14px 0",
+            marginBottom: "0",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "48px",
+              animation: "marquee-scroll 22s linear infinite",
+              width: "max-content",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {Array(10)
+              .fill("BEST FOR GROWING TEAMS  •  BUILT TO SCALE  •  AI-FIRST APPROACH")
+              .map((w, i) => (
+                <span
+                  key={i}
+                  style={{
+                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "var(--muted)",
+                  }}
+                >
+                  {w}
+                </span>
+              ))}
           </div>
         </div>
 
         {/* Section label */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "14px 0",
-          borderBottom: "1px solid var(--line)",
-        }}>
-          <span style={{
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--muted)",
-          }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 0",
+            borderBottom: "1px solid var(--line)",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--muted)",
+            }}
+          >
             SERVICES
           </span>
-          <span style={{
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "11px",
-            color: "var(--muted)",
-            letterSpacing: "0.12em",
-          }}>
+          <span
+            style={{
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
+              color: "var(--muted)",
+              letterSpacing: "0.12em",
+            }}
+          >
             005
           </span>
         </div>
@@ -123,85 +364,13 @@ export default function Services() {
         {/* Service rows */}
         <div>
           {SERVICES.map((service, i) => (
-            <div
+            <ServiceRow
               key={i}
-              onMouseEnter={() => setHoveredIdx(i)}
-              onMouseLeave={() => setHoveredIdx(null)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "32px 24px",
-                borderBottom: "1px solid var(--line)",
-                background: hoveredIdx === i ? "var(--ink)" : "transparent",
-                cursor: "pointer",
-                transition: "background 0.35s cubic-bezier(0.16,1,0.3,1), padding 0.25s ease",
-                borderRadius: hoveredIdx === i ? "16px" : "0",
+              service={service}
+              onRegisterRow={(el) => {
+                rowsRef.current[i] = el;
               }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "32px", flex: 1 }}>
-                {/* Arrow */}
-                <span
-                  style={{
-                    fontFamily: "sans-serif",
-                    fontSize: "18px",
-                    color: hoveredIdx === i ? "var(--accent)" : "var(--line)",
-                    transition: "transform 0.35s ease, color 0.35s ease",
-                    transform: hoveredIdx === i ? "rotate(-45deg)" : "rotate(0deg)",
-                    display: "inline-block",
-                    flexShrink: 0,
-                  }}
-                >
-                  →
-                </span>
-
-                {/* Service name */}
-                <span
-                  style={{
-                    fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-                    fontSize: "clamp(28px, 3.5vw, 52px)",
-                    fontWeight: 400,
-                    letterSpacing: "0.01em",
-                    textTransform: "uppercase",
-                    color: hoveredIdx === i ? "var(--bg)" : "var(--ink)",
-                    transition: "color 0.35s ease",
-                  }}
-                >
-                  {service.name}
-                </span>
-              </div>
-
-              {/* Tags — slide in on hover */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  overflow: "hidden",
-                  opacity: hoveredIdx === i ? 1 : 0,
-                  transform: hoveredIdx === i ? "translateX(0)" : "translateX(20px)",
-                  transition: "opacity 0.3s ease, transform 0.3s ease",
-                  flexShrink: 0,
-                  marginLeft: "24px",
-                }}
-              >
-                {service.tags.map((tag) => (
-                  <span key={tag} style={{
-                    background: "rgba(255,255,255,0.08)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    borderRadius: "9999px",
-                    padding: "6px 14px",
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    letterSpacing: "0.06em",
-                    color: "rgba(255,255,255,0.6)",
-                    whiteSpace: "nowrap",
-                  }}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+            />
           ))}
         </div>
 
@@ -228,8 +397,10 @@ export default function Services() {
               width: "100%",
               overflow: "hidden",
               position: "relative",
-              maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-              WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+              maskImage:
+                "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+              WebkitMaskImage:
+                "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
             }}
           >
             <div

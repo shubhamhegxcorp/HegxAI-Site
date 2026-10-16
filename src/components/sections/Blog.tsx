@@ -110,6 +110,7 @@ export default function Blog() {
           }}
         >
           <h2
+            data-reveal
             style={{
               fontFamily: "var(--ff-display, 'Anton', sans-serif)",
               fontSize: "clamp(36px, 4.5vw, 64px)",

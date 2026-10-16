@@ -100,27 +100,33 @@ export default function CTABlock() {
               CONTACT
             </span>
 
-            <h2 style={{
-              fontFamily: "var(--ff-display, 'Anton', sans-serif)",
-              fontSize: "clamp(44px, 5vw, 72px)",
-              fontWeight: 400,
-              lineHeight: 0.95,
-              textTransform: "uppercase",
-              letterSpacing: "0.01em",
-              color: "var(--ink)",
-              marginBottom: "24px",
-            }}>
+            <h2
+              data-reveal
+              style={{
+                fontFamily: "var(--ff-display, 'Anton', sans-serif)",
+                fontSize: "clamp(44px, 5vw, 72px)",
+                fontWeight: 400,
+                lineHeight: 0.95,
+                textTransform: "uppercase",
+                letterSpacing: "0.01em",
+                color: "var(--ink)",
+                marginBottom: "24px",
+              }}
+            >
               TRANSFORM YOUR BUSINESS WITH INTELLIGENT AI AUTOMATION
             </h2>
 
-            <p style={{
-              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-              fontSize: "16px",
-              fontWeight: 400,
-              lineHeight: 1.7,
-              color: "var(--muted)",
-              marginBottom: "40px",
-            }}>
+            <p
+              data-reveal
+              style={{
+                fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                fontSize: "16px",
+                fontWeight: 400,
+                lineHeight: 1.7,
+                color: "var(--muted)",
+                marginBottom: "40px",
+              }}
+            >
               Start with a free audit. We&apos;ll map your biggest automation opportunities and
               show you exactly what&apos;s possible — no commitment required.
             </p>
@@ -141,7 +147,7 @@ export default function CTABlock() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 textDecoration: "none",
-                transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+                transition: "background-color 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.3s cubic-bezier(0.16,1,0.3,1)",
               }}
               onMouseEnter={e => { e.currentTarget.style.background = "#2a2a2a"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.transform = "translateY(0)"; }}

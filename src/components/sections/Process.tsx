@@ -40,6 +40,7 @@ const STEPS = [
 
 export default function Process() {
   const [activeStep, setActiveStep] = useState(0);
+  const activeStepRef = useRef(0);
   const sectionRef = useRef<HTMLElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
@@ -54,43 +55,52 @@ export default function Process() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Pin the section and drive step changes on scroll
-    const totalSteps = STEPS.length;
-    ScrollTrigger.create({
-      trigger: section,
-      start: "top top",
-      end: `+=${totalSteps * 400}`,
-      pin: true,
-      pinSpacing: true,
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const newStep = Math.min(
-          totalSteps - 1,
-          Math.floor(self.progress * totalSteps)
-        );
-        if (newStep !== activeStep) {
-          setActiveStep(newStep);
-          // Update progress bar
-          if (progressRef.current) {
-            gsap.to(progressRef.current, {
-              scaleY: (newStep + 1) / totalSteps,
-              duration: 0.5,
-              ease: "power3.out",
-            });
-          }
-          // Crossfade detail card
-          if (detailRef.current) {
-            gsap.fromTo(detailRef.current,
-              { opacity: 0, y: 20 },
-              { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }
-            );
-          }
-        }
-      },
-    });
+    let st: ScrollTrigger | null = null;
 
-    return () => ScrollTrigger.getAll().forEach(t => t.kill());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    const ctx = gsap.context(() => {
+      // Pin the section and drive step changes on scroll
+      const totalSteps = STEPS.length;
+      st = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: `+=${totalSteps * 400}`,
+        pin: true,
+        pinSpacing: true,
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const newStep = Math.min(
+            totalSteps - 1,
+            Math.floor(self.progress * totalSteps)
+          );
+          if (newStep !== activeStepRef.current) {
+            activeStepRef.current = newStep;
+            setActiveStep(newStep);
+            // Update progress bar
+            if (progressRef.current) {
+              gsap.to(progressRef.current, {
+                scaleY: (newStep + 1) / totalSteps,
+                duration: 0.5,
+                ease: "power3.out",
+                overwrite: "auto",
+              });
+            }
+            // Crossfade detail card
+            if (detailRef.current) {
+              gsap.fromTo(
+                detailRef.current,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", overwrite: "auto" }
+              );
+            }
+          }
+        },
+      });
+    }, sectionRef);
+
+    return () => {
+      if (st) st.kill();
+      ctx.revert();
+    };
   }, []);
 
   const step = STEPS[activeStep];
