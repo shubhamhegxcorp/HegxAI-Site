@@ -1,26 +1,414 @@
 @import "tailwindcss";
 
+/* ─── HEGXAI DESIGN TOKENS ─────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Cream theme */
+  --bg: #F4EFE6;
+  --surface: #FBF8F2;
+  --ink: #141414;
+  --muted: rgba(20, 20, 20, 0.55);
+  --line: rgba(20, 20, 20, 0.1);
+  --accent: #E8A25C;
+  --accent-light: rgba(232, 162, 92, 0.15);
+  --lime: #d7fd41;
+  --lime-glow: rgba(215, 253, 65, 0.25);
+
+  /* Typography scale */
+  --font-display: 'Anton', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+
+  /* Radius */
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 36px;
+  --r-full: 9999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.87, 0, 0.13, 1);
+  --dur-fast: 0.3s;
+  --dur-med: 0.6s;
+  --dur-slow: 1s;
 }
 
+/* ─── TAILWIND THEME MAPPING ───────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── RESET & BASE ─────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
+
+/* ─── FONT VARIABLE BRIDGE ──────────────────────────────────────────────── */
+/* Next.js Google Fonts injects --ff-display etc. on <html> via className */
+/* These are the authoritative font vars used everywhere in the design */
+:root {
+  --ff-display: var(--font-display, 'Anton', sans-serif);
+  --ff-body: var(--font-body, 'DM Sans', sans-serif);
+  --ff-mono: var(--font-mono, 'IBM Plex Mono', monospace);
+}
+
+/* ─── TYPOGRAPHY ────────────────────────────────────────────────────────── */
+.font-display { font-family: var(--ff-display); }
+.font-body    { font-family: var(--ff-body); }
+.font-mono    { font-family: var(--ff-mono); }
+
+/* Section label style */
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── SECTION HEADER BAR (dark, like reference) ───────────────────────── */
+.section-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+}
+
+/* Dark variant */
+.section-bar-dark {
+  background: var(--ink);
+  color: rgba(255,255,255,0.6);
+  padding: 14px 24px;
+  border: none;
+}
+
+/* ─── TECHNICAL CORNER BRACKETS ────────────────────────────────────────── */
+.corner-brackets {
+  position: relative;
+  display: inline-block;
+  padding: 10px 18px;
+}
+.corner-brackets::before,
+.corner-brackets::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+.corner-brackets::before {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid var(--ink);
+  border-left: 1.5px solid var(--ink);
+}
+.corner-brackets::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1.5px solid var(--ink);
+  border-right: 1.5px solid var(--ink);
+}
+
+/* ─── VIBRANT LIME HIGHLIGHT BOX ───────────────────────────────────────── */
+.highlight-lime {
+  background: #d7fd41 !important;
+  color: #141414 !important;
+  padding: 2px 18px !important;
+  display: inline-block !important;
+  box-shadow: 0 4px 20px rgba(215, 253, 65, 0.4) !important;
+  position: relative !important;
+}
+
+/* ─── CHAMFERED CORNER TAG ─────────────────────────────────────────────── */
+.chamfer-tag {
+  background: #d7fd41 !important;
+  color: #141414 !important;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%) !important;
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.chamfer-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(215, 253, 65, 0.45);
+}
+
+/* ─── PILL BUTTON ───────────────────────────────────────────────────────── */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--r-full);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s var(--ease-out);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-pill-dark {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.btn-pill-dark:hover {
+  background: #2a2a2a;
+  transform: translateY(-1px);
+}
+
+.btn-pill-dark:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+.btn-pill-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.btn-pill-outline:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.btn-arrow {
+  transition: transform 0.3s var(--ease-out);
+}
+
+/* ─── CARD ──────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 24px rgba(20,20,20,0.04), 0 1px 4px rgba(20,20,20,0.04);
+}
+
+.card-dark {
+  background: var(--ink);
+  border-radius: var(--r-lg);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+/* ─── MARQUEE ────────────────────────────────────────────────────────────── */
+.marquee-track {
+  display: flex;
+  gap: 0;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* ─── MASK REVEAL ────────────────────────────────────────────────────────── */
+.reveal-mask {
+  overflow: hidden;
+}
+
+.reveal-inner {
+  transform: translateY(110%);
+  will-change: transform;
+}
+
+/* ─── ACCENT DOT PULSE ──────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+
+/* ─── FLOATING CARD ANIMATION ───────────────────────────────────────────── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes float-y-reverse {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(10px); }
+}
+
+.float-card {
+  animation: float-y 5s ease-in-out infinite;
+}
+.float-card-reverse {
+  animation: float-y-reverse 6s ease-in-out infinite;
+}
+
+/* ─── MARQUEE ANIMATION ─────────────────────────────────────────────────── */
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-run {
+  animation: marquee-scroll 20s linear infinite;
+}
+
+.marquee-run-slow {
+  animation: marquee-scroll 40s linear infinite;
+}
+
+/* ─── HORIZONTAL RULE ───────────────────────────────────────────────────── */
+.hairline {
+  border: none;
+  border-top: 1px solid var(--line);
+  width: 100%;
+}
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal-inner {
+    transform: translateY(0) !important;
+  }
+}
+
+/* ─── MOBILE RESPONSIVE ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* About section */
+  .about-grid { grid-template-columns: 1fr !important; }
+  
+  /* Features section */
+  .features-grid { grid-template-columns: 1fr !important; }
+  
+  /* Benefits section */
+  .benefits-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
+  
+  /* Process section */
+  .process-grid { grid-template-columns: 1fr !important; }
+  
+  /* FAQ section */
+  .faq-grid { grid-template-columns: 1fr !important; }
+  
+  /* Footer columns */
+  .footer-cols { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+  .footer-newsletter { grid-template-columns: 1fr !important; gap: 40px !important; }
+  
+  /* Process section headline */
+  .process-headline { padding: 32px 0 40px !important; }
+}
+
+@media (max-width: 480px) {
+  .footer-cols { grid-template-columns: 1fr !important; }
+}
+
+/* ─── NEW FULL-WIDTH HEADER STYLES ─────────────────────────────────────────── */
+.header-btn {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--bg);
+  border: 2px solid var(--ink);
+  transition: color 0.35s ease, background-color 0.35s ease;
+  cursor: pointer;
+}
+.header-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+.header-btn:hover::before {
+  transform: translateY(0%);
+}
+.header-btn:hover {
+  color: var(--ink);
+}
+.header-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.header-nav-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: var(--ink);
+  padding-bottom: 2px;
+}
+.header-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.header-nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.header-desktop-row {
+  display: flex !important;
+}
+.header-mobile-row {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .header-desktop-row {
+    display: none !important;
+  }
+  .header-mobile-row {
+    display: flex !important;
+  }
+}
+
