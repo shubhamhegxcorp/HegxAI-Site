@@ -9,15 +9,23 @@
   --muted: rgba(20, 20, 20, 0.55);
   --line: rgba(20, 20, 20, 0.1);
   --accent: #E8A25C;
+  --accent-text: #B8742A;
   --accent-light: rgba(232, 162, 92, 0.15);
   --lime: #d7fd41;
   --lime-glow: rgba(215, 253, 65, 0.25);
 
-  /* Radius */
+  /* Radius System */
+  --r-0: 0px;
+  --r-card: 12px;
+  --r-pill: 999px;
   --r-sm: 12px;
-  --r-md: 20px;
-  --r-xl: 36px;
-  --r-full: 9999px;
+  --r-md: 12px;
+  --r-lg: 12px;
+  --r-xl: 12px;
+  --r-full: 999px;
+
+  /* Standard Column Padding */
+  --col-pad: 24px;
 
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -89,12 +97,26 @@ body {
 }
 
 /* ─── TYPOGRAPHY ────────────────────────────────────────────────────────── */
-.font-display { font-family: var(--ff-display); }
+.font-display {
+  font-family: var(--ff-display);
+  letter-spacing: -0.02em;
+}
 .font-logo    { font-family: var(--ff-logo); }
 .font-body    { font-family: var(--ff-body); }
 .font-mono    { font-family: var(--ff-mono); }
 
-/* Section label style */
+h1 {
+  font-family: var(--ff-display);
+  letter-spacing: -0.03em;
+}
+
+h2, h3 {
+  font-family: var(--ff-display);
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+
+/* Section label style (mono only for labels <= 11px) */
 .label-mono {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -178,66 +200,97 @@ body {
   box-shadow: 0 8px 24px rgba(215, 253, 65, 0.45);
 }
 
-/* ─── PILL BUTTON ───────────────────────────────────────────────────────── */
+/* ─── ONE BUTTON STYLE: SQUARE, INTER TIGHT 500 13PX UPPERCASE ─────────── */
+.btn-square,
 .btn-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border-radius: var(--r-full);
-  font-family: var(--font-mono);
-  font-size: 12px;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-radius: var(--r-0);
+  font-family: var(--ff-display, 'Inter Tight', sans-serif);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   cursor: pointer;
-  border: none;
-  transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out), transform 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  border: 1px solid transparent;
+  transition: background-color 0.25s var(--ease-out), color 0.25s var(--ease-out), transform 0.25s var(--ease-out), border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
   text-decoration: none;
   white-space: nowrap;
 }
 
+.btn-dark,
 .btn-pill-dark {
   background: var(--ink);
-  color: var(--bg);
-}
-
-.btn-pill-dark:hover {
-  background: #2a2a2a;
-  transform: translateY(-1px);
-}
-
-.btn-pill-dark:hover .btn-arrow {
-  transform: translateX(3px);
-}
-
-.btn-pill-outline {
-  background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--line);
-}
-
-.btn-pill-outline:hover {
-  background: var(--ink);
-  color: var(--bg);
+  color: #ffffff;
   border-color: var(--ink);
 }
 
-.btn-arrow {
-  transition: transform 0.3s var(--ease-out);
+.btn-dark:hover,
+.btn-pill-dark:hover {
+  background: #2a2a2a;
+  border-color: #2a2a2a;
+  transform: translateY(-1px);
 }
 
-/* ─── CARD ──────────────────────────────────────────────────────────────── */
+.btn-outline,
+.btn-pill-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.btn-outline:hover,
+.btn-pill-outline:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+/* Inverted for dark sections */
+.btn-invert-lime {
+  background: var(--lime);
+  color: #141414;
+  border-color: var(--lime);
+}
+.btn-invert-lime:hover {
+  background: #e4ff6b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(215, 253, 65, 0.35);
+}
+
+.btn-invert-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.btn-invert-outline:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-arrow {
+  transition: transform 0.25s var(--ease-out);
+  display: inline-block;
+}
+
+.btn-square:hover .btn-arrow,
+.btn-pill:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+/* ─── CARD (RADIUS: 12px) ──────────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-card);
   border: 1px solid var(--line);
   box-shadow: 0 2px 24px rgba(20,20,20,0.04), 0 1px 4px rgba(20,20,20,0.04);
 }
 
 .card-dark {
   background: var(--ink);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-card);
   border: 1px solid rgba(255,255,255,0.08);
   color: #fff;
 }
@@ -250,10 +303,12 @@ body {
   will-change: transform;
 }
 
-/* ─── MASK REVEAL ────────────────────────────────────────────────────────── */
+/* ─── MASK REVEAL (PADDING-BOTTOM .14em & MARGIN-BOTTOM -.14em TO PREVENT CLIPPING) ─ */
 .reveal-mask {
   overflow: hidden;
   display: block;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
 }
 
 .reveal-line {

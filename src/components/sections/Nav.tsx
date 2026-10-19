@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Button } from "@/components/ui/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -406,28 +407,14 @@ export default function Nav() {
 
           {/* Row 1, Col 3: Right Button */}
           <div ref={buttonContentRef} style={{ display: "flex", justifyContent: "flex-end" }}>
-            <a
+            <Button
               href="#contact"
+              variant="primary"
+              size="sm"
               onClick={(e) => handleLinkClick(e, "#contact")}
-              className="header-btn"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "16px 40px",
-                borderRadius: 0,
-                textDecoration: "none",
-                fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                fontSize: "13px",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                whiteSpace: "nowrap",
-                height: "48px",
-              }}
             >
-              <span>BOOK A FREE AUDIT</span>
-            </a>
+              Book a free audit
+            </Button>
           </div>
 
           {/* Row 2, Col 1: Line 1 (directly under logo) */}
@@ -638,29 +625,14 @@ export default function Nav() {
 
           {/* Bottom sharp ink CTA */}
           <div>
-            <a
+            <Button
               href="#contact"
+              variant="primary"
+              style={{ width: "100%" }}
               onClick={(e) => handleLinkClick(e, "#contact")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-                padding: "18px 24px",
-                borderRadius: 0,
-                background: "var(--ink)",
-                color: "var(--bg)",
-                fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                fontSize: "14px",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                border: "2px solid var(--ink)",
-              }}
             >
-              BOOK A FREE AUDIT →
-            </a>
+              Book a free audit
+            </Button>
           </div>
         </div>
       )}

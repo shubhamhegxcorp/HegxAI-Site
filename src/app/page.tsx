@@ -4,15 +4,11 @@ import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Features from "@/components/sections/Features";
 import WhyAutomate from "@/components/sections/WhyAutomate";
-import Benefits from "@/components/sections/Benefits";
 import Services from "@/components/sections/Services";
-import Testimonials from "@/components/sections/Testimonials";
 import Process from "@/components/sections/Process";
-import Blog from "@/components/sections/Blog";
 import Pricing from "@/components/sections/Pricing";
-import AgentShowcase from "@/components/sections/AgentShowcase";
-import CTABlock from "@/components/sections/CTABlock";
 import FAQ from "@/components/sections/FAQ";
+import CTABlock from "@/components/sections/CTABlock";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
@@ -30,40 +26,25 @@ export default function Home() {
       {/* 3. 002 THE FEATURES */}
       <Features />
 
-      {/* 4. 003 THE STATISTICS */}
+      {/* 4. 003 WHY AUTOMATE (DARK) */}
       <WhyAutomate />
 
-      {/* 5. 004 BENEFITS "SCALE YOUR TEAM" */}
-      <Benefits />
-
-      {/* 6. 005 SERVICES */}
+      {/* 5. 004 SERVICES */}
       <Services />
 
-      {/* 7. 006 TESTIMONIALS */}
-      {/* TODO: replace with verified client testimonials */}
-      <Testimonials />
-
-      {/* 8. 007 THE PROCESS */}
+      {/* 6. 005 THE PROCESS */}
       <Process />
 
-      {/* 9. 008 BLOG */}
-      {/* TODO: replace with live published blog links */}
-      <Blog />
-
-      {/* 10. 009 PRICING */}
-      {/* TODO: update with enterprise pricing tiers */}
+      {/* 7. 006 FLEXIBLE ENGAGEMENT (PRICING) */}
       <Pricing />
 
-      {/* 11. SECOND STATISTICS / AGENTS BLOCK */}
-      <AgentShowcase />
-
-      {/* 12. CONTACT CTA */}
-      <CTABlock />
-
-      {/* 13. FAQ */}
+      {/* 8. 007 FAQ */}
       <FAQ />
 
-      {/* 14. FOOTER */}
+      {/* 9. 008 CONTACT */}
+      <CTABlock />
+
+      {/* 10. FOOTER */}
       <Footer />
     </SmoothScrollProvider>
   );

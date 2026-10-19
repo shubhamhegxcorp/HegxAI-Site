@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { SectionBar, SectionColumn } from "@/components/ui/shared";
+import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
 import { useIsMobile } from "@/lib/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -231,11 +231,11 @@ export default function Features() {
 
   return (
     <section
-      id="services"
+      id="features"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "32px 24px 80px",
+        padding: isMobile ? "80px 24px" : "128px 24px",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -243,15 +243,15 @@ export default function Features() {
         position: "relative",
       }}
     >
-      <SectionColumn style={{ padding: "0 24px", width: "100%" }}>
-        <SectionBar label="THE FEATURES" num="002" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px)", width: "100%" }}>
+        <SectionBar label="THE FEATURES" sectionId="features" />
 
         <div
           style={{
             display: "grid",
             gridTemplateColumns: isMobile ? "1fr" : "1fr 1px 380px",
             gap: isMobile ? "32px" : "48px",
-            marginTop: "48px",
+            marginTop: "64px",
             alignItems: "stretch",
           }}
         >
@@ -260,7 +260,7 @@ export default function Features() {
             ref={cardRef}
             style={{
               background: "var(--ink)",
-              borderRadius: "28px",
+              borderRadius: "var(--r-card, 12px)",
               padding: "36px",
               minHeight: "480px",
               position: "relative",
@@ -447,79 +447,22 @@ export default function Features() {
                       {item.agentType}
                     </div>
 
-                    {/* Chips: DM Sans */}
-                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "24px" }}>
-                      {item.tasks.map((task) => (
-                        <span
-                          key={task}
-                          style={{
-                            background: "rgba(255,255,255,0.07)",
-                            border: "1px solid rgba(255,255,255,0.12)",
-                            borderRadius: "9999px",
-                            padding: "5px 12px",
-                            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                            fontSize: "12px",
-                            color: "rgba(255,255,255,0.75)",
-                            fontWeight: 500,
-                            letterSpacing: "0.01em",
-                          }}
-                        >
-                          {task}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Compact black button (auto width, 14px uppercase, small lime arrow square) */}
-                    <a
-                      href="#contact"
+                    {/* Plain line of text (replacing chips per Step 3) */}
+                    <p
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "12px",
-                        padding: "10px 14px 10px 18px",
-                        width: "fit-content",
-                        borderRadius: "8px",
-                        background: "#141414",
-                        border: "1px solid rgba(255,255,255,0.18)",
-                        color: "#ffffff",
-                        fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                        fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                         fontSize: "14px",
-                        fontWeight: 500,
-                        letterSpacing: "0.04em",
-                        textTransform: "uppercase",
-                        textDecoration: "none",
-                        transition: "background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#222222";
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "#141414";
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
-                        e.currentTarget.style.transform = "translateY(0)";
+                        color: "rgba(255,255,255,0.7)",
+                        lineHeight: 1.5,
+                        margin: "0 0 24px",
                       }}
                     >
-                      <span>DEPLOY AGENT</span>
-                      <span
-                        style={{
-                          width: "22px",
-                          height: "22px",
-                          background: "#d7fd41",
-                          borderRadius: "4px",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#141414",
-                          fontSize: "13px",
-                          fontWeight: 700,
-                          lineHeight: 1,
-                        }}
-                      >
-                        →
-                      </span>
-                    </a>
+                      {item.tasks.join(" · ")}
+                    </p>
+
+                    <Button href="#contact" variant="inverse" size="sm">
+                      Book a free audit
+                    </Button>
                   </div>
                 </div>
               ))}
@@ -554,32 +497,13 @@ export default function Features() {
                     width: "100%",
                   }}
                 >
-                  <span
-                    style={{
-                      display: "inline-block",
-                      background: "var(--surface)",
-                      border: "1px solid var(--line)",
-                      borderRadius: "9999px",
-                      padding: "5px 14px",
-                      fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                      fontSize: "11px",
-                      fontWeight: 500,
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "var(--accent)",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    {item.tag}
-                  </span>
-
                   <h2
                     style={{
                       fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                       fontSize: "clamp(26px, 2.8vw, 38px)",
                       fontWeight: 500,
-                      letterSpacing: "-0.04em",
-                      lineHeight: 1.05,
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1.04,
                       color: "var(--ink)",
                       marginBottom: "20px",
                     }}
@@ -717,88 +641,6 @@ export default function Features() {
           </div>
         </div>
       </SectionColumn>
-
-      {/* Marquee word strip */}
-      <div
-        style={{
-          marginTop: "64px",
-          borderTop: "1px solid var(--line)",
-          borderBottom: "1px solid var(--line)",
-          padding: "20px 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            flex: 1,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "60px",
-              animation: "marquee-scroll 25s linear infinite",
-              width: "max-content",
-            }}
-          >
-        {Array(8)
-          .fill("INTELLIGENT AUTOMATION")
-          .map((w, i) => (
-            <span
-              key={i}
-              style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(36px, 4vw, 56px)",
-                fontWeight: 500,
-                letterSpacing: "-0.04em",
-                textTransform: "uppercase",
-                color: i % 2 === 0 ? "var(--ink)" : "var(--line)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {w}
-            </span>
-          ))}
-          </div>
-        </div>
-
-        <a
-          href="#contact"
-          style={{
-            flexShrink: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            padding: "14px 28px",
-            borderRadius: "9999px",
-            background: "var(--ink)",
-            color: "var(--bg)",
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "12px",
-            fontWeight: 500,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            textDecoration: "none",
-            marginLeft: "32px",
-            transition: "background-color 0.3s ease, transform 0.3s ease",
-            whiteSpace: "nowrap",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "#2a2a2a";
-            e.currentTarget.style.transform = "translateY(-2px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "var(--ink)";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-        >
-          Get Started →
-        </a>
-      </div>
     </section>
   );
 }

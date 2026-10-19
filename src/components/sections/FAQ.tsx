@@ -80,17 +80,18 @@ export default function FAQ() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "0 24px 120px",
+        padding: "128px 0",
         opacity: 0,
       }}
     >
-      <SectionColumn style={{ padding: "0 24px 120px" }}>
-        <SectionBar label="FAQ" num="010" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
+        <SectionBar label="FAQ" sectionId="faq" />
 
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "80px",
+          marginTop: "64px",
           alignItems: "start",
         }}>
           {/* Left: heading */}
@@ -100,8 +101,8 @@ export default function FAQ() {
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                 fontSize: "clamp(32px, 3.6vw, 56px)",
                 fontWeight: 500,
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
+                lineHeight: 1.04,
+                letterSpacing: "-0.02em",
                 color: "var(--ink)",
               }}
             >
@@ -138,19 +139,20 @@ export default function FAQ() {
                 alignItems: "center",
                 gap: "8px",
                 marginTop: "28px",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "11px",
+                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                fontSize: "13px",
                 fontWeight: 500,
-                letterSpacing: "0.08em",
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: "var(--accent)",
-                textDecoration: "none",
+                color: "var(--ink)",
+                textDecoration: "underline",
+                textUnderlineOffset: "4px",
                 transition: "gap 0.2s ease",
               }}
               onMouseEnter={e => { e.currentTarget.style.gap = "12px"; }}
               onMouseLeave={e => { e.currentTarget.style.gap = "8px"; }}
             >
-              Ask a question →
+              ASK A QUESTION →
             </a>
           </div>
 

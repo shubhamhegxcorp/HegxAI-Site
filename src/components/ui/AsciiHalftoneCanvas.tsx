@@ -5,16 +5,24 @@ interface AsciiHalftoneCanvasProps {
   theme?: "light" | "dark";
   className?: string;
   style?: React.CSSProperties;
+  wrapperStyle?: React.CSSProperties;
   density?: "sparse" | "normal" | "dense";
   interactive?: boolean;
+  fontSize?: number;
+  color?: string;
+  accentColor?: string;
 }
 
 export default function AsciiHalftoneCanvas({
   theme = "light",
   className = "",
   style,
+  wrapperStyle,
   density = "normal",
   interactive = true,
+  fontSize,
+  color: customColor,
+  accentColor: customAccentColor,
 }: AsciiHalftoneCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +55,7 @@ export default function AsciiHalftoneCanvas({
     ).matches;
 
     // Character set ordered from empty/light to dense
-    const CHARS = [" ", ".", "·", "+", "?", "*", "%", "@"];
+    const CHARS = [" ", ".", "·", "+", "?", "¦", "%", "@"];
 
     // Grid spacing based on density
     const step = density === "dense" ? 11 : density === "sparse" ? 16 : 13;
@@ -78,8 +86,9 @@ export default function AsciiHalftoneCanvas({
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Precompute font and text settings
-      ctx.font = '500 9px "IBM Plex Mono", monospace';
+      // Precompute font and text settings (no bold glyphs, 11-12px size)
+      const fSize = fontSize ?? (theme === "dark" ? 11 : 9);
+      ctx.font = `400 ${fSize}px "IBM Plex Mono", monospace`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
@@ -129,14 +138,16 @@ export default function AsciiHalftoneCanvas({
     };
 
     const color =
-      theme === "dark"
-        ? "rgba(255, 255, 255, 0.16)"
-        : "rgba(20, 20, 20, 0.18)";
+      customColor ??
+      (theme === "dark"
+        ? "rgba(255, 255, 255, 0.14)"
+        : "rgba(20, 20, 20, 0.18)");
 
     const accentColor =
-      theme === "dark"
-        ? "rgba(215, 253, 65, 0.35)"
-        : "rgba(232, 162, 92, 0.35)";
+      customAccentColor ??
+      (theme === "dark"
+        ? "rgba(215, 253, 65, 0.22)"
+        : "rgba(232, 162, 92, 0.35)");
 
     const centerCrosshairColor =
       theme === "dark"
@@ -329,7 +340,7 @@ export default function AsciiHalftoneCanvas({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("resize", handleResize);
     };
-  }, [theme, density, interactive]);
+  }, [theme, density, interactive, fontSize, customColor, customAccentColor]);
 
   return (
     <div
@@ -341,6 +352,7 @@ export default function AsciiHalftoneCanvas({
         zIndex: 0,
         overflow: "hidden",
         contain: "strict",
+        ...wrapperStyle,
       }}
     >
       <canvas

@@ -42,11 +42,12 @@ export default function About() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
+        padding: isMobile ? "80px 0" : "128px 0",
         position: "relative",
       }}
     >
-      <SectionColumn style={{ padding: "0 32px 100px" }}>
-        <SectionBar label="ABOUT US" num="001" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
+        <SectionBar label="ABOUT US" sectionId="about" />
 
         <div
           style={{
@@ -58,11 +59,12 @@ export default function About() {
               : "110px 1fr",
             gap: isMobile ? "32px" : "48px",
             alignItems: "start",
-            marginTop: "32px",
+            marginTop: "64px",
           }}
         >
           {/* Left: Lime Chamfered Sticky Tag (100x144) */}
-          <div
+          <a
+            href="#contact"
             className="chamfer-tag"
             style={{
               width: "100px",
@@ -78,6 +80,7 @@ export default function About() {
               justifyContent: "space-between",
               flexShrink: 0,
               cursor: "pointer",
+              textDecoration: "none",
               transition: "transform 0.25s ease",
             }}
           >
@@ -114,12 +117,12 @@ export default function About() {
                   color: "#141414",
                 }}
               >
-                GET
+                BOOK A
                 <br />
-                STARTED
+                FREE AUDIT
               </div>
             </div>
-          </div>
+          </a>
 
           {/* Center Main Content: Two-tone Headline + Material Columns */}
           <div>
@@ -178,10 +181,11 @@ export default function About() {
                 <p
                   style={{
                     fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "13px",
+                    fontSize: "15px",
                     fontWeight: 400,
                     lineHeight: 1.65,
                     color: "#5f5b52",
+                    maxWidth: "56ch",
                     margin: 0,
                   }}
                 >
@@ -214,10 +218,11 @@ export default function About() {
                 <p
                   style={{
                     fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "13px",
+                    fontSize: "15px",
                     fontWeight: 400,
                     lineHeight: 1.65,
                     color: "#5f5b52",
+                    maxWidth: "56ch",
                     margin: 0,
                   }}
                 >

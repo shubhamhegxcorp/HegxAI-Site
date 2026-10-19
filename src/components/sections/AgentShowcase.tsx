@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionBar, SectionColumn } from "@/components/ui/shared";
+import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -103,8 +103,8 @@ export default function AgentShowcase() {
         position: "relative",
       }}
     >
-      <SectionColumn style={{ padding: "0 24px 140px" }}>
-        <SectionBar label="(I) AI WORKFLOW AUTOMATION" num="011" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px) 140px" }}>
+        <SectionBar label="AI WORKFLOW AUTOMATION" sectionId="agent-showcase" />
 
         {/* Top Split: Title + Intro CTA */}
         <div
@@ -122,8 +122,8 @@ export default function AgentShowcase() {
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                 fontSize: "clamp(32px, 3.6vw, 56px)",
                 fontWeight: 500,
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
+                lineHeight: 1.04,
+                letterSpacing: "-0.02em",
                 color: "var(--ink)",
                 margin: 0,
               }}
@@ -155,36 +155,9 @@ export default function AgentShowcase() {
               </span>
             </p>
 
-            <a
-              href="#contact"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "14px 32px",
-                borderRadius: "9999px",
-                background: "var(--ink)",
-                color: "var(--bg)",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "12px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                transition: "background-color 0.25s ease, transform 0.25s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#2a2a2a";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--ink)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
+            <Button href="#contact" variant="dark">
               Deploy An Agent
-              <span>→</span>
-            </a>
+            </Button>
           </div>
         </div>
 
@@ -193,7 +166,7 @@ export default function AgentShowcase() {
           style={{
             background: "var(--surface)",
             border: "1px solid var(--line)",
-            borderRadius: "36px",
+            borderRadius: "var(--r-card, 12px)",
             padding: "64px 32px",
             display: "flex",
             flexWrap: "wrap",

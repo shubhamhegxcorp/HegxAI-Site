@@ -98,7 +98,7 @@ export default function Footer() {
         {/* Newsletter form */}
         <div style={{
           background: "var(--ink)",
-          borderRadius: "24px",
+          borderRadius: "var(--r-card, 12px)",
           padding: "32px",
         }}>
           <span style={{

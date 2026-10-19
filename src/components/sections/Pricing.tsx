@@ -2,11 +2,11 @@
 import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionBar, SectionColumn } from "@/components/ui/shared";
+import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// TODO: replace with real pricing tiers when finalized
 // HARD RULE: NO invented dollar amounts, NO fake discounts
 
 export default function Pricing() {
@@ -14,6 +14,9 @@ export default function Pricing() {
   const sectionRef = useRef<HTMLElement>(null);
   const priceRollStarterRef = useRef<HTMLDivElement>(null);
   const priceRollGrowthRef = useRef<HTMLDivElement>(null);
+
+  // Render toggle only if any plan has a numeric price
+  const hasNumericPrices = siteContent.pricingTiers.some((p) => /\d/.test(p.price));
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -36,7 +39,6 @@ export default function Pricing() {
     );
   }, []);
 
-  // Vertical roll animation on billing toggle
   const handleToggle = (cycle: "monthly" | "yearly") => {
     if (cycle === billingCycle) return;
     setBillingCycle(cycle);
@@ -60,21 +62,22 @@ export default function Pricing() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "0 24px 120px",
+        padding: "128px 0",
         opacity: 0,
       }}
     >
-      <SectionColumn style={{ padding: "0 24px 100px" }}>
-        <SectionBar label="FLEXIBLE ENGAGEMENT" num="009" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
+        <SectionBar label="FLEXIBLE ENGAGEMENT" sectionId="pricing" />
 
-        {/* Section Title & Monthly/Yearly Toggle */}
+        {/* Section Title & Optional Toggle */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             textAlign: "center",
-            marginBottom: "56px",
+            marginTop: "64px",
+            marginBottom: "64px",
           }}
         >
           <h2
@@ -82,10 +85,10 @@ export default function Pricing() {
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontSize: "clamp(32px, 3.6vw, 56px)",
               fontWeight: 500,
-              lineHeight: 0.95,
-              letterSpacing: "-0.04em",
+              lineHeight: 1.04,
+              letterSpacing: "-0.02em",
               color: "var(--ink)",
-              maxWidth: "760px",
+              maxWidth: "56ch",
               margin: "0 0 32px",
             }}
           >
@@ -96,81 +99,76 @@ export default function Pricing() {
             </span>
           </h2>
 
-          {/* Animated Pill Slider Toggle */}
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              position: "relative",
-              background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "9999px",
-              padding: "4px",
-              boxShadow: "0 2px 10px rgba(20,20,20,0.03)",
-            }}
-          >
-            {/* Sliding Pill Background Indicator */}
+          {/* Toggle only rendered if numeric prices exist */}
+          {hasNumericPrices && (
             <div
               style={{
-                position: "absolute",
-                top: "4px",
-                bottom: "4px",
-                left: billingCycle === "monthly" ? "4px" : "calc(50%)",
-                width: "calc(50% - 4px)",
-                background: "var(--ink)",
-                borderRadius: "9999px",
-                transition: "left 0.3s cubic-bezier(0.16,1,0.3,1)",
-                zIndex: 1,
-              }}
-            />
-
-            <button
-              onClick={() => handleToggle("monthly")}
-              style={{
+                display: "inline-flex",
+                alignItems: "center",
                 position: "relative",
-                zIndex: 2,
-                border: "none",
-                background: "transparent",
-                padding: "8px 24px",
-                borderRadius: "9999px",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                color: billingCycle === "monthly" ? "var(--bg)" : "var(--muted)",
-                transition: "color 0.25s ease",
+                background: "var(--surface)",
+                border: "1px solid var(--line)",
+                borderRadius: "var(--r-0, 0px)",
+                padding: "4px",
+                boxShadow: "0 2px 10px rgba(20,20,20,0.03)",
               }}
             >
-              MONTHLY
-            </button>
-
-            <button
-              onClick={() => handleToggle("yearly")}
-              style={{
-                position: "relative",
-                zIndex: 2,
-                border: "none",
-                background: "transparent",
-                padding: "8px 24px",
-                borderRadius: "9999px",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "11px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                color: billingCycle === "yearly" ? "var(--bg)" : "var(--muted)",
-                transition: "color 0.25s ease",
-              }}
-            >
-              YEARLY
-            </button>
-          </div>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "4px",
+                  bottom: "4px",
+                  left: billingCycle === "monthly" ? "4px" : "calc(50%)",
+                  width: "calc(50% - 4px)",
+                  background: "var(--ink)",
+                  borderRadius: "var(--r-0, 0px)",
+                  transition: "left 0.3s cubic-bezier(0.16,1,0.3,1)",
+                  zIndex: 1,
+                }}
+              />
+              <button
+                onClick={() => handleToggle("monthly")}
+                style={{
+                  position: "relative",
+                  zIndex: 2,
+                  padding: "8px 20px",
+                  border: "none",
+                  background: "transparent",
+                  color: billingCycle === "monthly" ? "#ffffff" : "var(--muted)",
+                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => handleToggle("yearly")}
+                style={{
+                  position: "relative",
+                  zIndex: 2,
+                  padding: "8px 20px",
+                  border: "none",
+                  background: "transparent",
+                  color: billingCycle === "yearly" ? "#ffffff" : "var(--muted)",
+                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                Annual
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Pricing Cards Grid */}
+        {/* Pricing Cards Grid (Card radius 12px, aligned top) */}
         <div
           style={{
             display: "grid",
@@ -183,22 +181,24 @@ export default function Pricing() {
           <div
             style={{
               background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "32px",
+              border: "1px solid rgba(20,20,20,0.12)",
+              borderRadius: "var(--r-card, 12px)",
               padding: "48px 40px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              boxShadow: "0 8px 32px rgba(20,20,20,0.04)",
+              boxShadow: "none",
               position: "relative",
             }}
           >
             <div>
+              {/* Top Bar with Reserved Height to perfectly align with Card 2 */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  minHeight: "28px",
                   marginBottom: "20px",
                 }}
               >
@@ -214,14 +214,16 @@ export default function Pricing() {
                 >
                   FOUNDATIONAL
                 </span>
+                {/* Empty placeholder spacer maintaining exact top alignment */}
+                <span style={{ minHeight: "24px", display: "inline-block" }} />
               </div>
 
               <h3
                 style={{
                   fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontSize: "clamp(20px, 1.8vw, 28px)",
-                  lineHeight: 1.1,
-                  letterSpacing: "-0.04em",
+                  fontSize: "clamp(22px, 2vw, 30px)",
+                  lineHeight: 1.04,
+                  letterSpacing: "-0.02em",
                   color: "var(--ink)",
                   marginBottom: "12px",
                   fontWeight: 500,
@@ -236,6 +238,7 @@ export default function Pricing() {
                   fontSize: "15px",
                   lineHeight: 1.6,
                   color: "#5f5b52",
+                  maxWidth: "56ch",
                   marginBottom: "32px",
                 }}
               >
@@ -257,7 +260,7 @@ export default function Pricing() {
                       fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                       fontSize: "44px",
                       lineHeight: 1,
-                      letterSpacing: "-0.04em",
+                      letterSpacing: "-0.02em",
                       fontWeight: 500,
                       color: "var(--ink)",
                     }}
@@ -274,17 +277,6 @@ export default function Pricing() {
                     / scoped to your needs
                   </span>
                 </div>
-                <span
-                  style={{
-                    display: "block",
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "10px",
-                    color: "rgba(20,20,20,0.45)",
-                    marginTop: "6px",
-                  }}
-                >
-                  {/* Custom milestone or retainer agreement */}
-                </span>
               </div>
 
               {/* Features List */}
@@ -310,16 +302,16 @@ export default function Pricing() {
                   >
                     <span
                       style={{
-                        width: "18px",
-                        height: "18px",
+                        width: "16px",
+                        height: "16px",
                         borderRadius: "50%",
                         background: "rgba(20,20,20,0.06)",
                         color: "var(--ink)",
-                        display: "flex",
+                        display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "11px",
-                        fontWeight: "bold",
+                        fontSize: "9px",
+                        fontWeight: 700,
                         flexShrink: 0,
                         marginTop: "2px",
                       }}
@@ -332,58 +324,28 @@ export default function Pricing() {
               </ul>
             </div>
 
-            {/* CTA Button */}
-            <a
-              href="#contact"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                width: "100%",
-                padding: "16px 28px",
-                borderRadius: "9999px",
-                background: "transparent",
-                border: "1px solid var(--ink)",
-                color: "var(--ink)",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "12px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                transition: "background-color 0.25s ease, color 0.25s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--ink)";
-                e.currentTarget.style.color = "var(--bg)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "var(--ink)";
-              }}
-            >
-              Book a Strategy Call
-              <span>→</span>
-            </a>
+            {/* CTA Button: Secondary */}
+            <Button href="#process" variant="secondary" style={{ width: "100%" }}>
+              See how it works
+            </Button>
           </div>
 
-          {/* Card 2: Growth (Ink Theme with Popular Badge) */}
+          {/* Card 2: Growth (Dark Theme with RECOMMENDED Badge) */}
           <div
             style={{
               background: "var(--ink)",
               border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: "32px",
+              borderRadius: "var(--r-card, 12px)",
               padding: "48px 40px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              boxShadow: "0 16px 48px rgba(20,20,20,0.18)",
+              boxShadow: "none",
               position: "relative",
               overflow: "hidden",
             }}
           >
-            {/* Background texture line */}
+            {/* Background subtle dot texture */}
             <div
               aria-hidden
               style={{
@@ -396,11 +358,13 @@ export default function Pricing() {
             />
 
             <div style={{ position: "relative", zIndex: 1 }}>
+              {/* Top Bar with RECOMMENDED Badge */}
               <div
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  minHeight: "28px",
                   marginBottom: "20px",
                 }}
               >
@@ -417,31 +381,31 @@ export default function Pricing() {
                   ENTERPRISE
                 </span>
 
-                {/* Popular Plan Badge */}
+                {/* RECOMMENDED Badge */}
                 <span
                   style={{
                     background: "#D7FD41",
                     color: "#141414",
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    letterSpacing: "0.08em",
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
                     textTransform: "uppercase",
                     padding: "4px 12px",
-                    borderRadius: "9999px",
+                    borderRadius: "var(--r-0, 0px)",
                   }}
                 >
-                  POPULAR PLAN
+                  RECOMMENDED
                 </span>
               </div>
 
               <h3
                 style={{
                   fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontSize: "clamp(20px, 1.8vw, 28px)",
-                  lineHeight: 1.1,
-                  letterSpacing: "-0.04em",
-                  color: "var(--bg)",
+                  fontSize: "clamp(22px, 2vw, 30px)",
+                  lineHeight: 1.04,
+                  letterSpacing: "-0.02em",
+                  color: "#ffffff",
                   marginBottom: "12px",
                   fontWeight: 500,
                 }}
@@ -454,11 +418,12 @@ export default function Pricing() {
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "15px",
                   lineHeight: 1.6,
-                  color: "rgba(244,239,230,0.65)",
+                  color: "rgba(255,255,255,0.65)",
+                  maxWidth: "56ch",
                   marginBottom: "32px",
                 }}
               >
-                For scaling organizations requiring multi-agent orchestration, bidirectional data pipelines, and custom intelligence.
+                Comprehensive automation infrastructure for organizations demanding high-volume operations and autonomous agent networks.
               </p>
 
               {/* Price Slot */}
@@ -476,45 +441,33 @@ export default function Pricing() {
                       fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                       fontSize: "44px",
                       lineHeight: 1,
-                      letterSpacing: "-0.04em",
+                      letterSpacing: "-0.02em",
                       fontWeight: 500,
-                      color: "var(--bg)",
+                      color: "#ffffff",
                     }}
                   >
-                    Custom
+                    Enterprise
                   </span>
                   <span
                     style={{
                       fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                       fontSize: "13px",
-                      color: "rgba(244,239,230,0.6)",
+                      color: "rgba(255,255,255,0.5)",
                     }}
                   >
-                    / scoped to your needs
+                    / tailored scope
                   </span>
                 </div>
-                <span
-                  style={{
-                    display: "block",
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "10px",
-                    color: "rgba(244,239,230,0.45)",
-                    marginTop: "6px",
-                  }}
-                >
-                  {/* Scaled enterprise capacity agreement */}
-                </span>
               </div>
 
               {/* Features List */}
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px", display: "flex", flexDirection: "column", gap: "16px" }}>
                 {[
-                  "Comprehensive multi-department workflow mapping",
-                  "Autonomous multi-agent network orchestration",
-                  "Bidirectional real-time database & API synchronization",
-                  "Custom guardrails, failover logic & security compliance",
-                  "Dedicated engineering escalation & priority iterations",
-                  "Ongoing performance optimization & custom fine-tuning",
+                  "Full operational audit & systems architecture blueprint",
+                  "Multi-agent autonomous systems with human-in-the-loop controls",
+                  "Custom API integrations & legacy database synchronizations",
+                  "Priority operational SLA & dedicated monitoring engineer",
+                  "Quarterly automation reviews & roadmap expansion",
                 ].map((feat, i) => (
                   <li
                     key={i}
@@ -525,21 +478,21 @@ export default function Pricing() {
                       fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                       fontSize: "14px",
                       lineHeight: 1.5,
-                      color: "var(--bg)",
+                      color: "rgba(255,255,255,0.85)",
                     }}
                   >
                     <span
                       style={{
-                        width: "18px",
-                        height: "18px",
+                        width: "16px",
+                        height: "16px",
                         borderRadius: "50%",
-                        background: "#D7FD41",
-                        color: "#141414",
-                        display: "flex",
+                        background: "rgba(215,253,65,0.2)",
+                        color: "#D7FD41",
+                        display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "11px",
-                        fontWeight: "bold",
+                        fontSize: "9px",
+                        fontWeight: 700,
                         flexShrink: 0,
                         marginTop: "2px",
                       }}
@@ -552,41 +505,10 @@ export default function Pricing() {
               </ul>
             </div>
 
-            {/* CTA Button */}
-            <a
-              href="#contact"
-              style={{
-                position: "relative",
-                zIndex: 1,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                width: "100%",
-                padding: "16px 28px",
-                borderRadius: "9999px",
-                background: "var(--bg)",
-                color: "var(--ink)",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "12px",
-                fontWeight: 600,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                transition: "background-color 0.25s ease, transform 0.25s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#D7FD41";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--bg)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Schedule Executive Audit
-              <span>→</span>
-            </a>
+            {/* CTA Button: Inverse */}
+            <Button href="#contact" variant="inverse" style={{ width: "100%" }}>
+              Book a free audit
+            </Button>
           </div>
         </div>
       </SectionColumn>

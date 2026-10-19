@@ -112,36 +112,48 @@ export default function Process() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "0 24px",
+        padding: "128px 24px",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
       }}
     >
-      <SectionColumn style={{ padding: "0 24px 100px", flex: 1, width: "100%" }}>
-        <SectionBar label="THE PROCESS" num="007" />
+      <SectionColumn style={{ padding: "0 var(--col-pad, 24px)", flex: 1, width: "100%" }}>
+        <SectionBar label="THE PROCESS" sectionId="process" />
 
-        {/* Headline */}
-        <h2
-          style={{
-            fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-            fontSize: "clamp(32px, 3.6vw, 56px)",
-            fontWeight: 500,
-            lineHeight: 0.95,
-            letterSpacing: "-0.04em",
-            color: "var(--ink)",
-            maxWidth: "640px",
-            padding: "32px 0 48px",
-          }}
-        >
-          Automation built around your business
-        </h2>
+        {/* Headline & Intro */}
+        <div style={{ marginTop: "64px", marginBottom: "48px" }}>
+          <h2
+            style={{
+              fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+              fontSize: "clamp(32px, 3.6vw, 56px)",
+              fontWeight: 500,
+              lineHeight: 1.04,
+              letterSpacing: "-0.02em",
+              color: "var(--ink)",
+              maxWidth: "640px",
+              marginBottom: "16px",
+            }}
+          >
+            Automation built around your business
+          </h2>
+          <p
+            style={{
+              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+              fontSize: "16px",
+              lineHeight: 1.6,
+              color: "#5f5b52",
+              maxWidth: "56ch",
+            }}
+          >
+            Automation that grows with you — designed to scale alongside your team with no rework and no surprises.
+          </p>
+        </div>
 
         <div style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "80px",
-          paddingBottom: "80px",
           alignItems: "start",
         }}>
           {/* Left: step list + progress */}
@@ -199,7 +211,7 @@ export default function Process() {
                       fontSize: "10px",
                       fontWeight: 500,
                       letterSpacing: "0.12em",
-                      color: activeStep === i ? "var(--accent)" : "var(--muted)",
+                      color: activeStep === i ? "var(--accent-text, #B8742A)" : "var(--muted)",
                     }}>
                       {s.num}
                     </span>
@@ -207,7 +219,7 @@ export default function Process() {
                       fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                       fontSize: "20px",
                       fontWeight: 500,
-                      letterSpacing: "-0.04em",
+                      letterSpacing: "-0.02em",
                       color: "var(--ink)",
                     }}>
                       {s.title}
@@ -223,48 +235,33 @@ export default function Process() {
             ref={detailRef}
             style={{
               background: "var(--surface)",
-              border: "1px solid var(--line)",
-              borderRadius: "28px",
+              border: "1px solid rgba(20,20,20,0.12)",
+              borderRadius: "var(--r-card, 12px)",
               padding: "36px",
-              boxShadow: "0 4px 32px rgba(20,20,20,0.06)",
+              boxShadow: "none",
             }}
           >
-            <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-              <span style={{
-                background: "var(--accent-light)",
-                border: "1px solid var(--accent)",
-                borderRadius: "9999px",
-                padding: "4px 12px",
+            <div
+              style={{
                 fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "10px",
+                fontSize: "11px",
                 fontWeight: 500,
-                color: "var(--accent)",
                 letterSpacing: "0.08em",
-              }}>
-                {step.tag}
-              </span>
-              <span style={{
-                background: "var(--surface)",
-                border: "1px solid var(--line)",
-                borderRadius: "9999px",
-                padding: "4px 12px",
-                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                fontSize: "10px",
-                fontWeight: 500,
-                color: "#5f5b52",
-                letterSpacing: "0.08em",
-              }}>
-                Step {step.num}
-              </span>
+                color: "var(--accent-text, #B8742A)",
+                textTransform: "uppercase",
+                marginBottom: "16px",
+              }}
+            >
+              {step.tag} · STEP {step.num}
             </div>
 
             <div style={{
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontSize: "clamp(24px, 2.5vw, 36px)",
               fontWeight: 500,
-              letterSpacing: "-0.04em",
+              letterSpacing: "-0.02em",
               color: "var(--ink)",
-              lineHeight: 1.05,
+              lineHeight: 1.04,
               marginBottom: "20px",
             }}>
               {step.title}
@@ -276,6 +273,7 @@ export default function Process() {
               fontWeight: 400,
               lineHeight: 1.7,
               color: "#5f5b52",
+              maxWidth: "56ch",
               marginBottom: "28px",
             }}>
               {step.body}
@@ -284,7 +282,7 @@ export default function Process() {
             {/* Visual placeholder */}
             <div style={{
               background: "var(--ink)",
-              borderRadius: "16px",
+              borderRadius: "var(--r-card, 12px)",
               padding: "32px",
               display: "flex",
               alignItems: "center",
