@@ -341,6 +341,18 @@ h2, h3 {
   color: #fff;
 }
 
+/* ─── SERVICE ROWS HOVER ────────────────────────────────────────────────── */
+.service-row {
+  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out), padding 0.35s var(--ease-out);
+}
+.service-row:not(.is-active):hover {
+  background: rgba(20, 20, 20, 0.03) !important;
+}
+.service-row:not(.is-active):hover .service-row-arrow {
+  color: var(--ink) !important;
+  transform: translateX(8px) !important;
+}
+
 
 
 /* ─── MASK REVEAL (PADDING-BOTTOM .14em & MARGIN-BOTTOM -.14em TO PREVENT CLIPPING) ─ */

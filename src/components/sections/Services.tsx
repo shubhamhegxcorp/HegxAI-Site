@@ -99,7 +99,7 @@ export default function Services() {
           Custom AI agents, workflow automation, and deep tool integrations built to eliminate bottlenecks and scale operations.
         </p>
 
-        {/* Service rows (straight 1px bottom borders, 0 radius, accordion behavior) */}
+        {/* Service rows (straight 1px bottom borders, 0 radius, accordion behavior with hover activation) */}
         <div style={{ borderTop: "1px solid var(--line)", marginTop: "64px" }}>
           {SERVICES.map((service, i) => {
             const isActive = activeIdx === i;
@@ -111,6 +111,8 @@ export default function Services() {
                   rowsRef.current[i] = el;
                 }}
                 onClick={() => setActiveIdx(isActive ? null : i)}
+                onMouseEnter={() => setActiveIdx(i)}
+                className={`service-row ${isActive ? "is-active" : ""}`}
                 style={{
                   position: "relative",
                   borderBottom: "1px solid var(--line)",
@@ -118,8 +120,9 @@ export default function Services() {
                   background: isActive ? "var(--ink)" : "transparent",
                   color: isActive ? "#ffffff" : "var(--ink)",
                   cursor: "pointer",
-                  transition: "background-color 0.35s ease, color 0.35s ease",
-                  padding: "24px 20px",
+                  transition:
+                    "background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+                  padding: isActive ? "28px 24px" : "24px 20px",
                   overflow: "hidden",
                 }}
               >
@@ -133,14 +136,16 @@ export default function Services() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "28px", minWidth: 0 }}>
-                    {/* Arrow icon (ink at 60% when inactive, lime when active) */}
+                    {/* Arrow icon (ink at 60% when inactive, lime rotated 45deg when active) */}
                     <span
+                      className="service-row-arrow"
                       style={{
                         fontFamily: "sans-serif",
                         fontSize: "20px",
                         color: isActive ? "#d7fd41" : "rgba(20,20,20,0.6)",
                         transform: isActive ? "rotate(45deg)" : "rotate(0deg)",
-                        transition: "transform 0.35s ease, color 0.35s ease",
+                        transition:
+                          "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease",
                         display: "inline-block",
                         flexShrink: 0,
                       }}
@@ -165,11 +170,12 @@ export default function Services() {
                     </span>
                   </div>
 
-                  {/* Active row right-aligned Learn more link */}
+                  {/* Active row right-aligned Learn more link with hover arrow animation */}
                   {isActive && (
                     <a
                       href="#contact"
                       onClick={(e) => e.stopPropagation()}
+                      className="service-learn-more"
                       style={{
                         fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                         fontSize: "13px",
@@ -182,9 +188,29 @@ export default function Services() {
                         alignItems: "center",
                         gap: "6px",
                         flexShrink: 0,
+                        transition: "color 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = "#ffffff";
+                        const arrow = e.currentTarget.querySelector(".learn-arrow") as HTMLElement;
+                        if (arrow) arrow.style.transform = "translateX(4px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = "#d7fd41";
+                        const arrow = e.currentTarget.querySelector(".learn-arrow") as HTMLElement;
+                        if (arrow) arrow.style.transform = "translateX(0px)";
                       }}
                     >
-                      Learn more →
+                      <span>Learn more</span>
+                      <span
+                        className="learn-arrow"
+                        style={{
+                          display: "inline-block",
+                          transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+                        }}
+                      >
+                        →
+                      </span>
                     </a>
                   )}
                 </div>
@@ -195,7 +221,8 @@ export default function Services() {
                     maxHeight: isActive ? "120px" : "0px",
                     opacity: isActive ? 1 : 0,
                     overflow: "hidden",
-                    transition: "max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease, margin 0.35s ease",
+                    transition:
+                      "max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease, margin 0.35s ease",
                     marginTop: isActive ? "16px" : "0px",
                     paddingLeft: "48px",
                   }}
