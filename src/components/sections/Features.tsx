@@ -38,6 +38,7 @@ const FEATURES = [
 export default function Features() {
   const isMobile = useIsMobile();
   const [mobileActive, setMobileActive] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const orbitRef = useRef<HTMLDivElement>(null);
@@ -113,10 +114,15 @@ export default function Features() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=300%",
+          end: "+=180%",
           pin: true,
           pinSpacing: true,
           scrub: 0.6,
+          onUpdate: (self) => {
+            const p = self.progress;
+            const idx = p < 0.35 ? 0 : p < 0.75 ? 1 : 2;
+            setActiveIdx(idx);
+          },
           onRefresh: (self) => {
             stRef.current = self;
           },
@@ -206,13 +212,14 @@ export default function Features() {
             ease: "power2.inOut",
           },
           "<"
-        )
-        .to({}, { duration: 0.4 }); // brief hold on 2
+        );
     },
     { scope: sectionRef }
   );
 
   const goTo = (idx: number) => {
+    if (idx < 0 || idx >= FEATURES.length) return;
+    setActiveIdx(idx);
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -236,11 +243,7 @@ export default function Features() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: isMobile ? "80px 24px" : "128px 24px",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
+        padding: isMobile ? "80px 0" : "128px 0",
         position: "relative",
       }}
     >
@@ -395,7 +398,7 @@ export default function Features() {
                     justifyContent: "space-between",
                   }}
                 >
-                  {/* Top status (tiny labels <= 11px keep mono) */}
+                  {/* Category label from data (AI AGENT, WORKFLOW, INTEGRATION) */}
                   <div
                     style={{
                       display: "flex",
@@ -411,25 +414,11 @@ export default function Features() {
                         fontWeight: 500,
                         letterSpacing: "0.12em",
                         textTransform: "uppercase",
-                        color: "rgba(255,255,255,0.45)",
+                        color: "rgba(255,255,255,0.65)",
                       }}
                     >
-                      DEPLOY AN AI AGENT
+                      {item.tag}
                     </span>
-                    <div
-                      style={{
-                        background: "var(--accent)",
-                        borderRadius: "var(--r-pill, 999px)",
-                        padding: "3px 10px",
-                        fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                        fontSize: "10px",
-                        color: "var(--ink)",
-                        fontWeight: 600,
-                        letterSpacing: "0.06em",
-                      }}
-                    >
-                      {item.status}
-                    </div>
                   </div>
 
                   {/* Agent info */}
@@ -442,24 +431,11 @@ export default function Features() {
                         fontWeight: 500,
                         letterSpacing: "-0.02em",
                         color: "#ffffff",
-                        marginBottom: "12px",
+                        marginBottom: "24px",
                       }}
                     >
                       {item.agentType}
                     </div>
-
-                    {/* Plain line of text (replacing chips per Step 3) */}
-                    <p
-                      style={{
-                        fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                        fontSize: "14px",
-                        color: "rgba(255,255,255,0.7)",
-                        lineHeight: 1.5,
-                        margin: "0 0 24px",
-                      }}
-                    >
-                      {item.tasks.join(" · ")}
-                    </p>
 
                     <Button href="#contact" variant="inverse" size="sm">
                       Book a free audit
@@ -482,9 +458,9 @@ export default function Features() {
             />
           )}
 
-          {/* Right: Feature copy + rolling pager */}
+          {/* Right: Feature copy + 3 bullet rows + rolling pager */}
           <div style={{ paddingTop: "12px", display: "flex", flexDirection: "column", minHeight: "440px", justifyContent: "space-between" }}>
-            <div style={{ position: "relative", minHeight: "320px" }}>
+            <div style={{ position: "relative", minHeight: "360px" }}>
               {FEATURES.map((item, i) => (
                 <div
                   key={i}
@@ -507,7 +483,7 @@ export default function Features() {
                       letterSpacing: "-0.02em",
                       lineHeight: 1.04,
                       color: "var(--ink)",
-                      marginBottom: "20px",
+                      marginBottom: "16px",
                     }}
                   >
                     {item.title}
@@ -518,128 +494,179 @@ export default function Features() {
                       fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                       fontSize: "15px",
                       fontWeight: 400,
-                      lineHeight: 1.7,
+                      lineHeight: 1.65,
                       color: "var(--muted)",
-                      marginBottom: "40px",
+                      marginBottom: "24px",
                     }}
                   >
                     {item.body}
                   </p>
+
+                  {/* 3 bullet items moved out of card as rows (1px dividers, 10px ink square marker, 15px text) */}
+                  <div style={{ marginTop: "16px", marginBottom: "32px", borderTop: "1px solid var(--line)" }}>
+                    {item.tasks.map((task, tIdx) => (
+                      <div
+                        key={tIdx}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                          padding: "12px 0",
+                          borderBottom: "1px solid var(--line)",
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: "10px",
+                            height: "10px",
+                            background: "var(--ink)",
+                            display: "inline-block",
+                            flexShrink: 0,
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                            fontSize: "15px",
+                            fontWeight: 400,
+                            color: "var(--ink)",
+                          }}
+                        >
+                          {task}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* Pager with vertically rolling digits */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "auto" }}>
-              <div
-                style={{
-                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                  fontSize: "11px",
-                  letterSpacing: "0.1em",
-                  color: "var(--muted)",
-                }}
-              >
-                ▶ NEXT FEATURE
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                <button
-                  onClick={() => goTo((mobileActive - 1 + FEATURES.length) % FEATURES.length)}
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
-                    border: "1px solid var(--line)",
-                    background: "var(--surface)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "sans-serif",
-                    fontSize: "14px",
-                    color: "var(--muted)",
-                    transition: "background-color 0.2s ease, color 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "var(--ink)";
-                    e.currentTarget.style.color = "var(--bg)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "var(--surface)";
-                    e.currentTarget.style.color = "var(--muted)";
-                  }}
-                  aria-label="Previous feature"
-                >
-                  ‹
-                </button>
-
-                {/* Rolling digits container */}
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "12px",
-                    color: "var(--muted)",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "inline-block",
-                      height: "16px",
-                      overflow: "hidden",
-                      verticalAlign: "middle",
-                    }}
-                  >
+            {(() => {
+              const currentIdx = isMobile ? mobileActive : activeIdx;
+              return (
+                <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "auto" }}>
+                  {currentIdx < FEATURES.length - 1 && (
                     <div
-                      ref={digitsRef}
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        lineHeight: "16px",
-                        transform: "translateY(0%)",
+                        fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                        fontSize: "11px",
+                        letterSpacing: "0.1em",
+                        color: "var(--muted)",
                       }}
                     >
-                      <span style={{ height: "16px", display: "flex", alignItems: "center" }}>01</span>
-                      <span style={{ height: "16px", display: "flex", alignItems: "center" }}>02</span>
-                      <span style={{ height: "16px", display: "flex", alignItems: "center" }}>03</span>
+                      ▶ NEXT FEATURE
                     </div>
-                  </div>
-                  <span style={{ lineHeight: "16px" }}>&nbsp;/ 03</span>
-                </div>
+                  )}
 
-                <button
-                  onClick={() => goTo((mobileActive + 1) % FEATURES.length)}
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    borderRadius: "50%",
-                    border: "1px solid var(--line)",
-                    background: "var(--surface)",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "sans-serif",
-                    fontSize: "14px",
-                    color: "var(--muted)",
-                    transition: "background-color 0.2s ease, color 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "var(--ink)";
-                    e.currentTarget.style.color = "var(--bg)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "var(--surface)";
-                    e.currentTarget.style.color = "var(--muted)";
-                  }}
-                  aria-label="Next feature"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px", marginLeft: currentIdx >= FEATURES.length - 1 ? "auto" : undefined }}>
+                    <button
+                      disabled={currentIdx === 0}
+                      onClick={() => goTo(currentIdx - 1)}
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--line)",
+                        background: "var(--surface)",
+                        cursor: currentIdx === 0 ? "not-allowed" : "pointer",
+                        opacity: currentIdx === 0 ? 0.35 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontFamily: "sans-serif",
+                        fontSize: "14px",
+                        color: "var(--muted)",
+                        transition: "background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentIdx !== 0) {
+                          e.currentTarget.style.background = "var(--ink)";
+                          e.currentTarget.style.color = "var(--bg)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "var(--surface)";
+                        e.currentTarget.style.color = "var(--muted)";
+                      }}
+                      aria-label="Previous feature"
+                    >
+                      ‹
+                    </button>
+
+                    {/* Rolling digits container */}
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                        fontSize: "12px",
+                        color: "var(--muted)",
+                        letterSpacing: "0.08em",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "inline-block",
+                          height: "16px",
+                          overflow: "hidden",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        <div
+                          ref={digitsRef}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            lineHeight: "16px",
+                            transform: "translateY(0%)",
+                          }}
+                        >
+                          <span style={{ height: "16px", display: "flex", alignItems: "center" }}>01</span>
+                          <span style={{ height: "16px", display: "flex", alignItems: "center" }}>02</span>
+                          <span style={{ height: "16px", display: "flex", alignItems: "center" }}>03</span>
+                        </div>
+                      </div>
+                      <span style={{ lineHeight: "16px" }}>&nbsp;/ 03</span>
+                    </div>
+
+                    <button
+                      disabled={currentIdx === FEATURES.length - 1}
+                      onClick={() => goTo(currentIdx + 1)}
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--line)",
+                        background: "var(--surface)",
+                        cursor: currentIdx === FEATURES.length - 1 ? "not-allowed" : "pointer",
+                        opacity: currentIdx === FEATURES.length - 1 ? 0.35 : 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontFamily: "sans-serif",
+                        fontSize: "14px",
+                        color: "var(--muted)",
+                        transition: "background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (currentIdx !== FEATURES.length - 1) {
+                          e.currentTarget.style.background = "var(--ink)";
+                          e.currentTarget.style.color = "var(--bg)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "var(--surface)";
+                        e.currentTarget.style.color = "var(--muted)";
+                      }}
+                      aria-label="Next feature"
+                    >
+                      ›
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       </SectionColumn>

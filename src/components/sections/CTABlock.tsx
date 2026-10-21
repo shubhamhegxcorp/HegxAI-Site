@@ -51,13 +51,18 @@ export default function CTABlock() {
             background: "var(--surface)",
             border: "1px solid rgba(20,20,20,0.12)",
             borderRadius: "var(--r-card, 12px)",
-            padding: "64px 48px",
+            padding: "56px 48px",
             marginTop: "64px",
             position: "relative",
             boxShadow: "none",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "56px",
+            alignItems: "center",
           }}
         >
-          <div style={{ maxWidth: "56ch" }}>
+          {/* Left: Heading + Copy + CTA */}
+          <div style={{ maxWidth: "52ch" }}>
             <h2
               id="contact-title"
               style={{
@@ -80,7 +85,7 @@ export default function CTABlock() {
                 fontWeight: 400,
                 lineHeight: 1.65,
                 color: "#5f5b52",
-                maxWidth: "56ch",
+                maxWidth: "52ch",
                 marginBottom: "36px",
               }}
             >
@@ -93,23 +98,93 @@ export default function CTABlock() {
                 Book a free audit
               </Button>
             ) : (
-              <p
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
                 style={{
-                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "16px 24px",
+                  borderRadius: "0px",
+                  background: "var(--ink)",
+                  border: "1px solid var(--ink)",
+                  color: "#ffffff",
+                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                   fontSize: "13px",
                   fontWeight: 500,
-                  letterSpacing: "0.08em",
+                  letterSpacing: "0.04em",
                   textTransform: "uppercase",
-                  color: "var(--ink)",
-                  padding: "16px 24px",
-                  border: "1px solid var(--ink)",
-                  display: "inline-block",
-                  margin: 0,
+                  opacity: 0.4,
+                  cursor: "not-allowed",
+                  userSelect: "none",
                 }}
               >
-                Booking opens soon.
-              </p>
+                Booking opens soon
+              </button>
             )}
+          </div>
+
+          {/* Right: Vertical list of 3 steps */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              borderTop: "1px solid rgba(20,20,20,0.12)",
+            }}
+          >
+            {[
+              { num: "01", text: "Free audit call" },
+              { num: "02", text: "Automation map" },
+              { num: "03", text: "Build plan" },
+            ].map((step, idx) => (
+              <div
+                key={idx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "24px 0",
+                  borderBottom: "1px solid rgba(20,20,20,0.12)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <span
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      background: "var(--ink)",
+                      display: "inline-block",
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                      fontSize: "18px",
+                      fontWeight: 500,
+                      color: "var(--ink)",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {step.text}
+                  </span>
+                </div>
+                <span
+                  style={{
+                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    letterSpacing: "0.08em",
+                    color: "rgba(20,20,20,0.4)",
+                  }}
+                >
+                  {step.num}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </SectionColumn>

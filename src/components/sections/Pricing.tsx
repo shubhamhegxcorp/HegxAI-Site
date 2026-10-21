@@ -327,7 +327,11 @@ export default function Pricing() {
             </div>
 
             {/* CTA Button: Secondary */}
-            <Button href="#process" variant="secondary" style={{ width: "100%" }}>
+            <Button
+              href="#process"
+              variant="secondary"
+              style={{ width: "100%", color: "var(--ink)", borderColor: "var(--ink)" }}
+            >
               See how it works
             </Button>
           </div>

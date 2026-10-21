@@ -67,13 +67,27 @@ export default function Nav() {
   useEffect(() => {
     // 0. Active section tracking with ScrollTrigger
     const triggers: ScrollTrigger[] = [];
+
+    // Clear activeId when Hero is in view
+    const heroEl = document.getElementById("hero");
+    if (heroEl) {
+      const heroST = ScrollTrigger.create({
+        trigger: heroEl,
+        start: "top top",
+        end: "bottom 40%",
+        onEnter: () => setActiveId(""),
+        onEnterBack: () => setActiveId(""),
+      });
+      triggers.push(heroST);
+    }
+
     NAV_LINKS.forEach((link) => {
       const el = document.getElementById(link.id);
       if (!el) return;
       const st = ScrollTrigger.create({
         trigger: el,
-        start: "top 45%",
-        end: "bottom 45%",
+        start: "top 40%",
+        end: "bottom 40%",
         onToggle: (self) => {
           if (self.isActive) {
             setActiveId(link.id);
@@ -423,9 +437,7 @@ export default function Nav() {
                       letterSpacing: "0.06em",
                       textTransform: "uppercase",
                       color: "var(--ink)",
-                      borderBottom: isActive ? "2px solid var(--ink)" : "2px solid transparent",
                       paddingBottom: "2px",
-                      transition: "border-color 0.25s ease",
                     }}
                   >
                     {link.label}

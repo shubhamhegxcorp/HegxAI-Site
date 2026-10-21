@@ -277,6 +277,23 @@ h2, h3 {
   color: #ffffff;
 }
 
+.btn-square[data-variant="secondary"] .btn-text,
+.btn-square[data-variant="secondary"] .btn-arrow {
+  color: var(--ink);
+}
+
+.btn-square[data-variant="secondary"]:hover .btn-text,
+.btn-square[data-variant="secondary"]:focus-visible .btn-text,
+.btn-square[data-variant="secondary"]:hover .btn-arrow,
+.btn-square[data-variant="secondary"]:focus-visible .btn-arrow {
+  color: #ffffff !important;
+}
+
+.btn-square[data-variant="secondary"]:hover .btn-wipe,
+.btn-square[data-variant="secondary"]:focus-visible .btn-wipe {
+  transform: translateY(0%) !important;
+}
+
 /* Inverted for dark sections */
 .btn-invert-lime {
   background: var(--lime);

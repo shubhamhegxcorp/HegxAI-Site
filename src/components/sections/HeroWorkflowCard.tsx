@@ -438,14 +438,14 @@ export default function HeroWorkflowCard() {
         }}
         className="hero-workflow-panel"
       >
-        {/* ─── FLOATING TOASTS (Overlapping lime panel edge) ─── */}
-        {/* Toast Left: "Lead routed" */}
+        {/* ─── FLOATING TOASTS (Positioned outside card edges, below header bar, never over text) ─── */}
+        {/* Toast Left: "Lead routed" at x: card.left - 24px, y: 96px */}
         <div
           ref={toastLeftRef}
           style={{
             position: "absolute",
-            left: "-36px",
-            top: "40px",
+            left: "-24px",
+            top: "96px",
             zIndex: 12,
             background: "#ffffff",
             borderRadius: "var(--r-pill, 999px)",
@@ -490,13 +490,13 @@ export default function HeroWorkflowCard() {
           </span>
         </div>
 
-        {/* Toast Right: "Report generated" */}
+        {/* Toast Right: "Report generated" at x: card.right - 80px, y: 140px */}
         <div
           ref={toastRightRef}
           style={{
             position: "absolute",
-            right: "-36px",
-            bottom: "40px",
+            right: "-80px",
+            top: "140px",
             zIndex: 12,
             background: "#ffffff",
             borderRadius: "var(--r-pill, 999px)",
@@ -722,7 +722,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[0] = el;
                     }}
-                    d="M 124 37 C 155 37, 165 115, 178 115"
+                    d="M 126 37 C 155 37, 165 115, 178 115"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -732,7 +732,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[1] = el;
                     }}
-                    d="M 124 115 C 148 115, 162 115, 178 115"
+                    d="M 126 115 C 148 115, 162 115, 178 115"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -742,7 +742,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[2] = el;
                     }}
-                    d="M 124 193 C 155 193, 165 115, 178 115"
+                    d="M 126 193 C 155 193, 165 115, 178 115"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -754,7 +754,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[0] = el;
                     }}
-                    d="M 242 115 C 255 115, 265 37, 296 37"
+                    d="M 242 115 C 255 115, 265 37, 294 37"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -764,7 +764,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[1] = el;
                     }}
-                    d="M 242 115 C 258 115, 272 115, 296 115"
+                    d="M 242 115 C 258 115, 272 115, 294 115"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -774,7 +774,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[2] = el;
                     }}
-                    d="M 242 115 C 255 115, 265 193, 296 193"
+                    d="M 242 115 C 255 115, 265 193, 294 193"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -782,12 +782,12 @@ export default function HeroWorkflowCard() {
                   />
                 </g>
 
-                {/* ─── COLUMN 1: INPUT NODES (120x34, dark #262626, mono 11px label) ─── */}
+                {/* ─── COLUMN 1: INPUT NODES (124x34, dark #262626, mono 11px label) ─── */}
                 <g>
                   {/* Node 1: NEW LEAD */}
-                  <g transform="translate(4, 20)">
+                  <g transform="translate(2, 20)">
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -795,7 +795,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -809,9 +809,9 @@ export default function HeroWorkflowCard() {
                   </g>
 
                   {/* Node 2: INBOUND EMAIL */}
-                  <g transform="translate(4, 98)">
+                  <g transform="translate(2, 98)">
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -819,7 +819,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -833,9 +833,9 @@ export default function HeroWorkflowCard() {
                   </g>
 
                   {/* Node 3: FORM SUBMIT */}
-                  <g transform="translate(4, 176)">
+                  <g transform="translate(2, 176)">
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -843,7 +843,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -857,7 +857,7 @@ export default function HeroWorkflowCard() {
                   </g>
                 </g>
 
-                {/* ─── COLUMN 2: CENTER AI AGENT (64px circle, lime ring, spark, halo) ─── */}
+                {/* ─── COLUMN 2: CENTER AI AGENT (64px circle, lime ring, spark, halo, 10px mono label) ─── */}
                 <g transform="translate(210, 115)">
                   {/* Soft pulsing halo (scale 1 -> 1.25, opacity .5 -> 0, 2s loop) */}
                   <circle
@@ -900,36 +900,36 @@ export default function HeroWorkflowCard() {
 
                   {/* Spark / Asterisk Icon ✦ */}
                   <path
-                    d="M 0 -10 L 2.5 -2.5 L 10 0 L 2.5 2.5 L 0 10 L -2.5 2.5 L -10 0 L -2.5 -2.5 Z"
+                    d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z"
                     fill="#d7fd41"
                   />
 
-                  {/* Small Agent Tag */}
+                  {/* Agent Tag (10px IBM Plex Mono 500) */}
                   <text
                     x="0"
-                    y="18"
+                    y="16"
                     fill="#d7fd41"
                     fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
-                    fontSize="7"
-                    fontWeight="700"
-                    letterSpacing="0.06em"
+                    fontSize="10"
+                    fontWeight="500"
+                    letterSpacing="0.04em"
                     textAnchor="middle"
                   >
                     AI AGENT
                   </text>
                 </g>
 
-                {/* ─── COLUMN 3: ACTION NODES (120x34, dark #262626, mono 11px label) ─── */}
+                {/* ─── COLUMN 3: ACTION NODES (124x34, dark #262626, mono 11px label) ─── */}
                 <g>
                   {/* Node 1: ROUTE TO OWNER */}
                   <g
-                    transform="translate(296, 20)"
+                    transform="translate(294, 20)"
                     ref={(el) => {
                       actionNodeRefs.current[0] = el;
                     }}
                   >
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -937,7 +937,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -952,13 +952,13 @@ export default function HeroWorkflowCard() {
 
                   {/* Node 2: DRAFT REPLY */}
                   <g
-                    transform="translate(296, 98)"
+                    transform="translate(294, 98)"
                     ref={(el) => {
                       actionNodeRefs.current[1] = el;
                     }}
                   >
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -966,7 +966,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -981,13 +981,13 @@ export default function HeroWorkflowCard() {
 
                   {/* Node 3: UPDATE CRM */}
                   <g
-                    transform="translate(296, 176)"
+                    transform="translate(294, 176)"
                     ref={(el) => {
                       actionNodeRefs.current[2] = el;
                     }}
                   >
                     <rect
-                      width="120"
+                      width="124"
                       height="34"
                       rx="6"
                       fill="#262626"
@@ -995,7 +995,7 @@ export default function HeroWorkflowCard() {
                       strokeWidth="1"
                     />
                     <text
-                      x="60"
+                      x="62"
                       y="21.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
@@ -1084,7 +1084,7 @@ export default function HeroWorkflowCard() {
                 />
               </div>
 
-              {/* 4 Event Rows: fixed 40px height, 8px gap, evenly spaced */}
+              {/* 4 Event Rows: fixed 44px height, 8px gap, evenly spaced, text 13px */}
               <div
                 style={{
                   display: "flex",
@@ -1102,7 +1102,7 @@ export default function HeroWorkflowCard() {
                       alignItems: "center",
                       justifyContent: "space-between",
                       gap: "8px",
-                      height: "40px",
+                      height: "44px",
                       padding: "0 8px",
                       borderRadius: "var(--r-0, 0px)",
                       background: idx === 0 ? "rgba(255,255,255,0.04)" : "transparent",
@@ -1148,7 +1148,7 @@ export default function HeroWorkflowCard() {
                       <span
                         style={{
                           fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                          fontSize: "12px",
+                          fontSize: "13px",
                           fontWeight: idx === 0 ? 600 : 400,
                           color: idx === 0 ? "#ffffff" : "rgba(255,255,255,0.72)",
                           whiteSpace: "nowrap",
@@ -1353,13 +1353,13 @@ export default function HeroWorkflowCard() {
       <style>{`
         .hero-workflow-panel {
           width: 576px;
-          height: 416px;
+          height: 436px;
           max-width: 94vw;
         }
         @media (max-width: 1199px) {
           .hero-workflow-panel {
             width: 456px;
-            height: 376px;
+            height: 390px;
           }
         }
         @media (max-width: 767px) {

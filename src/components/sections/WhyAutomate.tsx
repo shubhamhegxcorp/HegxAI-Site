@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import { SectionBar, SectionColumn, Button, LimeTag } from "@/components/ui/shared";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -196,8 +196,8 @@ export default function WhyAutomate() {
                   borderBottom: "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                {/* Masked big word (Inter Tight 500, uppercase, 40px, tracking -0.01em) */}
-                <div style={{ overflow: "hidden", marginBottom: "16px", paddingBottom: "0.14em" }}>
+                {/* Masked big word (fixed 2-line title block min-height: 84px so all 3 divider lines align) */}
+                <div style={{ overflow: "hidden", marginBottom: "16px", paddingBottom: "0.14em", minHeight: "84px", display: "flex", alignItems: "flex-end" }}>
                   <div
                     className="why-phrase"
                     style={{
@@ -209,7 +209,6 @@ export default function WhyAutomate() {
                       letterSpacing: "-0.01em",
                       color: "#ffffff",
                       transform: "translateY(110%)",
-                      marginBottom: "16px",
                     }}
                   >
                     {item.phrase}
@@ -245,46 +244,9 @@ export default function WhyAutomate() {
             ))}
           </div>
 
-          {/* Bottom CTAs: lime square tag "BOOK A FREE AUDIT" + secondary button "See how it works" */}
-          <div style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
-            {/* Lime square chamfer tag */}
-            <a
-              href="#contact"
-              className="chamfer-tag"
-              style={{
-                background: "#d7fd41",
-                color: "#141414",
-                clipPath: "polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%)",
-                boxShadow: "0 6px 24px rgba(215, 253, 65, 0.4)",
-                padding: "18px 24px",
-                display: "inline-flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                minHeight: "100px",
-                minWidth: "160px",
-                cursor: "pointer",
-                textDecoration: "none",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ fontSize: "10px", lineHeight: 1 }}>■</span>
-                <span
-                  style={{
-                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  BOOK A<br />FREE AUDIT
-                </span>
-              </div>
-              <div style={{ fontSize: "14px", fontWeight: 700, letterSpacing: "3px", textAlign: "right" }}>
-                ›››
-              </div>
-            </a>
+          {/* Bottom CTAs: lime tag + secondary button */}
+          <div style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
+            <LimeTag href="#contact" />
 
             {/* Secondary square outline button in white */}
             <Button

@@ -38,7 +38,7 @@ export function SectionBar({
   const displayNum = num || number || autoNum;
   const barRef = useRef<HTMLDivElement>(null);
   const isDark = theme === "dark";
-  const shouldShowLine = showLine ?? false;
+  const shouldShowLine = showLine ?? true;
 
   const insetVal = typeof inset === "number" ? `${inset}px` : inset;
   const heightVal = typeof height === "number" ? `${height}px` : height;
@@ -235,6 +235,7 @@ export interface ButtonProps {
   variant?: "primary" | "secondary" | "inverse";
   size?: "sm" | "md";
   brackets?: boolean;
+  arrow?: string | false;
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   style?: React.CSSProperties;
@@ -246,6 +247,7 @@ export function Button({
   variant = "primary",
   size = "md",
   brackets = false,
+  arrow = "→",
   className = "",
   onClick,
   style: propStyle,
@@ -254,16 +256,19 @@ export function Button({
 
   const isSmall = size === "sm";
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const normalTextColor =
+    propStyle?.color || (v === "primary" ? "#ffffff" : "#141414");
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement> | React.FocusEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
     const wipe = el.querySelector(".btn-wipe") as HTMLElement;
-    const arrow = el.querySelector(".btn-arrow") as HTMLElement;
+    const arrowEl = el.querySelector(".btn-arrow") as HTMLElement;
     const text = el.querySelector(".btn-text") as HTMLElement;
 
     if (wipe) wipe.style.transform = "translateY(0%)";
-    if (arrow) {
-      arrow.style.transform = "translateX(4px)";
-      if (v === "secondary") arrow.style.color = "#ffffff";
+    if (arrowEl) {
+      arrowEl.style.transform = arrow === "↑" ? "translateY(-3px)" : "translateX(4px)";
+      if (v === "secondary") arrowEl.style.color = "#ffffff";
     }
     if (text && v === "secondary") {
       text.style.color = "#ffffff";
@@ -281,19 +286,19 @@ export function Button({
     }
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement> | React.FocusEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
     const wipe = el.querySelector(".btn-wipe") as HTMLElement;
-    const arrow = el.querySelector(".btn-arrow") as HTMLElement;
+    const arrowEl = el.querySelector(".btn-arrow") as HTMLElement;
     const text = el.querySelector(".btn-text") as HTMLElement;
 
     if (wipe) wipe.style.transform = "translateY(100%)";
-    if (arrow) {
-      arrow.style.transform = "translateX(0px)";
-      arrow.style.color = v === "primary" ? "#ffffff" : "#141414";
+    if (arrowEl) {
+      arrowEl.style.transform = "translate(0, 0)";
+      arrowEl.style.color = normalTextColor;
     }
     if (text) {
-      text.style.color = v === "primary" ? "#ffffff" : "#141414";
+      text.style.color = normalTextColor;
     }
 
     if (brackets) {
@@ -315,8 +320,7 @@ export function Button({
       ? "var(--lime)"
       : "transparent";
 
-  const textColorDefault =
-    v === "primary" ? "#ffffff" : "#141414";
+  const textColorDefault = normalTextColor;
 
   const borderColorDefault =
     v === "primary"
@@ -338,6 +342,9 @@ export function Button({
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      data-variant={v}
       className={`btn-square ${className}`}
       style={{
         position: "relative",
@@ -363,20 +370,29 @@ export function Button({
         ...propStyle,
       }}
     >
-      {/* Ink Wipe from bottom (0.35s) */}
+      {/* Ink Wipe from bottom (0.35s) wrapped in overflow:hidden container so it never escapes */}
       <span
-        className="btn-wipe"
         aria-hidden="true"
         style={{
           position: "absolute",
           inset: 0,
-          background: wipeBg,
-          transform: "translateY(100%)",
-          transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-          zIndex: 0,
+          overflow: "hidden",
           pointerEvents: "none",
+          zIndex: 0,
+          borderRadius: "inherit",
         }}
-      />
+      >
+        <span
+          className="btn-wipe"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: wipeBg,
+            transform: "translateY(100%)",
+            transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        />
+      </span>
 
       {/* Button Content */}
       <span
@@ -391,21 +407,23 @@ export function Button({
         {children}
       </span>
 
-      <span
-        className="btn-arrow"
-        aria-hidden="true"
-        style={{
-          position: "relative",
-          zIndex: 1,
-          display: "inline-block",
-          color: propStyle?.color || (v === "primary" ? "#ffffff" : "#141414"),
-          transition:
-            "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-          lineHeight: 1,
-        }}
-      >
-        →
-      </span>
+      {arrow !== false && (
+        <span
+          className="btn-arrow"
+          aria-hidden="true"
+          style={{
+            position: "relative",
+            zIndex: 1,
+            display: "inline-block",
+            color: propStyle?.color || (v === "primary" ? "#ffffff" : "#141414"),
+            transition:
+              "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+            lineHeight: 1,
+          }}
+        >
+          {arrow}
+        </span>
+      )}
 
       {/* 4 Corner Brackets (Hero CTA) */}
       {brackets && (
@@ -478,3 +496,92 @@ export function Button({
 
 // Keep PillButton mapped to the new square Button
 export const PillButton = Button;
+
+export function LimeTag({
+  href = "#contact",
+  className = "",
+  style,
+  tagRef,
+}: {
+  href?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  tagRef?: React.Ref<HTMLAnchorElement>;
+}) {
+  return (
+    <a
+      ref={tagRef}
+      href={href}
+      className={`about-lime-tag ${className}`}
+      style={{
+        display: "block",
+        position: "relative",
+        width: "102px",
+        height: "144px",
+        background: "#d7fd41",
+        color: "#141414",
+        clipPath: "polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px))",
+        textDecoration: "none",
+        cursor: "pointer",
+        flexShrink: 0,
+        ...style,
+      }}
+    >
+      {/* Top-left: 10px black square at (12px, 20px) */}
+      <span
+        style={{
+          position: "absolute",
+          left: "12px",
+          top: "20px",
+          width: "10px",
+          height: "10px",
+          background: "#000000",
+        }}
+      />
+
+      {/* 3 thin chevrons ">>>" */}
+      <div
+        className="about-chevrons"
+        style={{
+          position: "absolute",
+          left: "30px",
+          top: "18px",
+          display: "flex",
+          alignItems: "center",
+          gap: "3px",
+        }}
+      >
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+
+      {/* Bottom-right text: 2 lines, Inter Tight 500 14px uppercase: "BOOK" / "AUDIT" */}
+      <div
+        style={{
+          position: "absolute",
+          right: "12px",
+          bottom: "18px",
+          textAlign: "right",
+          fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+          fontWeight: 500,
+          fontSize: "14px",
+          lineHeight: 1.15,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          color: "#000000",
+        }}
+      >
+        BOOK
+        <br />
+        AUDIT
+      </div>
+    </a>
+  );
+}

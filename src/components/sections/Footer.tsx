@@ -1,19 +1,16 @@
 "use client";
 import { useState } from "react";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
+import { Button } from "@/components/ui/shared";
 import { siteContent } from "@/content/site";
 
 const CURRENT_YEAR = 2026;
 
-const SOCIAL_LINKS = [
-  { label: "X", href: "#", icon: "𝕏" },
-  { label: "LinkedIn", href: "#", icon: "in" },
-  { label: "Instagram", href: "#", icon: "⊕" },
-];
-
 export default function Footer() {
   const [email, setEmail] = useState("");
   const showNewsletter = Boolean(siteContent.contact.newsletterAction);
+  const socials = siteContent.socials ?? [];
+  const legal = siteContent.legal ?? [];
 
   const footerCols = [
     {
@@ -26,14 +23,14 @@ export default function Footer() {
         { label: "FAQ", href: "#faq" },
       ],
     },
-    {
-      heading: "LEGAL",
-      links: [
-        { label: "Privacy Policy", href: "#" },
-        { label: "Terms of Service", href: "#" },
-        { label: "Cookie Policy", href: "#" },
-      ],
-    },
+    ...(legal.length > 0
+      ? [
+          {
+            heading: "LEGAL",
+            links: legal,
+          },
+        ]
+      : []),
     {
       heading: "CONTACT",
       links: [
@@ -47,8 +44,15 @@ export default function Footer() {
 
   return (
     <footer style={{ background: "var(--bg)", borderTop: "1px solid var(--line)", position: "relative", overflow: "hidden" }}>
-      {/* Background ASCII Halftone Matrix */}
-      <AsciiHalftoneCanvas theme="light" density="sparse" interactive={true} />
+      {/* Background ASCII Halftone Matrix - reduced to 60% opacity with no orange */}
+      <AsciiHalftoneCanvas
+        theme="light"
+        density="sparse"
+        interactive={true}
+        color="rgba(20, 20, 20, 0.12)"
+        accentColor="rgba(20, 20, 20, 0.14)"
+        wrapperStyle={{ opacity: 0.6 }}
+      />
 
       {/* Newsletter block (only rendered if newsletterAction is configured) */}
       {showNewsletter && (
@@ -188,55 +192,60 @@ export default function Footer() {
         maxWidth: "1200px",
         margin: "0 auto",
         padding: "48px 24px",
-        display: "grid",
-        gridTemplateColumns: "1fr auto auto auto",
+        display: "flex",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
         gap: "48px",
         borderBottom: "1px solid var(--line)",
         alignItems: "start",
+        position: "relative",
+        zIndex: 2,
       }}>
-        {/* Social */}
-        <div>
-          <span style={{
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--muted)",
-            display: "block",
-            marginBottom: "16px",
-          }}>
-            OUR SOCIAL:
-          </span>
-          <div style={{ display: "flex", gap: "8px" }}>
-            {SOCIAL_LINKS.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                aria-label={s.label}
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                  border: "1px solid var(--line)",
-                  background: "var(--surface)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "serif",
-                  fontSize: "13px",
-                  color: "var(--muted)",
-                  textDecoration: "none",
-                  transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}
-              >
-                {s.icon}
-              </a>
-            ))}
+        {/* Social (only rendered if non-empty) */}
+        {socials.length > 0 && (
+          <div>
+            <span style={{
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--muted)",
+              display: "block",
+              marginBottom: "16px",
+            }}>
+              OUR SOCIAL:
+            </span>
+            <div style={{ display: "flex", gap: "8px" }}>
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "0",
+                    border: "1px solid var(--line)",
+                    background: "var(--surface)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontSize: "13px",
+                    color: "var(--muted)",
+                    textDecoration: "none",
+                    transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Link columns */}
         {footerCols.map((col) => (
@@ -280,30 +289,38 @@ export default function Footer() {
         ))}
       </div>
 
-      {/* Giant wordmark */}
+      {/* Giant wordmark spans the full container width with inline SVG */}
       <div style={{
-        maxWidth: "100%",
-        overflow: "hidden",
-        padding: "0 24px 20px",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        padding: "32px 24px 0",
         position: "relative",
+        zIndex: 2,
       }}>
-        <div style={{
-          fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
-          fontSize: "clamp(80px, 18vw, 280px)",
-          fontWeight: 400,
-          lineHeight: 0.85,
-          textTransform: "uppercase",
-          letterSpacing: "-0.02em",
-          color: "var(--ink)",
-          opacity: 0.08,
-          whiteSpace: "nowrap",
-          userSelect: "none",
-        }}>
-          HEGXAI
-        </div>
+        <svg
+          viewBox="0 0 1200 170"
+          width="100%"
+          height="auto"
+          style={{ display: "block" }}
+          aria-hidden="true"
+        >
+          <text
+            x="0"
+            y="145"
+            textLength="1200"
+            lengthAdjust="spacingAndGlyphs"
+            fill="var(--ink)"
+            opacity="0.08"
+            fontFamily="var(--ff-logo, 'Anton', sans-serif)"
+            fontSize="170"
+            letterSpacing="-0.02em"
+          >
+            HEGXAI
+          </text>
+        </svg>
       </div>
 
-      {/* Bottom bar */}
+      {/* Bottom bar - no crossing line */}
       <div style={{
         maxWidth: "1200px",
         margin: "0 auto",
@@ -311,7 +328,8 @@ export default function Footer() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        borderTop: "1px solid var(--line)",
+        position: "relative",
+        zIndex: 2,
       }}>
         <span style={{
           fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
@@ -322,7 +340,10 @@ export default function Footer() {
           © {CURRENT_YEAR} HEGXAI. All rights reserved.
         </span>
 
-        <a
+        <Button
+          variant="secondary"
+          size="sm"
+          arrow="↑"
           href="#main"
           onClick={(e) => {
             e.preventDefault();
@@ -331,27 +352,15 @@ export default function Footer() {
             else window.scrollTo({ top: 0, behavior: "smooth" });
           }}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
             padding: "8px 18px",
-            borderRadius: "var(--r-pill, 999px)",
-            border: "1px solid var(--line)",
-            background: "var(--surface)",
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "11px",
+            fontSize: "13px",
+            fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
             fontWeight: 500,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--muted)",
-            textDecoration: "none",
-            transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
+            letterSpacing: "0.04em",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}
         >
-          ↑ Back to Top
-        </a>
+          BACK TO TOP
+        </Button>
       </div>
     </footer>
   );

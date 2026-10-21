@@ -84,6 +84,21 @@ export default function Services() {
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
         <SectionBar label="SERVICES" sectionId="services" headingId="services-title" />
 
+        {/* One-line intro under the bar (16px #5f5b52, max-width 56ch) */}
+        <p
+          style={{
+            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+            fontSize: "16px",
+            lineHeight: 1.6,
+            color: "#5f5b52",
+            maxWidth: "56ch",
+            marginTop: "24px",
+            marginBottom: "0px",
+          }}
+        >
+          Custom AI agents, workflow automation, and deep tool integrations built to eliminate bottlenecks and scale operations.
+        </p>
+
         {/* Service rows (straight 1px bottom borders, 0 radius, accordion behavior) */}
         <div style={{ borderTop: "1px solid var(--line)", marginTop: "64px" }}>
           {SERVICES.map((service, i) => {
@@ -118,7 +133,7 @@ export default function Services() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "28px", minWidth: 0 }}>
-                    {/* Arrow icon (ink at 60% when inactive, lime/white when active) */}
+                    {/* Arrow icon (ink at 60% when inactive, lime when active) */}
                     <span
                       style={{
                         fontFamily: "sans-serif",
@@ -149,6 +164,29 @@ export default function Services() {
                       {service.name}
                     </span>
                   </div>
+
+                  {/* Active row right-aligned Learn more link */}
+                  {isActive && (
+                    <a
+                      href="#contact"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        color: "#d7fd41",
+                        textDecoration: "none",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        flexShrink: 0,
+                      }}
+                    >
+                      Learn more →
+                    </a>
+                  )}
                 </div>
 
                 {/* Accordion description line visible on active row */}

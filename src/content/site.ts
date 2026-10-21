@@ -2,6 +2,9 @@
 // HARD RULE: Only real data. If empty, components hide the section/block instead of showing fake placeholders.
 
 export interface SiteContent {
+  hero: {
+    subtitle: string;
+  };
   contact: {
     email: string;
     bookingUrl: string;
@@ -22,6 +25,8 @@ export interface SiteContent {
     description: string;
     features: string[];
   }>;
+  socials: Array<{ label: string; href: string }>;
+  legal: Array<{ label: string; href: string }>;
 }
 
 export const ACTIVE_SECTIONS = [
@@ -50,9 +55,12 @@ export function getContactHref(): string {
 }
 
 export const siteContent: SiteContent = {
+  hero: {
+    subtitle: "AI agents and workflows that run your repetitive business work.",
+  },
   contact: {
     email: "", // TODO: real email address (e.g. hello@hegxai.com)
-    bookingUrl: "", // TODO: real booking calendar URL (e.g. https://cal.com/...)
+    bookingUrl: "", // TODO: real booking calendar URL (e.g. https://cal.com/hegxai) - opens booking CTA
     newsletterAction: "", // TODO: newsletter subscription endpoint (leave empty to hide form)
   },
   founder: {
@@ -64,4 +72,6 @@ export const siteContent: SiteContent = {
   clientLogos: [],
   logos: [],
   pricingTiers: [],
+  socials: [], // Empty: hides social links until real social channels exist
+  legal: [], // Empty: hides legal links until real policy pages exist
 };

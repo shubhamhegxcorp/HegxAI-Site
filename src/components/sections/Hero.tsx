@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import HeroWorkflowCard from "./HeroWorkflowCard";
 import { Button } from "@/components/ui/shared";
 import Marquee from "@/components/ui/Marquee";
+import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -389,13 +390,13 @@ export default function Hero() {
             fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
             fontSize: "15px",
             color: "#5f5b52",
-            maxWidth: "380px",
+            maxWidth: "460px",
             margin: "0 auto 36px",
             lineHeight: 1.55,
             opacity: 0,
           }}
         >
-          Automation built for growth.
+          {siteContent.hero.subtitle}
         </p>
 
         {/* ─── 3. CTA WITH CORNER BRACKETS ─── */}
@@ -406,6 +407,9 @@ export default function Hero() {
             zIndex: 10,
             marginBottom: "64px",
             opacity: 0,
+            overflow: "hidden",
+            display: "inline-block",
+            padding: "4px",
           }}
         >
           <Button href="#contact" variant="primary" brackets={true}>

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionBar, Button } from "@/components/ui/shared";
+import { SectionBar, Button, LimeTag } from "@/components/ui/shared";
 import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -210,7 +210,7 @@ export default function About() {
         background: "var(--bg, #F4EFE6)",
         position: "relative",
         width: "100%",
-        paddingBottom: "8px",
+        padding: "128px 0",
       }}
     >
       {/* ─── 5. TOP LOGO STRIP (rendered ONLY if logos array has items) ─── */}
@@ -226,6 +226,7 @@ export default function About() {
             filter: "grayscale(100%)",
             borderBottom: "2px solid rgba(20,20,20,0.25)",
             padding: "0 24px",
+            marginBottom: "64px",
           }}
         >
           {siteContent.logos.map((logo, i) => (
@@ -251,123 +252,20 @@ export default function About() {
           borderRight: "1px solid rgba(20,20,20,0.25)",
         }}
       >
-        {/* ─── 1. SECTION BAR: black #0f0f0f, height 34px, inset 8px from both column lines ─── */}
+        {/* ─── 1. SECTION BAR: black #0f0f0f, height 34px, inset 24px from both column lines, with top line + nodes ─── */}
         <SectionBar
           label="ABOUT US"
           sectionId="about"
-          inset={8}
+          inset={24}
           height={34}
           padding="0 12px"
-          marginBottom={8}
-          showLine={false}
+          marginBottom={16}
         />
-
-        {/* ─── 2. 8px BELOW BAR: 1px full-viewport-width horizontal line (ink 25%) with 10px square nodes (#2b2b2b) at x=40px ─── */}
-        <div
-          style={{
-            position: "relative",
-            width: "100vw",
-            left: "50%",
-            transform: "translateX(-50%)",
-            height: "1px",
-            background: "rgba(20,20,20,0.25)",
-          }}
-        >
-          {/* Left node (at x=40px from viewport edge) */}
-          <span
-            style={{
-              position: "absolute",
-              left: "40px",
-              top: "-4.5px",
-              width: "10px",
-              height: "10px",
-              background: "#2b2b2b",
-            }}
-          />
-          {/* Right node (at x=40px from viewport edge) */}
-          <span
-            style={{
-              position: "absolute",
-              right: "40px",
-              top: "-4.5px",
-              width: "10px",
-              height: "10px",
-              background: "#2b2b2b",
-            }}
-          />
-        </div>
 
         {/* ─── 3. CONTENT AREA (Height 632px starting at horizontal line, absolute coordinate grid desktop) ─── */}
         <div className="about-content-area">
-          {/* ─── a) LIME TAG: left 24px, top 25px, size 102x144, bg #d7fd41, chamfer on bottom-left (~20px) ─── */}
-          <a
-            ref={tagRef}
-            href="#contact"
-            className="about-lime-tag"
-            style={{
-              background: "#d7fd41",
-              color: "#141414",
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px))",
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            {/* Top-left: 10px black square at (12px, 20px) inside tag */}
-            <span
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "20px",
-                width: "10px",
-                height: "10px",
-                background: "#000000",
-              }}
-            />
-
-            {/* To its right: 3 thin chevrons ">>>" (1.5px stroke, 14px tall, spaced 8px) */}
-            <div
-              className="about-chevrons"
-              style={{
-                position: "absolute",
-                left: "30px",
-                top: "18px",
-                display: "flex",
-                alignItems: "center",
-                gap: "3px",
-              }}
-            >
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-                <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-                <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-                <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-
-            {/* Bottom-right text: 2 lines, Inter Tight 500 14px uppercase: "BOOK" / "AUDIT" */}
-            <div
-              style={{
-                position: "absolute",
-                right: "12px",
-                bottom: "18px",
-                textAlign: "right",
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontWeight: 500,
-                fontSize: "14px",
-                lineHeight: 1.15,
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-                color: "#000000",
-              }}
-            >
-              BOOK
-              <br />
-              AUDIT
-            </div>
-          </a>
+          {/* ─── a) LIME TAG: size 102x144, bg #d7fd41, sans 14px BOOK / AUDIT ─── */}
+          <LimeTag tagRef={tagRef} href="#contact" />
 
           {/* ─── b) HEADLINE: left 537px, top 25px, width 560px, Inter Tight 500, 52px, lh 0.92, ls -0.03em ─── */}
           <div ref={headlineRef} className="about-headline-wrap">

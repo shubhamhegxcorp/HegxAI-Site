@@ -14,28 +14,28 @@ const STEPS = [
     title: "Discovery",
     tag: "(strategy)",
     body: "We start with a deep-dive into your current operations — workflows, tools, bottlenecks, and team structure. No assumption, no generic templates.",
-    visual: "DISCOVER",
+    deliverables: ["Operations deep-dive", "Bottleneck audit", "Toolstack review"],
   },
   {
     num: "02",
     title: "Strategy",
     tag: "(planning)",
     body: "We design the automation blueprint: which processes to automate first, which tools to connect, and what the rollout sequence should look like.",
-    visual: "PLAN",
+    deliverables: ["Automation blueprint", "Tool connections", "Rollout sequence"],
   },
   {
     num: "03",
     title: "Build",
     tag: "(development)",
     body: "We build, test, and iterate in tight loops — deploying agents, triggers, and integrations with full documentation and team walkthroughs.",
-    visual: "BUILD",
+    deliverables: ["Agent deployment", "Integration triggers", "Team walkthroughs"],
   },
   {
     num: "04",
     title: "Run",
     tag: "(deployment)",
     body: "We go live with monitoring, handoff your team, and stay available for support. Your automation runs — and keeps running — reliably.",
-    visual: "DEPLOY",
+    deliverables: ["Live monitoring", "Team handoff", "Ongoing support"],
   },
 ];
 
@@ -64,7 +64,7 @@ export default function Process() {
       st = ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: `+=${totalSteps * 400}`,
+        end: "+=900",
         pin: true,
         pinSpacing: true,
         scrub: 0.5,
@@ -76,21 +76,12 @@ export default function Process() {
           if (newStep !== activeStepRef.current) {
             activeStepRef.current = newStep;
             setActiveStep(newStep);
-            // Update progress bar
-            if (progressRef.current) {
-              gsap.to(progressRef.current, {
-                scaleY: (newStep + 1) / totalSteps,
-                duration: 0.5,
-                ease: "power3.out",
-                overwrite: "auto",
-              });
-            }
             // Crossfade detail card
             if (detailRef.current) {
               gsap.fromTo(
                 detailRef.current,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", overwrite: "auto" }
+                { opacity: 0, y: 16 },
+                { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", overwrite: "auto" }
               );
             }
           }
@@ -113,10 +104,8 @@ export default function Process() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "128px 24px",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
+        padding: "128px 0",
+        position: "relative",
       }}
     >
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)", flex: 1, width: "100%" }}>
@@ -163,7 +152,7 @@ export default function Process() {
             {/* Progress line */}
             <div style={{
               width: "2px",
-              background: "var(--line)",
+              background: "rgba(20,20,20,0.12)",
               position: "relative",
               flexShrink: 0,
               borderRadius: "var(--r-0, 0px)",
@@ -175,11 +164,10 @@ export default function Process() {
                   top: 0,
                   left: 0,
                   width: "100%",
-                  height: "25%",
-                  background: "var(--accent)",
+                  height: `${((activeStep + 1) / STEPS.length) * 100}%`,
+                  background: "var(--accent, #e8a25c)",
                   borderRadius: "var(--r-0, 0px)",
-                  transformOrigin: "top",
-                  transition: "transform 0.5s cubic-bezier(0.16,1,0.3,1)",
+                  transition: "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               />
             </div>
@@ -203,7 +191,7 @@ export default function Process() {
                         width: "8px",
                         height: "8px",
                         borderRadius: "50%",
-                        background: "var(--accent)",
+                        background: "var(--accent, #e8a25c)",
                         flexShrink: 0,
                         animation: "pulse-dot 1.6s ease-in-out infinite",
                       }} />
@@ -281,46 +269,72 @@ export default function Process() {
               {step.body}
             </p>
 
-            {/* Visual placeholder */}
-            <div style={{
-              background: "var(--ink)",
-              borderRadius: "var(--r-card, 12px)",
-              padding: "32px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minHeight: "120px",
-              position: "relative",
-              overflow: "hidden",
-            }}>
-              <div aria-hidden style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-                backgroundSize: "20px 20px",
-              }} />
-              <span style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "44px",
-                fontWeight: 600,
-                letterSpacing: "-0.04em",
-                color: "rgba(255,255,255,0.12)",
-                textTransform: "uppercase",
-                position: "relative",
-              }}>
-                {step.visual}
+            {/* Dark card (radius 12) showing that step's 3 deliverables as checklist rows */}
+            <div
+              style={{
+                background: "#141414",
+                borderRadius: "var(--r-card, 12px)",
+                padding: "24px 28px",
+                border: "1px solid rgba(255,255,255,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "14px",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.45)",
+                  marginBottom: "4px",
+                }}
+              >
+                KEY DELIVERABLES
               </span>
-              {/* Accent accent line */}
-              <div style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                height: "3px",
-                background: "var(--accent)",
-                width: `${((activeStep + 1) / STEPS.length) * 100}%`,
-                transition: "width 0.5s cubic-bezier(0.16,1,0.3,1)",
-                borderRadius: "var(--r-0, 0px)",
-              }} />
+              {step.deliverables.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    paddingBottom: idx < step.deliverables.length - 1 ? "12px" : "0",
+                    borderBottom:
+                      idx < step.deliverables.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: "16px",
+                      height: "16px",
+                      borderRadius: "var(--r-0, 0px)",
+                      background: "var(--lime, #d7fd41)",
+                      color: "#141414",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "10px",
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      flexShrink: 0,
+                    }}
+                  >
+                    ✓
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "14px",
+                      color: "#ffffff",
+                    }}
+                  >
+                    {item}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
