@@ -3,11 +3,14 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import { siteContent, getContactHref } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function CTABlock() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const hasContact = Boolean(siteContent.contact.email || siteContent.contact.bookingUrl);
+  const contactHref = getContactHref();
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -33,6 +36,7 @@ export default function CTABlock() {
   return (
     <section
       id="contact"
+      aria-labelledby="contact-title"
       style={{
         background: "var(--bg)",
         padding: "128px 0",
@@ -55,6 +59,7 @@ export default function CTABlock() {
         >
           <div style={{ maxWidth: "56ch" }}>
             <h2
+              id="contact-title"
               style={{
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                 fontSize: "clamp(32px, 3.6vw, 56px)",
@@ -83,9 +88,28 @@ export default function CTABlock() {
               show you exactly what&apos;s possible — no commitment required.
             </p>
 
-            <Button href="mailto:hello@hegxai.com" variant="primary">
-              Book a free audit
-            </Button>
+            {hasContact ? (
+              <Button href={contactHref} variant="primary">
+                Book a free audit
+              </Button>
+            ) : (
+              <p
+                style={{
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "var(--ink)",
+                  padding: "16px 24px",
+                  border: "1px solid var(--ink)",
+                  display: "inline-block",
+                  margin: 0,
+                }}
+              >
+                Booking opens soon.
+              </p>
+            )}
           </div>
         </div>
       </SectionColumn>

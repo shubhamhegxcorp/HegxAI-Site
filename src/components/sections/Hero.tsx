@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import HeroWorkflowCard from "./HeroWorkflowCard";
 import { Button } from "@/components/ui/shared";
+import Marquee from "@/components/ui/Marquee";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -170,6 +171,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
+      aria-labelledby="hero-title"
       ref={sectionRef}
       style={{
         display: "block",
@@ -208,6 +210,7 @@ export default function Hero() {
           className="hidden min-[900px]:block"
         >
           <svg
+            aria-hidden="true"
             viewBox="0 0 1200 220"
             width="100%"
             height="100%"
@@ -274,39 +277,35 @@ export default function Hero() {
           </svg>
         </div>
 
-        {/* ─── 1. HEADLINE (2 lines, Inter Tight 500, tight lime box on AUTOMATED.) ─── */}
-        <div style={{ position: "relative", zIndex: 10, margin: 0 }}>
-          <div style={{ overflow: "hidden", marginBottom: "4px" }}>
-            <h1
+        {/* ─── 1. HEADLINE (Single H1, 2 lines, Inter Tight 500, tight lime box on AUTOMATED.) ─── */}
+        <h1
+          id="hero-title"
+          style={{
+            fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+            fontSize: "clamp(44px, 5.5vw, 88px)",
+            fontWeight: 500,
+            letterSpacing: "-0.04em",
+            lineHeight: 0.92,
+            textTransform: "uppercase",
+            color: "var(--ink)",
+            margin: 0,
+            position: "relative",
+            zIndex: 10,
+          }}
+        >
+          <span style={{ display: "block", overflow: "hidden", marginBottom: "4px" }}>
+            <span
               ref={headlineLine1Ref}
-              style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(44px, 5.5vw, 88px)",
-                fontWeight: 500,
-                letterSpacing: "-0.04em",
-                lineHeight: 0.92,
-                textTransform: "uppercase",
-                color: "var(--ink)",
-                margin: 0,
-              }}
+              style={{ display: "block" }}
             >
               EVERY TASK.
-            </h1>
-          </div>
+            </span>
+          </span>
 
-          <div style={{ overflow: "hidden" }}>
-            <h1
+          <span style={{ display: "block", overflow: "hidden" }}>
+            <span
               ref={headlineLine2Ref}
-              style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(44px, 5.5vw, 88px)",
-                fontWeight: 500,
-                letterSpacing: "-0.04em",
-                lineHeight: 0.92,
-                textTransform: "uppercase",
-                color: "var(--ink)",
-                margin: 0,
-              }}
+              style={{ display: "block" }}
             >
               {/* Tight lime box with 4 tiny 6px ink squares on corners */}
               <span
@@ -332,6 +331,7 @@ export default function Hero() {
                     height: "6px",
                     background: "var(--ink)",
                   }}
+                  aria-hidden="true"
                 />
                 <span
                   style={{
@@ -342,6 +342,7 @@ export default function Hero() {
                     height: "6px",
                     background: "var(--ink)",
                   }}
+                  aria-hidden="true"
                 />
                 <span
                   style={{
@@ -352,6 +353,7 @@ export default function Hero() {
                     height: "6px",
                     background: "var(--ink)",
                   }}
+                  aria-hidden="true"
                 />
                 <span
                   style={{
@@ -362,11 +364,12 @@ export default function Hero() {
                     height: "6px",
                     background: "var(--ink)",
                   }}
+                  aria-hidden="true"
                 />
               </span>
-            </h1>
-          </div>
-        </div>
+            </span>
+          </span>
+        </h1>
 
         {/* ─── 2. THIN INK DASH & SUBTITLE (Gap: 24px -> dash -> 20px -> sub -> 36px -> CTA) ─── */}
         <div
@@ -610,16 +613,8 @@ export default function Hero() {
           zIndex: 4,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            gap: "48px",
-            animation: "marquee-scroll 24s linear infinite",
-            width: "max-content",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {MARQUEE_WORDS.concat(MARQUEE_WORDS).map((word, i) => (
+        <Marquee speed={0.8} gap={48}>
+          {MARQUEE_WORDS.map((word, i) => (
             <span
               key={i}
               style={{
@@ -635,7 +630,7 @@ export default function Hero() {
               {word}
             </span>
           ))}
-        </div>
+        </Marquee>
       </div>
     </section>
   );

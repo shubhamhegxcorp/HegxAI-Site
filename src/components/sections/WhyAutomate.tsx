@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -103,6 +104,7 @@ export default function WhyAutomate() {
   return (
     <section
       id="why"
+      aria-labelledby="why-title"
       ref={sectionRef}
       style={{
         background: "var(--ink)",
@@ -111,6 +113,26 @@ export default function WhyAutomate() {
         overflow: "hidden",
       }}
     >
+      {/* ─── FULL-BLEED ASCII HALFTONE CANVAS (THEME DARK, MASKED TO QUIET UNDER CONTENT) ─── */}
+      <AsciiHalftoneCanvas
+        theme="dark"
+        density="normal"
+        interactive={true}
+        fontSize={11}
+        color="rgba(255, 255, 255, 0.14)"
+        accentColor="rgba(215, 253, 65, 0.22)"
+        wrapperStyle={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          WebkitMaskImage: `linear-gradient(to bottom, #000 0px, #000 120px, transparent 180px, transparent calc(100% - 180px), #000 calc(100% - 120px), #000 100%), linear-gradient(to right, #000 0px, #000 calc(50% - 660px), rgba(0,0,0,0.3) calc(50% - 580px), rgba(0,0,0,0.3) calc(50% + 580px), #000 calc(50% + 660px), #000 100%)`,
+          maskImage: `linear-gradient(to bottom, #000 0px, #000 120px, transparent 180px, transparent calc(100% - 180px), #000 calc(100% - 120px), #000 100%), linear-gradient(to right, #000 0px, #000 calc(50% - 660px), rgba(0,0,0,0.3) calc(50% - 580px), rgba(0,0,0,0.3) calc(50% + 580px), #000 calc(50% + 660px), #000 100%)`,
+          WebkitMaskComposite: "source-over, destination-over",
+          maskComposite: "add",
+        }}
+      />
+
       <SectionColumn
         style={{
           position: "relative",
@@ -136,6 +158,7 @@ export default function WhyAutomate() {
             {/* Left: Headline */}
             <div ref={headlineRef}>
               <h2
+                id="why-title"
                 style={{
                   fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                   fontSize: "clamp(32px, 3.6vw, 56px)",

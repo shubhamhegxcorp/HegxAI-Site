@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
+import { siteContent } from "@/content/site";
 
 const CURRENT_YEAR = 2026;
 
@@ -10,171 +11,177 @@ const SOCIAL_LINKS = [
   { label: "Instagram", href: "#", icon: "⊕" },
 ];
 
-const FOOTER_COLS = [
-  {
-    heading: "PAGES",
-    links: [
-      { label: "Home", href: "/" },
-      { label: "About", href: "#about" },
-      { label: "Services", href: "#services-list" },
-      { label: "Process", href: "#process" },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    heading: "LEGAL",
-    links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Cookie Policy", href: "#" },
-    ],
-  },
-  {
-    heading: "CONTACT",
-    links: [
-      { label: "hello@hegxai.com", href: "mailto:hello@hegxai.com" }, // TODO: real email
-      { label: "hegxai.com", href: "/" },
-    ],
-  },
-];
-
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const showNewsletter = Boolean(siteContent.contact.newsletterAction);
+
+  const footerCols = [
+    {
+      heading: "PAGES",
+      links: [
+        { label: "Home", href: "/" },
+        { label: "About", href: "#about" },
+        { label: "Services", href: "#services" },
+        { label: "Process", href: "#process" },
+        { label: "FAQ", href: "#faq" },
+      ],
+    },
+    {
+      heading: "LEGAL",
+      links: [
+        { label: "Privacy Policy", href: "#" },
+        { label: "Terms of Service", href: "#" },
+        { label: "Cookie Policy", href: "#" },
+      ],
+    },
+    {
+      heading: "CONTACT",
+      links: [
+        ...(siteContent.contact.email
+          ? [{ label: siteContent.contact.email, href: `mailto:${siteContent.contact.email}` }]
+          : [{ label: "Contact Us", href: "#contact" }]),
+        { label: "hegxai.com", href: "/" },
+      ],
+    },
+  ];
 
   return (
     <footer style={{ background: "var(--bg)", borderTop: "1px solid var(--line)", position: "relative", overflow: "hidden" }}>
       {/* Background ASCII Halftone Matrix */}
       <AsciiHalftoneCanvas theme="light" density="sparse" interactive={true} />
 
-      {/* Newsletter block */}
-      <div style={{
-        maxWidth: "1200px",
-        margin: "0 auto",
-        padding: "80px 24px 64px",
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "80px",
-        alignItems: "center",
-        borderBottom: "1px solid var(--line)",
-        position: "relative",
-        zIndex: 2,
-      }}>
-        <div>
-          <h3
-            style={{
-              fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-              fontSize: "clamp(22px, 2.2vw, 32px)",
-              fontWeight: 500,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.15,
-              color: "var(--ink)",
-              marginBottom: "16px",
-            }}
-          >
-            <span className="reveal-mask">
-              <span className="reveal-line" data-reveal-line>
-                Stay ahead with AI insights and industry updates
-              </span>
-            </span>
-          </h3>
-          <p
-            style={{
-              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-              fontSize: "15px",
-              fontWeight: 400,
-              lineHeight: 1.65,
-              color: "var(--muted)",
-            }}
-          >
-            <span className="reveal-mask">
-              <span className="reveal-line" data-reveal-line>
-                Get the latest on AI automation, workflow optimization, and practical
-                strategies to help your business grow.
-              </span>
-            </span>
-          </p>
-        </div>
-
-        {/* Newsletter form */}
+      {/* Newsletter block (only rendered if newsletterAction is configured) */}
+      {showNewsletter && (
         <div style={{
-          background: "var(--ink)",
-          borderRadius: "var(--r-card, 12px)",
-          padding: "32px",
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "80px 24px 64px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "80px",
+          alignItems: "center",
+          borderBottom: "1px solid var(--line)",
+          position: "relative",
+          zIndex: 2,
         }}>
-          <span style={{
-            fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.4)",
-            display: "block",
-            marginBottom: "20px",
-          }}>
-            OUR NEWSLETTER
-          </span>
+          <div>
+            <h3
+              style={{
+                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                fontSize: "clamp(22px, 2.2vw, 32px)",
+                fontWeight: 500,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.15,
+                color: "var(--ink)",
+                marginBottom: "16px",
+              }}
+            >
+              <span className="reveal-mask">
+                <span className="reveal-line" data-reveal-line>
+                  Stay ahead with AI insights and industry updates
+                </span>
+              </span>
+            </h3>
+            <p
+              style={{
+                fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                fontSize: "15px",
+                fontWeight: 400,
+                lineHeight: 1.65,
+                color: "var(--muted)",
+              }}
+            >
+              <span className="reveal-mask">
+                <span className="reveal-line" data-reveal-line>
+                  Get the latest on AI automation, workflow optimization, and practical
+                  strategies to help your business grow.
+                </span>
+              </span>
+            </p>
+          </div>
 
-          <form
-            onSubmit={(e) => { e.preventDefault(); setEmail(""); }}
-            style={{ marginBottom: "16px" }}
-          >
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              borderBottom: "1px solid rgba(255,255,255,0.12)",
-              paddingBottom: "12px",
-              gap: "12px",
+          {/* Newsletter form */}
+          <div style={{
+            background: "var(--ink)",
+            borderRadius: "var(--r-card, 12px)",
+            padding: "32px",
+          }}>
+            <span style={{
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.4)",
+              display: "block",
+              marginBottom: "20px",
             }}>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="[Enter your email]"
-                required
-                style={{
-                  flex: 1,
-                  background: "none",
-                  border: "none",
-                  outline: "none",
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "15px",
-                  fontWeight: 400,
-                  color: "#fff",
-                  caretColor: "var(--accent)",
-                }}
-              />
-              <button
-                type="submit"
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "rgba(255,255,255,0.6)",
-                  fontSize: "18px",
-                  transition: "color 0.2s ease",
-                  flexShrink: 0,
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = "var(--accent)"}
-                onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
-                aria-label="Subscribe"
-              >
-                →
-              </button>
-            </div>
-          </form>
+              OUR NEWSLETTER
+            </span>
 
-          <p style={{
-            fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-            fontSize: "13px",
-            fontWeight: 400,
-            lineHeight: 1.6,
-            color: "rgba(255,255,255,0.35)",
-          }}>
-            Get the latest insights on AI automation, intelligent agents, workflow
-            optimization, and practical strategies to help your business grow.
-          </p>
+            <form
+              action={siteContent.contact.newsletterAction}
+              onSubmit={(e) => { e.preventDefault(); setEmail(""); }}
+              style={{ marginBottom: "16px" }}
+            >
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                borderBottom: "1px solid rgba(255,255,255,0.12)",
+                paddingBottom: "12px",
+                gap: "12px",
+              }}>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  required
+                  style={{
+                    flex: 1,
+                    background: "none",
+                    border: "none",
+                    outline: "none",
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "15px",
+                    fontWeight: 400,
+                    color: "#fff",
+                    caretColor: "var(--accent)",
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: "18px",
+                    transition: "color 0.2s ease",
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.color = "var(--accent)"}
+                  onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
+                  aria-label="Subscribe"
+                >
+                  →
+                </button>
+              </div>
+            </form>
+
+            <p style={{
+              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+              fontSize: "13px",
+              fontWeight: 400,
+              lineHeight: 1.6,
+              color: "rgba(255,255,255,0.35)",
+            }}>
+              Get the latest insights on AI automation, intelligent agents, workflow
+              optimization, and practical strategies to help your business grow.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Footer columns */}
       <div style={{
@@ -232,7 +239,7 @@ export default function Footer() {
         </div>
 
         {/* Link columns */}
-        {FOOTER_COLS.map((col) => (
+        {footerCols.map((col) => (
           <div key={col.heading}>
             <span style={{
               fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
@@ -246,7 +253,7 @@ export default function Footer() {
             }}>
               {col.heading}
             </span>
-            <nav>
+            <nav aria-label={col.heading}>
               {col.links.map((link) => (
                 <a
                   key={link.label}
@@ -316,14 +323,19 @@ export default function Footer() {
         </span>
 
         <a
-          href="#"
-          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+          href="#main"
+          onClick={(e) => {
+            e.preventDefault();
+            const lenis = (window as unknown as { __lenis?: { scrollTo: (t: number) => void } }).__lenis;
+            if (lenis) lenis.scrollTo(0);
+            else window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           style={{
             display: "inline-flex",
             alignItems: "center",
             gap: "8px",
             padding: "8px 18px",
-            borderRadius: "9999px",
+            borderRadius: "var(--r-pill, 999px)",
             border: "1px solid var(--line)",
             background: "var(--surface)",
             fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",

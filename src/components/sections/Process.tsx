@@ -109,6 +109,7 @@ export default function Process() {
   return (
     <section
       id="process"
+      aria-labelledby="process-title"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
@@ -124,6 +125,7 @@ export default function Process() {
         {/* Headline & Intro */}
         <div style={{ marginTop: "64px", marginBottom: "48px" }}>
           <h2
+            id="process-title"
             style={{
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontSize: "clamp(32px, 3.6vw, 56px)",
@@ -164,7 +166,7 @@ export default function Process() {
               background: "var(--line)",
               position: "relative",
               flexShrink: 0,
-              borderRadius: "2px",
+              borderRadius: "var(--r-0, 0px)",
             }}>
               <div
                 ref={progressRef}
@@ -175,7 +177,7 @@ export default function Process() {
                   width: "100%",
                   height: "25%",
                   background: "var(--accent)",
-                  borderRadius: "2px",
+                  borderRadius: "var(--r-0, 0px)",
                   transformOrigin: "top",
                   transition: "transform 0.5s cubic-bezier(0.16,1,0.3,1)",
                 }}
@@ -317,7 +319,7 @@ export default function Process() {
                 background: "var(--accent)",
                 width: `${((activeStep + 1) / STEPS.length) * 100}%`,
                 transition: "width 0.5s cubic-bezier(0.16,1,0.3,1)",
-                borderRadius: "2px",
+                borderRadius: "var(--r-0, 0px)",
               }} />
             </div>
           </div>

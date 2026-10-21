@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/shared";
 gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
-  { label: "ABOUT", href: "#about" },
-  { label: "SERVICES", href: "#services-list" },
-  { label: "PROCESS", href: "#process" },
-  { label: "BLOG", href: "#blog" },
+  { label: "ABOUT", href: "#about", id: "about" },
+  { label: "SERVICES", href: "#services", id: "services" },
+  { label: "PROCESS", href: "#process", id: "process" },
+  { label: "FAQ", href: "#faq", id: "faq" },
 ];
 
 export default function Nav() {
@@ -33,6 +33,9 @@ export default function Nav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileLinksRef = useRef<HTMLDivElement>(null);
+
+  // Active section tracking
+  const [activeId, setActiveId] = useState<string>("");
 
   // Ref tracking scroll navigation lock to prevent hiding while auto-scrolling
   const isNavScrollingRef = useRef(false);
@@ -62,12 +65,32 @@ export default function Nav() {
   };
 
   useEffect(() => {
+    // 0. Active section tracking with ScrollTrigger
+    const triggers: ScrollTrigger[] = [];
+    NAV_LINKS.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (!el) return;
+      const st = ScrollTrigger.create({
+        trigger: el,
+        start: "top 45%",
+        end: "bottom 45%",
+        onToggle: (self) => {
+          if (self.isActive) {
+            setActiveId(link.id);
+          }
+        },
+      });
+      triggers.push(st);
+    });
+
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) {
       if (headerRef.current) {
         gsap.set(headerRef.current, { yPercent: 0, opacity: 1 });
       }
-      return;
+      return () => {
+        triggers.forEach((t) => t.kill());
+      };
     }
 
     // 1. Page-load animation: draw in lines from left, then fade up items
@@ -112,7 +135,7 @@ export default function Nav() {
     // 2. ScrollTrigger direction detection (clean & synced with Lenis)
     let lastScroll = window.scrollY;
 
-    const st = ScrollTrigger.create({
+    const navST = ScrollTrigger.create({
       start: 0,
       end: "max",
       onUpdate: (self) => {
@@ -169,7 +192,8 @@ export default function Nav() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      st.kill();
+      triggers.forEach((t) => t.kill());
+      navST.kill();
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("hashchange", handleHashChange);
       window.removeEventListener("popstate", handleHashChange);
@@ -185,7 +209,14 @@ export default function Nav() {
     isNavScrollingRef.current = true;
     closeMobileMenu();
 
-    if (href === "/") {
+    const getHeaderOffset = () => {
+      if (typeof window === "undefined") return -92;
+      const hStr = getComputedStyle(document.documentElement).getPropertyValue("--header-h").trim();
+      const hNum = parseInt(hStr, 10);
+      return -(hNum || (window.innerWidth < 768 ? 72 : 92));
+    };
+
+    if (href === "/" || href === "#") {
       const lenis = (window as unknown as { __lenis?: { scrollTo: (target: number, opts: unknown) => void } }).__lenis;
       if (lenis) {
         lenis.scrollTo(0, {
@@ -205,10 +236,13 @@ export default function Nav() {
       return;
     }
 
-    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: string, opts: unknown) => void } }).__lenis;
+    const targetEl = document.querySelector(href);
+    const offset = getHeaderOffset();
+
+    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: Element | string, opts: unknown) => void } }).__lenis;
     if (lenis) {
-      lenis.scrollTo(href, {
-        offset: -120,
+      lenis.scrollTo(targetEl || href, {
+        offset,
         duration: 1.2,
         onComplete: () => {
           setTimeout(() => {
@@ -217,9 +251,9 @@ export default function Nav() {
         },
       });
     } else {
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
+      if (targetEl) {
+        const top = targetEl.getBoundingClientRect().top + window.scrollY + offset;
+        window.scrollTo({ top, behavior: "smooth" });
       }
       setTimeout(() => {
         isNavScrollingRef.current = false;
@@ -365,6 +399,7 @@ export default function Nav() {
           {/* Row 1, Col 2: Center Nav */}
           <nav
             ref={navContentRef}
+            aria-label="Primary"
             style={{
               display: "flex",
               alignItems: "center",
@@ -373,36 +408,42 @@ export default function Nav() {
               width: "100%",
             }}
           >
-            {NAV_LINKS.map((link, idx) => (
-              <div key={link.label} style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-                <a
-                  href={link.href}
-                  onClick={(e) => handleLinkClick(e, link.href)}
-                  className="header-nav-link"
-                  style={{
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "15px",
-                    fontWeight: 500,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    color: "var(--ink)",
-                  }}
-                >
-                  {link.label}
-                </a>
-                {idx < NAV_LINKS.length - 1 && (
-                  <span
+            {NAV_LINKS.map((link, idx) => {
+              const isActive = activeId === link.id;
+              return (
+                <div key={link.label} style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    className={`header-nav-link ${isActive ? "is-active" : ""}`}
                     style={{
-                      width: "6px",
-                      height: "6px",
-                      background: "var(--ink)",
-                      display: "inline-block",
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "15px",
+                      fontWeight: 500,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: "var(--ink)",
+                      borderBottom: isActive ? "2px solid var(--ink)" : "2px solid transparent",
+                      paddingBottom: "2px",
+                      transition: "border-color 0.25s ease",
                     }}
-                    aria-hidden="true"
-                  />
-                )}
-              </div>
-            ))}
+                  >
+                    {link.label}
+                  </a>
+                  {idx < NAV_LINKS.length - 1 && (
+                    <span
+                      style={{
+                        width: "6px",
+                        height: "6px",
+                        background: "var(--ink)",
+                        display: "inline-block",
+                      }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </nav>
 
           {/* Row 1, Col 3: Right Button */}
@@ -591,7 +632,8 @@ export default function Nav() {
           </div>
 
           {/* Stacked big links */}
-          <div
+          <nav
+            aria-label="Mobile Navigation"
             ref={mobileLinksRef}
             style={{
               display: "flex",
@@ -621,7 +663,7 @@ export default function Nav() {
                 </a>
               </div>
             ))}
-          </div>
+          </nav>
 
           {/* Bottom sharp ink CTA */}
           <div>

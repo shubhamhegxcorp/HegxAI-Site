@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionBar, SectionColumn } from "@/components/ui/shared";
+import Marquee from "@/components/ui/Marquee";
 import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -72,6 +73,7 @@ export default function Services() {
   return (
     <section
       id="services"
+      aria-labelledby="services-title"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
@@ -80,7 +82,7 @@ export default function Services() {
       }}
     >
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
-        <SectionBar label="SERVICES" sectionId="services" />
+        <SectionBar label="SERVICES" sectionId="services" headingId="services-title" />
 
         {/* Service rows (straight 1px bottom borders, 0 radius, accordion behavior) */}
         <div style={{ borderTop: "1px solid var(--line)", marginTop: "64px" }}>
@@ -196,57 +198,38 @@ export default function Services() {
               OUR CLIENTS
             </span>
 
-            <div
-              style={{
-                width: "100%",
-                overflow: "hidden",
-                position: "relative",
-                maskImage:
-                  "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-                WebkitMaskImage:
-                  "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  gap: "20px",
-                  width: "max-content",
-                  animation: "marquee-scroll 24s linear infinite",
-                }}
-              >
-                {siteContent.clientLogos.map((client, i) => (
-                  <div
-                    key={i}
+            <Marquee fadeEdges gap={20} speed={0.8}>
+              {siteContent.clientLogos.map((client, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    padding: "10px 24px",
+                    borderRadius: "var(--r-0, 0px)",
+                    background: "var(--surface)",
+                    border: "1px solid var(--line)",
+                    color: "var(--muted)",
+                    minWidth: "140px",
+                  }}
+                >
+                  <span
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "8px",
-                      padding: "10px 24px",
-                      borderRadius: "var(--r-0, 0px)",
-                      background: "var(--surface)",
-                      border: "1px solid var(--line)",
-                      color: "var(--muted)",
-                      minWidth: "140px",
+                      fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--ink)",
                     }}
                   >
-                    <span
-                      style={{
-                        fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                        fontSize: "12px",
-                        fontWeight: 500,
-                        letterSpacing: "0.08em",
-                        textTransform: "uppercase",
-                        color: "var(--ink)",
-                      }}
-                    >
-                      {client.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    {client.name}
+                  </span>
+                </div>
+              ))}
+            </Marquee>
           </div>
         )}
       </SectionColumn>

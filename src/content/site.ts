@@ -2,6 +2,11 @@
 // HARD RULE: Only real data. If empty, components hide the section/block instead of showing fake placeholders.
 
 export interface SiteContent {
+  contact: {
+    email: string;
+    bookingUrl: string;
+    newsletterAction: string;
+  };
   founder: {
     name: string;
     role: string;
@@ -10,19 +15,6 @@ export interface SiteContent {
   };
   clientLogos: Array<{ name: string; logoUrl: string }>;
   logos: Array<{ name: string; url: string }>;
-  testimonials: Array<{
-    id: string;
-    name: string;
-    role: string;
-    quote: string;
-  }>;
-  blogPosts: Array<{
-    slug: string;
-    title: string;
-    date: string;
-    category: string;
-    excerpt: string;
-  }>;
   pricingTiers: Array<{
     name: string;
     price: string;
@@ -51,16 +43,25 @@ export function getSectionNumber(sectionId: string): string {
   return String(index + 1).padStart(3, "0");
 }
 
+export function getContactHref(): string {
+  if (siteContent.contact.bookingUrl) return siteContent.contact.bookingUrl;
+  if (siteContent.contact.email) return `mailto:${siteContent.contact.email}`;
+  return "#contact";
+}
+
 export const siteContent: SiteContent = {
+  contact: {
+    email: "", // TODO: real email address (e.g. hello@hegxai.com)
+    bookingUrl: "", // TODO: real booking calendar URL (e.g. https://cal.com/...)
+    newsletterAction: "", // TODO: newsletter subscription endpoint (leave empty to hide form)
+  },
   founder: {
-    name: "", // Keep empty to hide placeholder box per prompt instruction
+    name: "", // Keep empty to hide founder slot until real data exists
     role: "",
     photo: "",
     bio: "",
   },
   clientLogos: [],
   logos: [],
-  testimonials: [],
-  blogPosts: [],
   pricingTiers: [],
 };

@@ -1,60 +1,75 @@
-# HEGXAI Design System Specification (Avande Framer Replica)
+# HEGXAI Design System Specification
 
-## 1. Brand & Theme Tokens
-- **Canvas Base (--bg)**: `#F4EFE6` (Warm Architectural Cream)
-- **Card Surface (--surface)**: `#FBF8F2` (Soft Off-White Cream)
-- **Primary Ink (--ink)**: `#141414` (Deep Technical Charcoal Black)
-- **Muted Text (--muted)**: `rgba(20, 20, 20, 0.60)`
-- **Border Hairline (--line)**: `rgba(20, 20, 20, 0.10)`
-- **Accent Highlight (--accent)**: `#E8A25C` (Warm Amber, used sparingly for active states and indicators)
-- **Neon Chartreuse (--lime)**: `#D7FD41` (Signature highlight tag color from Avande)
-- **Neon Glow (--lime-glow)**: `rgba(215, 253, 65, 0.35)`
+## 1. Brand & Color Tokens
+
+- **Canvas Base (`--bg`)**: `#F4EFE6` (Warm Architectural Cream)
+- **Card Surface (`--surface`)**: `#FBF8F2` (Soft Off-White Cream)
+- **Primary Ink (`--ink`)**: `#141414` (Deep Technical Charcoal Black)
+- **Muted Text (`--muted`)**: `rgba(20, 20, 20, 0.55)` (Optimized contrast ratio >= 4.5:1 on cream)
+- **Border Hairline (`--line`)**: `rgba(20, 20, 20, 0.10)`
+- **Accent Highlight (`--accent`)**: `#E8A25C` (Warm Amber for status dots and secondary indicators)
+- **Neon Chartreuse (`--lime`)**: `#D7FD41` (Signature technical highlight color)
+- **Lime Glow (`--lime-glow`)**: `rgba(215, 253, 65, 0.25)`
+
+---
 
 ## 2. Typography Hierarchy
-- **Display Font (`--font-display`)**: `Anton`, sans-serif
-  - Headline Large: `clamp(64px, 13vw, 190px)`, uppercase, line-height `0.92`, letter-spacing `-0.01em`
-  - Section Title: `clamp(36px, 4.5vw, 68px)`, uppercase, line-height `0.96`, letter-spacing `0.01em`
-  - Big Wordmark: `clamp(90px, 18vw, 240px)`, letter-spacing `-0.02em`
-- **Body Font (`--font-body`)**: `DM Sans`, sans-serif
-  - Large Body: `18px - 22px`, line-height `1.45`, weight `400`
-  - Regular Body: `15px - 16px`, line-height `1.65`, weight `400`
-  - Small Body: `13px - 14px`, line-height `1.60`, weight `400`
-- **Mono Technical Font (`--font-mono`)**: `IBM Plex Mono`, monospace
-  - Labels & Section Numbers: `11px`, weight `500`, tracking `0.12em`, uppercase
-  - Badges & Buttons: `12px`, weight `500`, tracking `0.08em`, uppercase
 
-## 3. Geometric Components & Surfacing
-- **Corner Radii**:
-  - Small (`--r-sm`): `12px`
-  - Medium (`--r-md`): `20px`
-  - Large (`--r-lg`): `28px`
-  - Extra Large (`--r-xl`): `36px`
-  - Pill (`--r-full`): `9999px`
-- **Borders & Dividers**:
-  - Precision hairlines: `1px solid var(--line)`
-  - Terminal anchor squares: `6px × 6px` solid ink boxes `[▪]` on horizontal section dividing rules
-- **Chamfered Corner Tags**:
-  - Polygon cut corner: `clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%)`
-  - Background `#D7FD41` with `#141414` text and `■ ›››` chevrons
-- **Corner Brackets**:
-  - Technical framing `┌ ┐ └ ┘` with `8px × 8px` crosshairs on interactive CTA buttons and modules
-- **Procedural Background**:
-  - ASCII halftone matrix sampling 4-point astroid / super-ellipse contours with characters `[' ', '.', '·', '+', '?', '*', '%', '@']`
-  - SVG blueprint dashed guidelines `stroke-dasharray="6 6"` with rotating crosshair reticle target `┼` and floating 3D technical badges (`↗`, `☍`, `❇`, `⬡`)
+- **Display Heading Font (`--font-display` / `--ff-display`)**: `Inter Tight`, sans-serif (weights: 500, 600)
+  - Hero H1: `clamp(44px, 5.5vw, 88px)`, weight 500, letter-spacing `-0.04em`, line-height `0.92`, uppercase
+  - Section H2: `clamp(32px, 3.6vw, 56px)`, weight 500, letter-spacing `-0.02em`, line-height `1.04`
+  - Section H3: `clamp(20px, 1.8vw, 28px)`, weight 500, letter-spacing `-0.02em`, line-height `1.15`
+  - Text Reveal Masks: `padding-bottom: 0.14em` and `margin-bottom: -0.14em` to prevent clipping of descenders (`g`, `y`, `p`, `q`).
+- **Brand Wordmark Font (`--font-logo` / `--ff-logo`)**: `Anton`, sans-serif
+  - Used **EXCLUSIVELY** for the `HEGXAI` logo wordmark in the header and footer.
+- **Body Font (`--font-body` / `--ff-body`)**: `DM Sans`, sans-serif (weights: 300, 400, 500, 600)
+  - Regular Body: `15px - 16px`, weight 400, color `#5f5b52` / `var(--muted)`
+  - Small Body: `13px - 14px`, weight 400
+- **Technical Mono Font (`--font-mono` / `--ff-mono`)**: `IBM Plex Mono`, monospace (weights: 400, 500)
+  - Section Labels: `11px`, weight 500, letter-spacing `0.12em`, uppercase
+  - Status Indicators & Badges: `11px - 13px`, weight 500, letter-spacing `0.06em - 0.08em`
 
-## 4. Section Order & Structure
-1. `Nav`: Floating pill navigation with blur backdrop, section links, and "BOOK A FREE AUDIT" pill
-2. `Hero`: Giant Anton headline, lime highlight on "AUTOMATED.", blueprint guides, floating active task cards, live circular speedometer gauge, client logo marquee strip
-3. `001 About Us`: Chamfered lime tag, text illumination scrubber on scroll, team/founder badge
-4. `002 The Features`: Pinned "DEPLOY AI AGENT" card with counter-rotating avatar cluster, rolling digits pager `01/03`, mock analytics card, and giant "INTELLIGENT" Anton marquee
-5. `003 The Statistics (Why Automate)`: Dark section in `#141414`, dark ASCII matrix background, qualitative columns ("LESS", "FEWER", "FASTER"), chamfered "BOOK A CALL ›››" tag
-6. `004 Benefits ("Scale Your Team")`: "SCALE YOUR TEAM" banner with chevron indicators, left sticky label/title, right 3 stacking sticky cards (`01 AI Discovery`, `02 Custom AI Build`, `03 Scale & Optimize`)
-7. `005 Services`: "BEST FOR..." marquee strip, huge Anton rows with tag chips and ink hover wipe, "(our clients)" logo marquee row
-8. `006 Testimonials`: Portrait card with neutral gradient, quote placeholder, pager `01/03`, metric slots
-9. `007 The Process`: Pinned 4-step workflow tracker (01 Discovery, 02 Strategy, 03 Development, 04 Deployment) with progress connector line and interactive step cards
-10. `008 Blog`: List-style article rows with date placeholder `[DATE]`, category chips, excerpt, hover background wipe
-11. `009 Pricing`: "FLEXIBLE AI SOLUTIONS" with Monthly/Yearly animated pill slider, Starter & Growth cards, "Custom / scoped to your needs" price slots
-12. `Second Statistics / Agent Showcase`: "AI Workflow Automation" with 2-3 floating CSS phone mockups showing agent list, progress bar, and staggered rows
-13. `Contact CTA`: Card scaling `0.92 -> 1` on scroll with corner crosshair brackets
-14. `FAQ`: 2-column layout with Anton headline and 5 smooth animated accordions
-15. `Footer`: Newsletter block, 4 link columns, giant masked "HEGXAI" wordmark with letter stagger, "BACK TO TOP" smooth scroll
+---
+
+## 3. Radius System Tokens
+
+A unified geometric corner system defined via CSS variables:
+- **`--r-0`**: `0px` (All buttons, section bars, input fields, and tags)
+- **`--r-card`**: `12px` (All interactive cards, dashboard panels, and modals)
+- **`--r-pill`**: `999px` (Pills, badges, and floating status indicators only)
+- **Circles**: `50%` (Avatars, radio dots, and circular icon nodes)
+
+All stray radius values (2px, 6px, 8px, 10px, 14px, 32px, 40px) have been refactored to use the above tokens.
+
+---
+
+## 4. Single Button System
+
+Only one `<Button>` system is used across the entire application:
+- **Style**: Square (`--r-0`), `Inter Tight 500`, `13px`, uppercase, `0.04em` tracking, padding `16px 24px`, animated arrow glyph (`→`) with `4px` hover translation.
+- **Variants**:
+  - `primary`: Solid black background (`var(--ink)`), white text.
+  - `secondary`: Transparent background, `1px solid var(--ink)` border, ink text.
+  - `inverse`: For dark sections (`#141414`), chartreuse lime background (`var(--lime)`), black text.
+- **Hero CTA**: Keeps square corner crosshair brackets (`┌ ┐ └ ┘`).
+
+---
+
+## 5. Section Layout & Structural Grid
+
+- **Column Width**: Standard `1320px` max-width centered column with `--col-pad: 24px`.
+- **Vertical Line Guides**: 1px vertical borders at `25%` ink on left and right column boundaries, starting from the About section downwards.
+- **Section Bars (`<SectionBar>`)**: 34px height, `#0f0f0f` background, white Inter Tight 500 13px uppercase label with 3-digit padded number (`001`, `002`, ...).
+
+### Section Sequence:
+1. `Nav`: 2-row grid header with scroll-direction auto-hide, ScrollTrigger active-link underline, and Lenis offset.
+2. `Hero`: Full-width hero with single H1, lime highlight box on "AUTOMATED.", interactive dashed connector SVG, live workflow visual card, and GSAP ticker Marquee.
+3. `001 About Us`: Chamfered lime tag (`#d7fd41`), coordinate-aligned headline, and conditional founder card.
+4. `002 The Features`: Pinned agent card and feature copy pager with rolling indicators.
+5. `003 Why Automate`: Dark background (`#141414`), additive-masked ASCII halftone canvas, qualitative value propositions.
+6. `004 Services`: Interactive accordion with ink row expansion, plus live partner Marquee.
+7. `005 The Process`: Step-by-step methodology tabbed walkthrough.
+8. `006 Flexible Engagement`: Transparent pricing tiers and scoping cards.
+9. `007 FAQ`: Accessible accordion items with `aria-expanded` and `aria-controls`.
+10. `008 Contact`: Final conversion CTA block with dynamic "Booking opens soon" fallback.
+11. `Footer`: ASCII matrix background, navigation links, and optional newsletter subscription.

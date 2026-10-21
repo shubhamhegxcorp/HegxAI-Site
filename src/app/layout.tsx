@@ -35,18 +35,32 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "HEGXAI — Intelligent Automation for Modern Teams",
-  description:
-    "HEGXAI is a B2B AI automation agency that designs and deploys custom workflow automation, AI agents, and system integrations to help your business scale faster.",
-  keywords:
-    "AI automation, workflow automation, AI agents, business automation, B2B AI, process automation",
+  metadataBase: new URL(siteUrl),
+  title: "HEGXAI | Every Task. Automated.",
+  description: "AI agents and workflow automation for businesses",
   openGraph: {
-    title: "HEGXAI — Every Task. Automated.",
-    description:
-      "Automation built for growth. We design and deploy AI-powered workflows that scale with your team.",
+    title: "HEGXAI | Every Task. Automated.",
+    description: "AI agents and workflow automation for businesses",
+    url: siteUrl,
+    siteName: "HEGXAI",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "HEGXAI | Every Task. Automated.",
+    description: "AI agents and workflow automation for businesses",
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "HEGXAI",
+  url: siteUrl,
+  description: "AI agents and workflow automation for businesses",
 };
 
 export default function RootLayout({
@@ -60,10 +74,16 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${interTight.variable} ${anton.variable} ${dmSans.variable} ${ibmMono.variable}`}
     >
-      <body
-        suppressHydrationWarning
-        style={{ fontFamily: "var(--ff-body, 'DM Sans', sans-serif)" }}
-      >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
+      <body style={{ fontFamily: "var(--ff-body, 'DM Sans', sans-serif)" }}>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

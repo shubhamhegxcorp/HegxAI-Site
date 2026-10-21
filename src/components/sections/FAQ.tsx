@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionBar, SectionColumn } from "@/components/ui/shared";
+import { getContactHref } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -77,6 +78,7 @@ export default function FAQ() {
   return (
     <section
       id="faq"
+      aria-labelledby="faq-title"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
@@ -97,6 +99,7 @@ export default function FAQ() {
           {/* Left: heading */}
           <div>
             <h2
+              id="faq-title"
               style={{
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                 fontSize: "clamp(32px, 3.6vw, 56px)",
@@ -133,7 +136,7 @@ export default function FAQ() {
             </p>
 
             <a
-              href="mailto:hello@hegxai.com"
+              href={getContactHref()}
               style={{
                 display: "inline-flex",
                 alignItems: "center",

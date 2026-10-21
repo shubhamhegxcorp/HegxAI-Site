@@ -232,6 +232,7 @@ export default function Features() {
   return (
     <section
       id="features"
+      aria-labelledby="features-title"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
@@ -418,7 +419,7 @@ export default function Features() {
                     <div
                       style={{
                         background: "var(--accent)",
-                        borderRadius: "9999px",
+                        borderRadius: "var(--r-pill, 999px)",
                         padding: "3px 10px",
                         fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                         fontSize: "10px",
@@ -498,6 +499,7 @@ export default function Features() {
                   }}
                 >
                   <h2
+                    id={i === 0 ? "features-title" : undefined}
                     style={{
                       fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                       fontSize: "clamp(26px, 2.8vw, 38px)",

@@ -1,37 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HEGXAI
+
+> Every Task. Automated. Intelligent AI agents and workflow automation for modern businesses.
+
+A high-performance, editorial landing page engineered with Next.js, TypeScript, GSAP, and Lenis smooth scrolling, featuring a warm cream architectural palette, lime chartreuse technical accents, and dynamic GSAP ticker marquees.
+
+---
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, React 19)
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS tokens + TailwindCSS v4 bridge
+- **Typography**: 
+  - Display: `Inter Tight` (weights 500/600)
+  - Wordmark Logo: `Anton` (used exclusively for the HEGXAI brand mark)
+  - Body: `DM Sans` (weights 300, 400, 500, 600)
+  - Technical Labels: `IBM Plex Mono` (monospace labels <= 11px)
+- **Animation**: [GSAP](https://greensock.com/gsap/) + ScrollTrigger
+- **Smooth Scroll**: [@studio-freight/lenis](https://github.com/darkroomengineering/lenis)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+Node.js 18+ (tested on Node.js v22+)
 
+### Development
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build
+```bash
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Type Check & Linting
+```bash
+npx tsc --noEmit
+npm run lint
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Folder Map
 
-## Learn More
+```
+hegxai-design-final/
+├── docs/
+│   └── design-spec.md            # Detailed design tokens, typography, and layout specifications
+├── public/                       # Static public assets
+├── src/
+│   ├── app/
+│   │   ├── favicon.ico           # HEGXAI square mark favicon
+│   │   ├── globals.css           # CSS design tokens, typography, focus rings, and resets
+│   │   ├── icon.svg              # SVG square mark favicon
+│   │   ├── layout.tsx            # Root layout, next/font bindings, metadata, JSON-LD
+│   │   ├── opengraph-image.tsx   # Dynamic edge OpenGraph image generator (next/og)
+│   │   ├── page.tsx              # Main single-page entry wrapping all sections
+│   │   ├── robots.ts             # Robots.txt metadata route
+│   │   └── sitemap.ts            # Sitemap.xml metadata route
+│   ├── components/
+│   │   ├── sections/
+│   │   │   ├── About.tsx         # 001 About Us section with interactive chamfered lime tag
+│   │   │   ├── CTABlock.tsx      # 008 Contact section with dynamic audit booking
+│   │   │   ├── FAQ.tsx           # 007 FAQ accordion with accessible regions
+│   │   │   ├── Features.tsx      # 002 The Features with interactive mock card
+│   │   │   ├── Footer.tsx        # Footer columns, social links, and optional newsletter
+│   │   │   ├── Hero.tsx          # Single H1 Hero with dashed connector and Marquee
+│   │   │   ├── HeroWorkflowCard.tsx # Live workflow card with interactive nodes & feed
+│   │   │   ├── Nav.tsx           # Desktop & mobile nav with ScrollTrigger active highlighting
+│   │   │   ├── Pricing.tsx       # 006 Flexible engagement tiers
+│   │   │   ├── Process.tsx       # 005 The Process with interactive step tabs
+│   │   │   ├── Services.tsx      # 004 Services accordion and live ticker Marquee
+│   │   │   └── WhyAutomate.tsx   # 003 Why Automate dark section with ASCII halftone canvas
+│   │   └── ui/
+│   │       ├── AsciiHalftoneCanvas.tsx # Procedural ASCII matrix background (light/dark)
+│   │       ├── Marquee.tsx       # GSAP ticker marquee with Lenis velocity boost
+│   │       └── shared.tsx        # Design system components: Button, SectionBar, SectionColumn
+│   ├── content/
+│   │   └── site.ts               # Central configuration and real business content
+│   └── lib/
+│       └── SmoothScrollProvider.tsx # Global Lenis smooth scrolling provider
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How to Edit Site Content (`src/content/site.ts`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+All user-configurable business information is centralized in [`src/content/site.ts`](file:///d:/hegxai-design-final/src/content/site.ts). The codebase follows a strict **"No Fake Data"** rule: sections and elements hide gracefully when data is empty.
 
-## Deploy on Vercel
+### 1. Contact & Booking
+```ts
+export const siteContent: SiteContent = {
+  contact: {
+    email: "", // Enter real email (e.g. "hello@hegxai.com")
+    bookingUrl: "", // Enter calendar URL (e.g. "https://cal.com/hegxai")
+    newsletterAction: "", // Enter newsletter form endpoint (leave empty to hide the form)
+  },
+  // ...
+};
+```
+- **When both `email` and `bookingUrl` are empty**: All CTAs across the site smoothly scroll to `#contact`, and the contact block shows a crisp `"Booking opens soon."` status.
+- **When `bookingUrl` is set**: CTAs open your calendar link directly.
+- **When `email` is set**: CTAs open a `mailto:` link.
+- **Newsletter**: The newsletter form in the footer only renders if `newsletterAction` is set.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Founder / Team Slot
+```ts
+founder: {
+  name: "", // Leave empty to keep founder card hidden until ready
+  role: "",
+  photo: "",
+  bio: "",
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# HegxAI-Site
+### 3. Client & Partner Logos
+Add entries to `siteContent.clientLogos` or `siteContent.logos` to automatically activate the scrolling ticker marquees.
+
+---
+
+## Accessibility & SEO Highlights
+
+- **Accessibility**:
+  - Global `:focus-visible` styling (`2px solid var(--ink)` on cream, `2px solid var(--lime)` on dark).
+  - Skip-to-content anchor targeting `#main`.
+  - Exactly one `<h1>` per page (in Hero).
+  - Semantic sectioning with `aria-labelledby` referencing heading IDs.
+  - Accordion controls with proper `aria-expanded` and `aria-controls`.
+  - Decorative SVG and canvas backgrounds flagged with `aria-hidden="true"`.
+- **SEO**:
+  - Dynamic `metadataBase` support via `NEXT_PUBLIC_SITE_URL`.
+  - Dynamic OpenGraph and Twitter cards (`src/app/opengraph-image.tsx`).
+  - Search engine crawlers guided by `robots.ts` and `sitemap.ts`.
+  - Valid `Organization` JSON-LD schema with real attributes only.

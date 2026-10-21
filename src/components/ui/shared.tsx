@@ -5,29 +5,44 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getSectionNumber } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
-
-interface SectionBarProps {
+export interface SectionBarProps {
   label: string;
   num?: string;
   number?: string;
   sectionId?: string;
   theme?: "light" | "dark";
   showLine?: boolean;
+  headingId?: string;
+  inset?: number | string;
+  height?: number | string;
+  padding?: string;
+  marginBottom?: number | string;
+  style?: React.CSSProperties;
 }
 
 export function SectionBar({
   label,
+  headingId,
   num,
   number,
   sectionId,
   theme = "light",
   showLine,
+  inset = 0,
+  height = 34,
+  padding = "0 12px",
+  marginBottom,
+  style,
 }: SectionBarProps) {
   const autoNum = sectionId ? getSectionNumber(sectionId) : "";
   const displayNum = num || number || autoNum;
   const barRef = useRef<HTMLDivElement>(null);
   const isDark = theme === "dark";
-  const shouldShowLine = showLine ?? (sectionId === "about");
+  const shouldShowLine = showLine ?? false;
+
+  const insetVal = typeof inset === "number" ? `${inset}px` : inset;
+  const heightVal = typeof height === "number" ? `${height}px` : height;
+  const mbVal = marginBottom !== undefined ? (typeof marginBottom === "number" ? `${marginBottom}px` : marginBottom) : "40px";
 
   useEffect(() => {
     const el = barRef.current;
@@ -44,7 +59,7 @@ export function SectionBar({
       { clipPath: "inset(0 100% 0 0)" },
       {
         clipPath: "inset(0 0% 0 0)",
-        duration: 0.8,
+        duration: 0.7,
         ease: "power3.out",
         scrollTrigger: {
           trigger: el,
@@ -56,8 +71,8 @@ export function SectionBar({
   }, []);
 
   return (
-    <div style={{ position: "relative", width: "100%", marginBottom: "40px" }}>
-      {/* Full-width thin horizontal line with 8px square nodes at ends (rendered ONLY at top of About) */}
+    <div style={{ position: "relative", width: "100%", marginBottom: mbVal, ...style }}>
+      {/* Full-width thin horizontal line with square nodes at ends (optional) */}
       {shouldShowLine && (
         <div
           style={{
@@ -70,48 +85,50 @@ export function SectionBar({
             marginBottom: "12px",
           }}
         >
-          {/* Left 8px node (at x=40px from viewport edge) */}
+          {/* Left node (at x=40px from viewport edge) */}
           <span
             style={{
               position: "absolute",
               left: "40px",
-              top: "-3.5px",
-              width: "8px",
-              height: "8px",
-              background: isDark ? "#ffffff" : "var(--ink)",
+              top: "-4.5px",
+              width: "10px",
+              height: "10px",
+              background: isDark ? "#ffffff" : "#2b2b2b",
             }}
           />
-          {/* Right 8px node (at x=40px from viewport edge) */}
+          {/* Right node (at x=40px from viewport edge) */}
           <span
             style={{
               position: "absolute",
               right: "40px",
-              top: "-3.5px",
-              width: "8px",
-              height: "8px",
-              background: isDark ? "#ffffff" : "var(--ink)",
+              top: "-4.5px",
+              width: "10px",
+              height: "10px",
+              background: isDark ? "#ffffff" : "#2b2b2b",
             }}
           />
         </div>
       )}
 
-      {/* Full-width black bar (36px high inside column) */}
+      {/* Section black bar */}
       <div
         ref={barRef}
         style={{
-          width: "100%",
-          height: "36px",
+          width: insetVal !== "0px" && insetVal !== "0" ? `calc(100% - (${insetVal} * 2))` : "100%",
+          margin: insetVal !== "0px" && insetVal !== "0" ? `0 ${insetVal}` : "0",
+          height: heightVal,
           background: isDark ? "rgba(255,255,255,0.08)" : "#0f0f0f",
           border: isDark ? "1px solid rgba(255,255,255,0.12)" : "none",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0 18px",
+          padding,
           clipPath: "inset(0 100% 0 0)",
           willChange: "clip-path",
         }}
       >
         <span
+          id={headingId}
           style={{
             fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
             fontWeight: 500,
@@ -126,10 +143,10 @@ export function SectionBar({
         {displayNum && (
           <span
             style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontWeight: 500,
-              fontSize: "11px",
-              letterSpacing: "0.08em",
+              fontSize: "13px",
+              letterSpacing: "0.04em",
               color: "#ffffff",
             }}
           >
@@ -215,7 +232,7 @@ export function ScrollReveal({ children, className = "", delay = 0 }: ScrollReve
 export interface ButtonProps {
   children: React.ReactNode;
   href?: string;
-  variant?: "primary" | "secondary" | "inverse" | "dark" | "outline" | "invert-lime" | "invert-outline";
+  variant?: "primary" | "secondary" | "inverse";
   size?: "sm" | "md";
   brackets?: boolean;
   className?: string;
@@ -233,13 +250,7 @@ export function Button({
   onClick,
   style: propStyle,
 }: ButtonProps) {
-  // Normalize legacy names to the 3 canonical variants
-  const v: "primary" | "secondary" | "inverse" =
-    variant === "secondary" || variant === "outline" || variant === "invert-outline"
-      ? "secondary"
-      : variant === "inverse" || variant === "invert-lime"
-      ? "inverse"
-      : "primary";
+  const v = variant;
 
   const isSmall = size === "sm";
 

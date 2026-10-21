@@ -59,6 +59,7 @@ export default function Pricing() {
   return (
     <section
       id="pricing"
+      aria-labelledby="pricing-title"
       ref={sectionRef}
       style={{
         background: "var(--bg)",
@@ -81,6 +82,7 @@ export default function Pricing() {
           }}
         >
           <h2
+            id="pricing-title"
             style={{
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontSize: "clamp(32px, 3.6vw, 56px)",
