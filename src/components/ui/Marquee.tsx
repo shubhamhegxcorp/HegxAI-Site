@@ -44,6 +44,9 @@ export default function Marquee({
     updateWidth();
     window.addEventListener("resize", updateWidth);
 
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const effectiveSpeed = isMobile ? Math.min(speed, 0.5) : speed;
+
     const onTick = () => {
       if (trackWidth <= 0) return;
 
@@ -64,7 +67,7 @@ export default function Marquee({
         }
       }
 
-      x += direction * (speed + boost);
+      x += direction * (effectiveSpeed + boost);
 
       // Seamless infinite wrapping
       if (x <= -trackWidth) {

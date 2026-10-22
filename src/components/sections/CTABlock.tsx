@@ -39,7 +39,7 @@ export default function CTABlock() {
       aria-labelledby="contact-title"
       style={{
         background: "var(--bg)",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
       }}
     >
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
@@ -47,17 +47,17 @@ export default function CTABlock() {
 
         <div
           ref={cardRef}
+          className="card p-5 md:p-14"
           style={{
             background: "var(--surface)",
             border: "1px solid rgba(20,20,20,0.12)",
             borderRadius: "var(--r-card, 12px)",
-            padding: "56px 48px",
-            marginTop: "64px",
+            marginTop: "var(--heading-content-gap, 40px)",
             position: "relative",
             boxShadow: "none",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "56px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "28px",
             alignItems: "center",
           }}
         >
@@ -67,12 +67,12 @@ export default function CTABlock() {
               id="contact-title"
               style={{
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(32px, 3.6vw, 56px)",
+                fontSize: "clamp(28px, 6vw, 56px)",
                 fontWeight: 500,
                 lineHeight: 1.04,
                 letterSpacing: "-0.02em",
                 color: "var(--ink)",
-                marginBottom: "20px",
+                marginBottom: "16px",
               }}
             >
               Transform your business with intelligent AI automation
@@ -81,12 +81,12 @@ export default function CTABlock() {
             <p
               style={{
                 fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                fontSize: "16px",
+                fontSize: "15px",
                 fontWeight: 400,
-                lineHeight: 1.65,
+                lineHeight: 1.6,
                 color: "#5f5b52",
                 maxWidth: "52ch",
-                marginBottom: "36px",
+                marginBottom: "24px",
               }}
             >
               Start with a free audit. We&apos;ll map your biggest automation opportunities and
@@ -94,7 +94,12 @@ export default function CTABlock() {
             </p>
 
             {hasContact ? (
-              <Button href={contactHref} variant="primary">
+              <Button
+                href={contactHref}
+                variant="primary"
+                className="btn-mobile-full"
+                style={{ minHeight: "52px" }}
+              >
                 Book a free audit
               </Button>
             ) : (
@@ -102,9 +107,11 @@ export default function CTABlock() {
                 type="button"
                 disabled
                 aria-disabled="true"
+                className="btn-mobile-full"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "10px",
                   padding: "16px 24px",
                   borderRadius: "0px",
@@ -119,6 +126,7 @@ export default function CTABlock() {
                   opacity: 0.4,
                   cursor: "not-allowed",
                   userSelect: "none",
+                  minHeight: "52px",
                 }}
               >
                 Booking opens soon
@@ -126,14 +134,28 @@ export default function CTABlock() {
             )}
           </div>
 
-          {/* Right: Vertical list of 3 steps */}
+          {/* Right: Mobile 1-line step list */}
           <div
+            className="flex md:hidden items-center justify-center py-2 border-t border-[rgba(20,20,20,0.12)]"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              borderTop: "1px solid rgba(20,20,20,0.12)",
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "12px",
+              color: "var(--muted)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
+          >
+            {[
+              { num: "01", text: "Free audit call" },
+              { num: "02", text: "Automation map" },
+              { num: "03", text: "Build plan" },
+            ].map(s => `${s.num} ${s.text}`).join(" · ")}
+          </div>
+
+          {/* Right: Desktop Vertical list of 3 steps */}
+          <div
+            className="hidden md:flex flex-col justify-center border-t md:border-t-0 md:border-l border-[rgba(20,20,20,0.12)] md:pl-10"
           >
             {[
               { num: "01", text: "Free audit call" },
@@ -146,7 +168,7 @@ export default function CTABlock() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "24px 0",
+                  padding: "18px 0",
                   borderBottom: "1px solid rgba(20,20,20,0.12)",
                 }}
               >

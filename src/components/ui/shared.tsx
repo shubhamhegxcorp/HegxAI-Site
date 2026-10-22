@@ -42,7 +42,7 @@ export function SectionBar({
 
   const insetVal = typeof inset === "number" ? `${inset}px` : inset;
   const heightVal = typeof height === "number" ? `${height}px` : height;
-  const mbVal = marginBottom !== undefined ? (typeof marginBottom === "number" ? `${marginBottom}px` : marginBottom) : "40px";
+  const mbVal = marginBottom !== undefined ? (typeof marginBottom === "number" ? `${marginBottom}px` : marginBottom) : "var(--heading-content-gap, 40px)";
 
   useEffect(() => {
     const el = barRef.current;
@@ -75,32 +75,31 @@ export function SectionBar({
       {/* Full-width thin horizontal line with square nodes at ends (optional) */}
       {shouldShowLine && (
         <div
+          className="section-bar-line"
           style={{
             position: "relative",
-            width: "100vw",
-            left: "50%",
-            transform: "translateX(-50%)",
+            width: "100%",
             height: "1px",
             background: isDark ? "rgba(255,255,255,0.18)" : "rgba(20,20,20,0.25)",
             marginBottom: "12px",
           }}
         >
-          {/* Left node (at x=40px from viewport edge) */}
+          {/* Left node (at x=40px from viewport edge desktop, 16px mobile) */}
           <span
             style={{
               position: "absolute",
-              left: "40px",
+              left: "var(--section-node-edge, 40px)",
               top: "-4.5px",
               width: "10px",
               height: "10px",
               background: isDark ? "#ffffff" : "#2b2b2b",
             }}
           />
-          {/* Right node (at x=40px from viewport edge) */}
+          {/* Right node (at x=40px from viewport edge desktop, 16px mobile) */}
           <span
             style={{
               position: "absolute",
-              right: "40px",
+              right: "var(--section-node-edge, 40px)",
               top: "-4.5px",
               width: "10px",
               height: "10px",
@@ -113,10 +112,11 @@ export function SectionBar({
       {/* Section black bar */}
       <div
         ref={barRef}
+        className={`section-bar-inner ${insetVal !== "0px" && insetVal !== "0" ? "section-bar-inset-custom" : ""}`}
         style={{
           width: insetVal !== "0px" && insetVal !== "0" ? `calc(100% - (${insetVal} * 2))` : "100%",
           margin: insetVal !== "0px" && insetVal !== "0" ? `0 ${insetVal}` : "0",
-          height: heightVal,
+          height: `var(--section-bar-h, ${heightVal})`,
           background: isDark ? "rgba(255,255,255,0.08)" : "#0f0f0f",
           border: isDark ? "1px solid rgba(255,255,255,0.12)" : "none",
           display: "flex",
@@ -132,7 +132,7 @@ export function SectionBar({
           style={{
             fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
             fontWeight: 500,
-            fontSize: "13px",
+            fontSize: "var(--section-bar-fz, 13px)",
             letterSpacing: "0.04em",
             textTransform: "uppercase",
             color: "#ffffff",
@@ -145,7 +145,7 @@ export function SectionBar({
             style={{
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
               fontWeight: 500,
-              fontSize: "13px",
+              fontSize: "var(--section-bar-fz, 13px)",
               letterSpacing: "0.04em",
               color: "#ffffff",
             }}

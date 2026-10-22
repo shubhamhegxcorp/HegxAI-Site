@@ -1,0 +1,172 @@
+{
+  "overflow": [
+    {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "width": 430,
+      "scrollWidth": 430
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024
+    }
+  ],
+  "layouts": [
+    {
+      "width": 360,
+      "name": "hero",
+      "outsideViewport": []
+    },
+    {
+      "width": 360,
+      "name": "about",
+      "outsideViewport": []
+    },
+    {
+      "width": 360,
+      "name": "features",
+      "outsideViewport": []
+    },
+    {
+      "width": 360,
+      "name": "footer",
+      "outsideViewport": []
+    },
+    {
+      "width": 390,
+      "name": "hero",
+      "outsideViewport": []
+    },
+    {
+      "width": 390,
+      "name": "about",
+      "outsideViewport": []
+    },
+    {
+      "width": 390,
+      "name": "features",
+      "outsideViewport": []
+    },
+    {
+      "width": 390,
+      "name": "footer",
+      "outsideViewport": []
+    },
+    {
+      "width": 430,
+      "name": "hero",
+      "outsideViewport": []
+    },
+    {
+      "width": 430,
+      "name": "about",
+      "outsideViewport": []
+    },
+    {
+      "width": 430,
+      "name": "features",
+      "outsideViewport": []
+    },
+    {
+      "width": 430,
+      "name": "footer",
+      "outsideViewport": []
+    },
+    {
+      "width": 768,
+      "name": "hero",
+      "outsideViewport": []
+    },
+    {
+      "width": 768,
+      "name": "about",
+      "outsideViewport": []
+    },
+    {
+      "width": 768,
+      "name": "features",
+      "outsideViewport": []
+    },
+    {
+      "width": 768,
+      "name": "footer",
+      "outsideViewport": []
+    },
+    {
+      "width": 1024,
+      "name": "hero",
+      "outsideViewport": []
+    },
+    {
+      "width": 1024,
+      "name": "about",
+      "outsideViewport": []
+    },
+    {
+      "width": 1024,
+      "name": "features",
+      "outsideViewport": []
+    },
+    {
+      "width": 1024,
+      "name": "footer",
+      "outsideViewport": []
+    }
+  ],
+  "menu": [
+    "open, locked scrolling, Escape close, Lenis restored",
+    {
+      "label": "ABOUT",
+      "top": 72.265625
+    },
+    {
+      "label": "SERVICES",
+      "top": 72.171875
+    },
+    {
+      "label": "PROCESS",
+      "top": 72.171875
+    }
+  ],
+  "reducedMotion": [],
+  "footerTargets": [
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    },
+    {
+      "height": 45.59375,
+      "size": "16px"
+    }
+  ]
+}

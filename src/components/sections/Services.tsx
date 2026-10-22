@@ -77,7 +77,7 @@ export default function Services() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
         position: "relative",
       }}
     >
@@ -86,13 +86,14 @@ export default function Services() {
 
         {/* One-line intro under the bar (16px #5f5b52, max-width 56ch) */}
         <p
+          className="services-intro"
           style={{
             fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
             fontSize: "16px",
             lineHeight: 1.6,
             color: "#5f5b52",
             maxWidth: "56ch",
-            marginTop: "24px",
+            marginTop: "16px",
             marginBottom: "0px",
           }}
         >
@@ -100,7 +101,7 @@ export default function Services() {
         </p>
 
         {/* Service rows (straight 1px bottom borders, 0 radius, accordion behavior with hover activation) */}
-        <div style={{ borderTop: "1px solid var(--line)", marginTop: "64px" }}>
+        <div className="services-list" style={{ borderTop: "1px solid var(--line)", marginTop: "var(--heading-content-gap, 40px)" }}>
           {SERVICES.map((service, i) => {
             const isActive = activeIdx === i;
 
@@ -111,7 +112,11 @@ export default function Services() {
                   rowsRef.current[i] = el;
                 }}
                 onClick={() => setActiveIdx(isActive ? null : i)}
-                onMouseEnter={() => setActiveIdx(i)}
+                onMouseEnter={() => {
+                  if (typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches) {
+                    setActiveIdx(i);
+                  }
+                }}
                 className={`service-row ${isActive ? "is-active" : ""}`}
                 style={{
                   position: "relative",
@@ -120,9 +125,10 @@ export default function Services() {
                   background: isActive ? "var(--ink)" : "transparent",
                   color: isActive ? "#ffffff" : "var(--ink)",
                   cursor: "pointer",
+                  minHeight: "56px",
                   transition:
                     "background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1), padding 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-                  padding: isActive ? "28px 24px" : "24px 20px",
+                  padding: isActive ? "24px 20px" : "20px 16px",
                   overflow: "hidden",
                 }}
               >
@@ -132,10 +138,10 @@ export default function Services() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: "24px",
+                    gap: "16px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: "28px", minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "20px", minWidth: 0 }}>
                     {/* Arrow icon (ink at 60% when inactive, lime rotated 45deg when active) */}
                     <span
                       className="service-row-arrow"
@@ -153,11 +159,12 @@ export default function Services() {
                       →
                     </span>
 
-                    {/* Service Name: 44-56px Inter Tight 500 uppercase */}
+                    {/* Service Name: 28-32px on mobile, up to 56px desktop */}
                     <span
+                      className="service-name"
                       style={{
                         fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                        fontSize: "clamp(32px, 3.8vw, 56px)",
+                        fontSize: "clamp(28px, 4vw, 56px)",
                         fontWeight: 500,
                         letterSpacing: "-0.02em",
                         lineHeight: 1.04,
@@ -170,12 +177,63 @@ export default function Services() {
                     </span>
                   </div>
 
-                  {/* Active row right-aligned Learn more link with hover arrow animation */}
+                  {/* Desktop Active row right-aligned Learn more link */}
                   {isActive && (
                     <a
                       href="#contact"
                       onClick={(e) => e.stopPropagation()}
-                      className="service-learn-more"
+                      className="service-learn-more hidden md:inline-flex"
+                      style={{
+                        fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        color: "#d7fd41",
+                        textDecoration: "none",
+                        alignItems: "center",
+                        gap: "6px",
+                        flexShrink: 0,
+                        transition: "color 0.2s ease",
+                      }}
+                    >
+                      <span>Learn more</span>
+                      <span className="learn-arrow">→</span>
+                    </a>
+                  )}
+                </div>
+
+                {/* Accordion description line visible on active row */}
+                <div
+                  style={{
+                    maxHeight: isActive ? "200px" : "0px",
+                    opacity: isActive ? 1 : 0,
+                    overflow: "hidden",
+                    transition:
+                      "max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease, margin 0.35s ease",
+                    marginTop: isActive ? "16px" : "0px",
+                    paddingLeft: "40px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      lineHeight: 1.6,
+                      color: "rgba(255,255,255,0.78)",
+                      maxWidth: "56ch",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    {service.desc}
+                  </p>
+
+                  {/* Mobile Learn More inside accordion */}
+                  <div className="block md:hidden" style={{ marginTop: "8px" }}>
+                    <a
+                      href="#contact"
+                      onClick={(e) => e.stopPropagation()}
                       style={{
                         fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                         fontSize: "13px",
@@ -187,58 +245,12 @@ export default function Services() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "6px",
-                        flexShrink: 0,
-                        transition: "color 0.2s ease",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = "#ffffff";
-                        const arrow = e.currentTarget.querySelector(".learn-arrow") as HTMLElement;
-                        if (arrow) arrow.style.transform = "translateX(4px)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = "#d7fd41";
-                        const arrow = e.currentTarget.querySelector(".learn-arrow") as HTMLElement;
-                        if (arrow) arrow.style.transform = "translateX(0px)";
                       }}
                     >
                       <span>Learn more</span>
-                      <span
-                        className="learn-arrow"
-                        style={{
-                          display: "inline-block",
-                          transition: "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-                        }}
-                      >
-                        →
-                      </span>
+                      <span>→</span>
                     </a>
-                  )}
-                </div>
-
-                {/* Accordion description line visible on active row */}
-                <div
-                  style={{
-                    maxHeight: isActive ? "120px" : "0px",
-                    opacity: isActive ? 1 : 0,
-                    overflow: "hidden",
-                    transition:
-                      "max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease, margin 0.35s ease",
-                    marginTop: isActive ? "16px" : "0px",
-                    paddingLeft: "48px",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                      fontSize: "15px",
-                      fontWeight: 400,
-                      lineHeight: 1.6,
-                      color: "rgba(255,255,255,0.78)",
-                      maxWidth: "56ch",
-                    }}
-                  >
-                    {service.desc}
-                  </p>
+                  </div>
                 </div>
               </div>
             );
@@ -298,6 +310,21 @@ export default function Services() {
           </div>
         )}
       </SectionColumn>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .services-intro {
+            font-size: 15px !important;
+            margin-top: 12px !important;
+          }
+          .services-list {
+            margin-top: var(--heading-content-gap, 24px) !important;
+          }
+          .service-name {
+            font-size: 26px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

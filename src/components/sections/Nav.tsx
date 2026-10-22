@@ -253,12 +253,19 @@ export default function Nav() {
     const targetEl = document.querySelector(href);
     const offset = getHeaderOffset();
 
-    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: Element | string, opts: unknown) => void } }).__lenis;
+    const lenis = (window as unknown as { __lenis?: { scrollTo: (target: Element | string | number, opts: unknown) => void } }).__lenis;
     if (lenis) {
       lenis.scrollTo(targetEl || href, {
         offset,
         duration: 1.2,
         onComplete: () => {
+          // Accordion layout can settle while scrolling; preserve the header clearance.
+          if (targetEl) {
+            const landing = targetEl.getBoundingClientRect().top;
+            if (Math.abs(landing + offset) > 1) {
+              lenis.scrollTo(window.scrollY + landing + offset, { immediate: true });
+            }
+          }
           setTimeout(() => {
             isNavScrollingRef.current = false;
           }, 100);
@@ -275,6 +282,8 @@ export default function Nav() {
     }
   };
 
+  const menuTriggerBtnRef = useRef<HTMLButtonElement>(null);
+
   // Mobile Menu open/close with Lenis scroll lock
   const openMobileMenu = () => {
     setIsMobileMenuOpen(true);
@@ -283,6 +292,12 @@ export default function Nav() {
     document.body.style.overflow = "hidden";
 
     setTimeout(() => {
+      // Focus first link or close button inside menu
+      if (mobileMenuRef.current) {
+        const firstFocusable = mobileMenuRef.current.querySelector<HTMLElement>('button, a');
+        firstFocusable?.focus();
+      }
+
       if (mobileLinksRef.current) {
         const links = mobileLinksRef.current.children;
         gsap.fromTo(
@@ -305,7 +320,41 @@ export default function Nav() {
     const lenis = (window as unknown as { __lenis?: { start: () => void } }).__lenis;
     lenis?.start();
     document.body.style.overflow = "";
+    menuTriggerBtnRef.current?.focus({ preventScroll: true });
   };
+
+  // Keyboard navigation & Focus Trap for Mobile Overlay
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeMobileMenu();
+        return;
+      }
+
+      if (e.key === "Tab" && mobileMenuRef.current) {
+        const focusableElements = mobileMenuRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMobileMenuOpen]);
 
   return (
     <>
@@ -542,6 +591,7 @@ export default function Nav() {
           {/* Row 1, Col 2: MENU button */}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
+              ref={menuTriggerBtnRef}
               onClick={openMobileMenu}
               aria-label="Open Navigation Menu"
               style={{
@@ -549,6 +599,8 @@ export default function Nav() {
                 background: "transparent",
                 color: "var(--ink)",
                 padding: "8px 20px",
+                minHeight: "44px",
+                minWidth: "44px",
                 borderRadius: 0,
                 fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                 fontSize: "12px",
@@ -556,6 +608,9 @@ export default function Nav() {
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               MENU
@@ -590,6 +645,9 @@ export default function Nav() {
       {isMobileMenuOpen && (
         <div
           ref={mobileMenuRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile Navigation"
           style={{
             position: "fixed",
             inset: 0,
@@ -598,7 +656,11 @@ export default function Nav() {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            padding: "24px 20px 36px",
+            paddingTop: "calc(16px + env(safe-area-inset-top, 0px))",
+            paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))",
+            paddingLeft: "calc(16px + env(safe-area-inset-left, 0px))",
+            paddingRight: "calc(16px + env(safe-area-inset-right, 0px))",
+            boxSizing: "border-box",
           }}
         >
           {/* Top Bar: Logo + Close button */}
@@ -630,6 +692,8 @@ export default function Nav() {
                 background: "transparent",
                 color: "var(--ink)",
                 padding: "8px 18px",
+                minHeight: "44px",
+                minWidth: "44px",
                 borderRadius: 0,
                 fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                 fontSize: "12px",
@@ -637,21 +701,24 @@ export default function Nav() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               ✕ CLOSE
             </button>
           </div>
 
-          {/* Stacked big links */}
+          {/* Stacked big links: 32px tall tap rows with 56px type */}
           <nav
             aria-label="Mobile Navigation"
             ref={mobileLinksRef}
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "24px",
-              padding: "40px 0",
+              gap: "20px",
+              padding: "24px 0",
             }}
           >
             {NAV_LINKS.map((link) => (
@@ -660,13 +727,15 @@ export default function Nav() {
                   href={link.href}
                   onClick={(e) => handleLinkClick(e, link.href)}
                   style={{
-                    display: "block",
+                    display: "flex",
+                    alignItems: "center",
+                    minHeight: "44px",
                     fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                    fontSize: "clamp(40px, 10vw, 56px)",
+                    fontSize: "clamp(42px, 12vw, 56px)",
                     fontWeight: 500,
-                    lineHeight: 0.95,
+                    lineHeight: 1,
                     textTransform: "uppercase",
-                    letterSpacing: "-0.04em",
+                    letterSpacing: "-0.03em",
                     color: "var(--ink)",
                     textDecoration: "none",
                   }}
@@ -677,12 +746,12 @@ export default function Nav() {
             ))}
           </nav>
 
-          {/* Bottom sharp ink CTA */}
+          {/* Bottom sharp ink CTA (min-height 52px, full width) */}
           <div>
             <Button
               href="#contact"
               variant="primary"
-              style={{ width: "100%" }}
+              style={{ width: "100%", minHeight: "52px" }}
               onClick={(e) => handleLinkClick(e, "#contact")}
             >
               Book a free audit

@@ -38,7 +38,7 @@ export default function About() {
             ease: "back.out(1.4)",
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 80%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
               toggleActions: "play none none none",
             },
           }
@@ -59,7 +59,7 @@ export default function About() {
               delay: 0.3,
               scrollTrigger: {
                 trigger: sectionRef.current,
-                start: "top 80%",
+                start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
                 toggleActions: "play none none none",
               },
             }
@@ -81,7 +81,7 @@ export default function About() {
               ease: "power3.out",
               scrollTrigger: {
                 trigger: headlineRef.current,
-                start: "top 82%",
+                start: () => window.innerWidth < 768 ? "top 95%" : "top 82%",
                 toggleActions: "play none none none",
               },
               onComplete: () => {
@@ -110,7 +110,7 @@ export default function About() {
             ease: "power2.out",
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: "top 88%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 88%",
               toggleActions: "play none none none",
             },
           }
@@ -133,7 +133,7 @@ export default function About() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 75%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
               toggleActions: "play none none none",
             },
           }
@@ -151,7 +151,7 @@ export default function About() {
             delay: 0.2,
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 75%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
               toggleActions: "play none none none",
             },
           }
@@ -171,7 +171,7 @@ export default function About() {
             delay: 0.4,
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 75%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
               toggleActions: "play none none none",
             },
           }
@@ -190,7 +190,7 @@ export default function About() {
             ease: "power2.out",
             scrollTrigger: {
               trigger: founderRef.current,
-              start: "top 80%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
               toggleActions: "play none none none",
             },
           }
@@ -210,7 +210,7 @@ export default function About() {
         background: "var(--bg, #F4EFE6)",
         position: "relative",
         width: "100%",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
       }}
     >
       {/* ─── 5. TOP LOGO STRIP (rendered ONLY if logos array has items) ─── */}
@@ -381,115 +381,117 @@ export default function About() {
           </div>
 
           {/* ─── e) TWO TEXT COLUMNS (bottom right): col 1 @ x=938px (71.1%), col 2 @ x=1119px (84.8%), top 391px, height 217px ─── */}
-          {/* Column 1 */}
-          <div className="about-col-1">
-            {/* 1px vertical line (ink 30%) on left edge */}
-            <div
-              ref={col1LineRef}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: "1px",
-                background: "rgba(20,20,20,0.3)",
-              }}
-            />
-            {/* 10px square node (#2b2b2b) centered on line at top */}
-            <div
-              ref={col1NodeRef}
-              style={{
-                position: "absolute",
-                left: "-4.5px",
-                top: "-5px",
-                width: "10px",
-                height: "10px",
-                background: "#2b2b2b",
-                zIndex: 2,
-              }}
-            />
-            {/* Content: padding-left 22px, padding-top 22px */}
-            <div ref={col1TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
+          <div className="about-cols-wrap">
+            {/* Column 1 */}
+            <div className="about-col-1">
+              {/* 1px vertical line (ink 30%) on left edge */}
               <div
+                ref={col1LineRef}
                 style={{
-                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  color: "#0f0f0f",
-                  marginBottom: "8px",
-                  lineHeight: 1.2,
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: "1px",
+                  background: "rgba(20,20,20,0.3)",
                 }}
-              >
-                What we build
+              />
+              {/* 10px square node (#2b2b2b) centered on line at top */}
+              <div
+                ref={col1NodeRef}
+                style={{
+                  position: "absolute",
+                  left: "-4.5px",
+                  top: "-5px",
+                  width: "10px",
+                  height: "10px",
+                  background: "#2b2b2b",
+                  zIndex: 2,
+                }}
+              />
+              {/* Content: padding-left 22px, padding-top 22px */}
+              <div ref={col1TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
+                <div
+                  style={{
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    color: "#0f0f0f",
+                    marginBottom: "8px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  What we build
+                </div>
+                <p
+                  style={{
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "15px",
+                    lineHeight: 1.55,
+                    color: "#6f6c64",
+                    maxWidth: "260px",
+                    margin: 0,
+                  }}
+                >
+                  Intelligent AI agents and workflow systems that remove repetitive work and keep your team moving.
+                </p>
               </div>
-              <p
-                style={{
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "14px",
-                  lineHeight: "18px",
-                  color: "#6f6c64",
-                  maxWidth: "150px",
-                  margin: 0,
-                }}
-              >
-                Intelligent AI agents and workflow systems that remove repetitive work and keep your team moving.
-              </p>
             </div>
-          </div>
 
-          {/* Column 2 */}
-          <div className="about-col-2">
-            {/* 1px vertical line (ink 30%) on left edge */}
-            <div
-              ref={col2LineRef}
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: "1px",
-                background: "rgba(20,20,20,0.3)",
-              }}
-            />
-            {/* 10px square node (#2b2b2b) centered on line at top */}
-            <div
-              ref={col2NodeRef}
-              style={{
-                position: "absolute",
-                left: "-4.5px",
-                top: "-5px",
-                width: "10px",
-                height: "10px",
-                background: "#2b2b2b",
-                zIndex: 2,
-              }}
-            />
-            {/* Content: padding-left 22px, padding-top 22px */}
-            <div ref={col2TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
+            {/* Column 2 */}
+            <div className="about-col-2">
+              {/* 1px vertical line (ink 30%) on left edge */}
               <div
+                ref={col2LineRef}
                 style={{
-                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontWeight: 500,
-                  fontSize: "14px",
-                  color: "#0f0f0f",
-                  marginBottom: "8px",
-                  lineHeight: 1.2,
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: "1px",
+                  background: "rgba(20,20,20,0.3)",
                 }}
-              >
-                How we build
+              />
+              {/* 10px square node (#2b2b2b) centered on line at top */}
+              <div
+                ref={col2NodeRef}
+                style={{
+                  position: "absolute",
+                  left: "-4.5px",
+                  top: "-5px",
+                  width: "10px",
+                  height: "10px",
+                  background: "#2b2b2b",
+                  zIndex: 2,
+                }}
+              />
+              {/* Content: padding-left 22px, padding-top 22px */}
+              <div ref={col2TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
+                <div
+                  style={{
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    color: "#0f0f0f",
+                    marginBottom: "8px",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  How we build
+                </div>
+                <p
+                  style={{
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "15px",
+                    lineHeight: 1.55,
+                    color: "#6f6c64",
+                    maxWidth: "260px",
+                    margin: 0,
+                  }}
+                >
+                  From audit to custom agents and integrations, every system is mapped, tested and connected to your stack.
+                </p>
               </div>
-              <p
-                style={{
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "14px",
-                  lineHeight: "18px",
-                  color: "#6f6c64",
-                  maxWidth: "150px",
-                  margin: 0,
-                }}
-              >
-                From audit to custom agents and integrations, every system is mapped, tested and connected to your stack.
-              </p>
             </div>
           </div>
         </div>
@@ -573,92 +575,88 @@ export default function About() {
         }
 
         /* Line reveal wrappers */
+        .about-headline-wrap h2 { text-wrap: balance; }
         .headline-reveal-mask {
           display: block;
           overflow: hidden;
-          padding-bottom: 0.12em;
-          margin-bottom: -0.12em;
+          padding-bottom: 0.14em;
+          margin-bottom: -0.14em;
         }
         .headline-reveal-line {
           display: inline-block;
           will-change: transform;
         }
 
-        /* Tablet (768px - 1199px) */
-        @media (min-width: 768px) and (max-width: 1199px) {
+        /* Below 1024px: Stack everything cleanly without absolute positioning */
+        @media (max-width: 1199px) {
           .about-content-area {
-            position: relative;
-            padding: 32px 24px 64px;
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
+            position: relative !important;
+            height: auto !important;
+            padding: 24px 16px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 20px !important;
           }
           .about-lime-tag {
-            width: 102px;
-            height: 144px;
-            display: inline-block;
-            position: relative;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            width: 102px !important;
+            height: 144px !important;
+            align-self: flex-start !important;
           }
           .about-headline-wrap {
-            max-width: 680px;
-            width: 100%;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
           .about-headline-wrap h2 {
-            font-size: 42px !important;
+            font-size: 34px !important;
+            line-height: 1 !important;
+            letter-spacing: -0.03em !important;
           }
           .about-founder-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-top: 16px;
+            position: relative !important;
+            right: auto !important;
+            top: auto !important;
+            align-self: flex-start !important;
+            align-items: flex-start !important;
+            text-align: left !important;
           }
           .about-cta-wrap {
-            margin-top: 12px;
-          }
-          .about-col-1, .about-col-2 {
-            position: relative;
-            min-height: 180px;
-            flex: 1;
-          }
-          .about-cols-container {
-            display: flex;
-            gap: 32px;
-            margin-top: 32px;
-          }
-        }
-
-        /* Mobile (< 768px) */
-        @media (max-width: 767px) {
-          .about-content-area {
-            padding: 32px 16px 48px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-          }
-          .about-lime-tag {
-            width: 102px;
-            height: 144px;
-            display: inline-block;
-            position: relative;
-          }
-          .about-headline-wrap {
-            width: 100%;
-          }
-          .about-headline-wrap h2 {
-            font-size: 36px !important;
-            line-height: 0.96 !important;
-          }
-          .about-cta-wrap {
-            width: 100%;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            width: 100% !important;
           }
           .about-cta-wrap a {
-            width: 100%;
-            justify-content: center;
+            width: 100% !important;
+            justify-content: center !important;
+            min-height: 52px !important;
+          }
+          .about-cols-wrap {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 24px !important;
+            width: 100% !important;
+          }
+          @media (min-width: 400px) {
+            .about-cols-wrap {
+              flex-direction: row !important;
+              gap: 24px !important;
+            }
+            .about-col-1, .about-col-2 {
+              flex: 1 !important;
+            }
           }
           .about-col-1, .about-col-2 {
-            position: relative;
-            min-height: 160px;
-            width: 100%;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            width: 100% !important;
+            min-height: 140px !important;
           }
         }
       `}</style>

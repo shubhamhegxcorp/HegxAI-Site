@@ -54,11 +54,27 @@ export default function AsciiHalftoneCanvas({
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
+    const isMobileOrCoarse =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 || window.matchMedia("(pointer: coarse)").matches);
+
+    const isStatic = prefersReducedMotion || isMobileOrCoarse;
+
     // Character set ordered from empty/light to dense
     const CHARS = [" ", ".", "·", "+", "?", "¦", "%", "@"];
 
-    // Grid spacing based on density
-    const step = density === "dense" ? 11 : density === "sparse" ? 16 : 13;
+    // Grid spacing based on density (lower density / larger step on mobile/touch)
+    const step = isStatic
+      ? density === "dense"
+        ? 14
+        : density === "sparse"
+        ? 20
+        : 16
+      : density === "dense"
+      ? 11
+      : density === "sparse"
+      ? 16
+      : 13;
 
     // Precomputed center points and radius
     interface CenterPoint {
@@ -73,8 +89,8 @@ export default function AsciiHalftoneCanvas({
     const handleResize = () => {
       const parent = container.parentElement || container;
       const rect = parent.getBoundingClientRect();
-      // Cap DPR to 1.5 for performance
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // Cap DPR to 1 on mobile/touch, 1.5 on desktop
+      const dpr = isStatic ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
       width = rect.width;
       height = rect.height;
 
@@ -118,7 +134,7 @@ export default function AsciiHalftoneCanvas({
         },
       ];
 
-      if (prefersReducedMotion) {
+      if (isStatic) {
         drawFrame();
       }
     };
@@ -304,8 +320,12 @@ export default function AsciiHalftoneCanvas({
         isIntersecting = entry.isIntersecting;
 
         if (isIntersecting && !document.hidden) {
-          attachMouse();
-          startAnimation();
+          if (!isStatic) {
+            attachMouse();
+            startAnimation();
+          } else {
+            drawFrame();
+          }
         } else {
           detachMouse();
           stopAnimation();
@@ -320,7 +340,7 @@ export default function AsciiHalftoneCanvas({
     const handleVisibilityChange = () => {
       if (document.hidden) {
         stopAnimation();
-      } else if (isIntersecting) {
+      } else if (isIntersecting && !isStatic) {
         startAnimation();
       }
     };
@@ -329,7 +349,7 @@ export default function AsciiHalftoneCanvas({
     handleResize();
     window.addEventListener("resize", handleResize, { passive: true });
 
-    if (prefersReducedMotion) {
+    if (isStatic) {
       drawFrame();
     }
 

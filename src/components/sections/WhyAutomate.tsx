@@ -108,7 +108,7 @@ export default function WhyAutomate() {
       ref={sectionRef}
       style={{
         background: "var(--ink)",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
         position: "relative",
         overflow: "hidden",
       }}
@@ -144,15 +144,16 @@ export default function WhyAutomate() {
       >
         <SectionBar label="WHY AUTOMATE" sectionId="why-automate" theme="dark" />
 
-        <div style={{ padding: "48px 0 0" }}>
+        <div className="why-content-wrap" style={{ paddingTop: "var(--heading-content-gap, 40px)" }}>
           {/* Header Row: Headline (left) + Right side empty so glyph texture shows at full strength */}
           <div
+            className="why-header-row"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
               gap: "48px",
               alignItems: "end",
-              marginBottom: "64px",
+              marginBottom: "var(--heading-content-gap, 40px)",
             }}
           >
             {/* Left: Headline */}
@@ -180,6 +181,7 @@ export default function WhyAutomate() {
           {/* Three big items */}
           <div
             ref={gridRef}
+            className="why-items-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
@@ -190,14 +192,15 @@ export default function WhyAutomate() {
             {WHY_ITEMS.map((item, i) => (
               <div
                 key={i}
+                className="why-item-col"
                 style={{
                   padding: "48px 32px",
                   borderRight: "1px solid rgba(255,255,255,0.08)",
                   borderBottom: "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                {/* Masked big word (fixed 2-line title block min-height: 84px so all 3 divider lines align) */}
-                <div style={{ overflow: "hidden", marginBottom: "16px", paddingBottom: "0.14em", minHeight: "84px", display: "flex", alignItems: "flex-end" }}>
+                {/* Masked big word (fixed 2-line title block min-height: 84px desktop, single line 28px mobile) */}
+                <div className="why-title-wrap" style={{ overflow: "hidden", marginBottom: "16px", paddingBottom: "0.14em", minHeight: "84px", display: "flex", alignItems: "flex-end" }}>
                   <div
                     className="why-phrase"
                     style={{
@@ -245,7 +248,7 @@ export default function WhyAutomate() {
           </div>
 
           {/* Bottom CTAs: lime tag + secondary button */}
-          <div style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
+          <div className="why-ctas-wrap" style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
             <LimeTag href="#contact" />
 
             {/* Secondary square outline button in white */}
@@ -259,6 +262,65 @@ export default function WhyAutomate() {
           </div>
         </div>
       </SectionColumn>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .why-content-wrap {
+            padding-top: var(--heading-content-gap, 24px) !important;
+          }
+          .why-header-row {
+            margin-bottom: var(--heading-content-gap, 24px) !important;
+          }
+          #why-title {
+            font-size: 30px !important;
+            line-height: 1.08 !important;
+          }
+          .why-items-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
+            border-top: 1px solid rgba(255,255,255,0.12) !important;
+          }
+          .why-item-col {
+            padding: 20px 0 !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+          }
+          .why-title-wrap {
+            min-height: auto !important;
+            margin-bottom: 6px !important;
+          }
+          .why-phrase {
+            font-size: 22px !important;
+            white-space: nowrap !important;
+            line-height: 1.1 !important;
+          }
+          .why-line {
+            display: none !important;
+          }
+          .why-copy {
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            display: -webkit-box !important;
+            -webkit-line-clamp: 2 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+          }
+          .why-ctas-wrap {
+            margin-top: var(--heading-content-gap, 24px) !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            gap: 12px !important;
+          }
+          .why-ctas-wrap a,
+          .why-ctas-wrap button,
+          .why-ctas-wrap .chamfer-tag {
+            width: 100% !important;
+            justify-content: center !important;
+            min-height: 52px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

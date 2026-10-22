@@ -153,7 +153,7 @@ export default function HeroWorkflowCard() {
 
   // ─── 2. FLOATING TOASTS (Alternating Left/Right every ~3s) ──────────
   useEffect(() => {
-    if (isReducedMotionRef.current) return;
+    if (isReducedMotionRef.current || (typeof window !== "undefined" && window.innerWidth < 768)) return;
 
     const toastL = toastLeftRef.current;
     const toastR = toastRightRef.current;
@@ -165,6 +165,7 @@ export default function HeroWorkflowCard() {
     let timer: NodeJS.Timeout | null = null;
 
     const runToastCycle = () => {
+      if (typeof window !== "undefined" && window.innerWidth < 768) return;
       if (!isVisibleRef.current) {
         timer = setTimeout(runToastCycle, 2000);
         return;
@@ -208,7 +209,13 @@ export default function HeroWorkflowCard() {
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hasPointerFine = window.matchMedia("(pointer: fine)").matches;
-    if (prefersReduced || !hasPointerFine) return;
+    const isTouchOrCoarse =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches ||
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 0);
+
+    if (prefersReduced || !hasPointerFine || isTouchOrCoarse) return;
 
     const container = containerRef.current;
     const panel = panelRef.current;
@@ -325,7 +332,7 @@ export default function HeroWorkflowCard() {
               if (agentHaloRef.current) {
                 gsap.fromTo(
                   agentHaloRef.current,
-                  { opacity: 0.9, scale: 1.25, transformOrigin: "center" },
+                  { opacity: 0.9, scale: 1.25, svgOrigin: "0 0" },
                   { opacity: 0.1, scale: 1, duration: 0.35, ease: "power2.out" }
                 );
               }
@@ -450,14 +457,13 @@ export default function HeroWorkflowCard() {
             background: "#ffffff",
             borderRadius: "var(--r-pill, 999px)",
             padding: "7px 16px 7px 10px",
-            display: "flex",
             alignItems: "center",
             gap: "8px",
             boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
             border: "1px solid rgba(20,20,20,0.06)",
             transform: "translateZ(30px)",
           }}
-          className="hidden md:flex"
+          className="hero-toast-item hidden md:flex"
         >
           <span
             style={{
@@ -501,14 +507,13 @@ export default function HeroWorkflowCard() {
             background: "#ffffff",
             borderRadius: "var(--r-pill, 999px)",
             padding: "7px 16px 7px 10px",
-            display: "flex",
             alignItems: "center",
             gap: "8px",
             boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
             border: "1px solid rgba(20,20,20,0.06)",
             transform: "translateZ(30px)",
           }}
-          className="hidden md:flex"
+          className="hero-toast-item hidden md:flex"
         >
           <span
             style={{
@@ -864,6 +869,7 @@ export default function HeroWorkflowCard() {
                     r="32"
                     fill="rgba(215,253,65,0.3)"
                     style={{
+                      transformBox: "fill-box",
                       transformOrigin: "center",
                       animation: "hero-halo-pulse 2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite",
                     }}
@@ -874,7 +880,7 @@ export default function HeroWorkflowCard() {
                     ref={agentHaloRef}
                     r="32"
                     fill="rgba(215,253,65,0.4)"
-                    style={{ transformOrigin: "center", opacity: 0 }}
+                    style={{ transformBox: "fill-box", transformOrigin: "center", opacity: 0 }}
                   />
 
                   {/* Slowly rotating dashed ring (20s) */}
@@ -885,6 +891,7 @@ export default function HeroWorkflowCard() {
                     strokeWidth="1"
                     strokeDasharray="4 4"
                     style={{
+                      transformBox: "fill-box",
                       transformOrigin: "center",
                       animation: "hero-agent-dash-spin 20s linear infinite",
                     }}
@@ -907,7 +914,7 @@ export default function HeroWorkflowCard() {
                   {/* Agent Tag (10px IBM Plex Mono 500) */}
                   <text
                     x="0"
-                    y="16"
+                    y="54"
                     fill="#d7fd41"
                     fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
                     fontSize="10"
@@ -1034,6 +1041,7 @@ export default function HeroWorkflowCard() {
 
             {/* 1px Vertical Divider */}
             <div
+              className="hero-workflow-divider"
               style={{
                 width: "1px",
                 height: "100%",
@@ -1084,7 +1092,7 @@ export default function HeroWorkflowCard() {
                 />
               </div>
 
-              {/* 4 Event Rows: fixed 44px height, 8px gap, evenly spaced, text 13px */}
+              {/* 4 Event Rows: fixed 44px height, 8px gap, evenly spaced, text 13px (3 rows on mobile) */}
               <div
                 style={{
                   display: "flex",
@@ -1097,6 +1105,7 @@ export default function HeroWorkflowCard() {
                 {feedRows.map((row, idx) => (
                   <div
                     key={row.id}
+                    className="hero-feed-row"
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -1191,7 +1200,7 @@ export default function HeroWorkflowCard() {
             }}
           >
             {/* Chips */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div className="hero-workflow-chips" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               {["LEAD ROUTING", "REPORTING", "OUTREACH"].map((chip) => (
                 <span
                   key={chip}
@@ -1215,6 +1224,7 @@ export default function HeroWorkflowCard() {
                 alignItems: "center",
                 gap: "3px",
               }}
+              className="hero-workflow-progress"
               title="Pipeline activity loop"
             >
               {Array.from({ length: 12 }).map((_, i) => (
@@ -1256,7 +1266,7 @@ export default function HeroWorkflowCard() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             zIndex: 6,
           }}
-          className="hidden sm:flex"
+          className="hero-tile-1 hidden sm:flex"
         >
           ↗
         </div>
@@ -1283,7 +1293,7 @@ export default function HeroWorkflowCard() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             zIndex: 6,
           }}
-          className="hidden sm:flex"
+          className="hero-tile-2 hidden sm:flex"
         >
           ✦
         </div>
@@ -1310,7 +1320,7 @@ export default function HeroWorkflowCard() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             zIndex: 6,
           }}
-          className="hidden sm:flex"
+          className="hero-tile-3 hidden sm:flex"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
@@ -1341,7 +1351,7 @@ export default function HeroWorkflowCard() {
             boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
             zIndex: 6,
           }}
-          className="hidden sm:flex"
+          className="hero-tile-4 hidden sm:flex"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M16 18l-6-6 6-6" />
@@ -1364,14 +1374,46 @@ export default function HeroWorkflowCard() {
         }
         @media (max-width: 767px) {
           .hero-workflow-panel {
-            width: calc(100vw - 32px);
-            max-width: 456px;
-            height: auto;
-            min-height: 440px;
+            width: 100% !important;
+            max-width: 420px !important;
+            height: auto !important;
+            min-height: auto !important;
+            padding: 8px !important;
           }
           .hero-workflow-grid {
             grid-template-columns: 1fr !important;
             gap: 16px !important;
+          }
+          .hero-workflow-bottom { flex-direction: column; align-items: stretch !important; gap: 6px; }
+          .hero-workflow-chips { flex-wrap: nowrap; white-space: nowrap; gap: 14px !important; overflow-x: auto; scrollbar-width: none; }
+          .hero-workflow-chips span { font-size: 10px !important; flex-shrink: 0; }
+          .hero-workflow-progress { width: 100%; }
+          .hero-workflow-progress > div { flex: 1; }
+          .hero-workflow-divider {
+            display: none !important;
+          }
+          .hero-feed-row:nth-child(n+4) {
+            display: none !important;
+          }
+          .hero-tile-1 {
+            display: flex !important;
+            width: 40px !important;
+            height: 40px !important;
+            top: -20px !important;
+            left: -8px !important;
+            font-size: 15px !important;
+          }
+          .hero-tile-2 {
+            display: flex !important;
+            width: 40px !important;
+            height: 40px !important;
+            top: -20px !important;
+            right: -8px !important;
+            font-size: 16px !important;
+          }
+          .hero-tile-3,
+          .hero-tile-4 {
+            display: none !important;
           }
         }
 

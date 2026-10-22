@@ -1,0 +1,33 @@
+.visual { position: relative; z-index: 2; width: 100%; min-width: 0; min-height: 200px; display: flex; align-items: center; justify-content: center; }
+.visual svg { max-width: 320px; overflow: visible; }
+.orbit { transform-origin: 150px 90px; animation: orbit 40s linear infinite; }
+.workflowDot { animation: workflow 3s linear infinite; }
+.syncForward { animation: syncForward 3s linear infinite; }
+.syncBack { animation: syncBack 3s linear infinite; }
+.visual[data-visible="false"] * { animation-play-state: paused; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes workflow {
+  0%, 10% { transform: translateX(0); }
+  30%, 40% { transform: translateX(72px); }
+  60%, 70% { transform: translateX(144px); }
+  90%, 100% { transform: translateX(216px); }
+}
+@keyframes syncForward {
+  0% { transform: translate(75px, 72px); }
+  25% { transform: translate(107px, 36px); }
+  50% { transform: translate(150px, 24px); }
+  75% { transform: translate(193px, 36px); }
+  100% { transform: translate(225px, 72px); }
+}
+@keyframes syncBack {
+  0% { transform: translate(225px, 108px); }
+  25% { transform: translate(193px, 144px); }
+  50% { transform: translate(150px, 156px); }
+  75% { transform: translate(107px, 144px); }
+  100% { transform: translate(75px, 108px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .visual * { animation: none !important; }
+  .syncForward { transform: translate(150px, 24px); }
+  .syncBack { transform: translate(150px, 156px); }
+}

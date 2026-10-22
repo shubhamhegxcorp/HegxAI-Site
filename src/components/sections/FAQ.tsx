@@ -32,6 +32,7 @@ const FAQS = [
 
 export default function FAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [showAllFaqs, setShowAllFaqs] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -82,35 +83,29 @@ export default function FAQ() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
         opacity: 0,
       }}
     >
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)" }}>
         <SectionBar label="FAQ" sectionId="faq" />
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "80px",
-          marginTop: "64px",
-          alignItems: "start",
-        }}>
-          {/* Left: heading */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-start" style={{ marginTop: "var(--heading-content-gap, 40px)" }}>
+          {/* Left: heading + intro */}
           <div>
             <h2
               id="faq-title"
               style={{
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(32px, 3.6vw, 56px)",
+                fontSize: "clamp(30px, 8.4vw, 56px)",
                 fontWeight: 500,
                 lineHeight: 1.04,
                 letterSpacing: "-0.02em",
                 color: "var(--ink)",
               }}
             >
-              <span className="reveal-mask">
-                <span className="reveal-line" data-reveal-line>
+              <span className="reveal-mask" style={{ padding: "4px 0", overflow: "visible" }}>
+                <span className="reveal-line" data-reveal-line style={{ lineHeight: 1.15 }}>
                   Frequently asked questions
                 </span>
               </span>
@@ -123,12 +118,12 @@ export default function FAQ() {
                 fontWeight: 400,
                 lineHeight: 1.7,
                 color: "var(--muted)",
-                marginTop: "28px",
+                marginTop: "20px",
                 maxWidth: "360px",
               }}
             >
-              <span className="reveal-mask">
-                <span className="reveal-line" data-reveal-line>
+              <span className="reveal-mask" style={{ padding: "4px 0", overflow: "visible" }}>
+                <span className="reveal-line" data-reveal-line style={{ lineHeight: 1.5 }}>
                   Questions about working with us? Here are the ones we hear most
                   often — answered honestly.
                 </span>
@@ -141,7 +136,8 @@ export default function FAQ() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "8px",
-                marginTop: "28px",
+                minHeight: "44px",
+                marginTop: "20px",
                 fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                 fontSize: "13px",
                 fontWeight: 500,
@@ -161,84 +157,120 @@ export default function FAQ() {
 
           {/* Right: accordion */}
           <div>
-            {FAQS.map((faq, i) => (
-              <div
-                key={i}
-                style={{ borderBottom: "1px solid var(--line)" }}
-              >
-                <button
-                  onClick={() => toggle(i)}
-                  id={`faq-btn-${i}`}
-                  aria-expanded={openIdx === i}
-                  aria-controls={`faq-answer-${i}`}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "22px 0",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    gap: "16px",
-                    textAlign: "left",
-                  }}
+            {FAQS.map((faq, i) => {
+              const isHiddenOnMobile = !showAllFaqs && i >= 4;
+              return (
+                <div
+                  key={i}
+                  className={isHiddenOnMobile ? "hidden md:block" : "block"}
+                  style={{ borderBottom: "1px solid var(--line)" }}
                 >
-                  <span style={{
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "16px",
-                    fontWeight: 500,
-                    color: "var(--ink)",
-                    lineHeight: 1.3,
-                  }}>
-                    {faq.q}
-                  </span>
-                  <span
+                  <button
+                    onClick={() => toggle(i)}
+                    id={`faq-btn-${i}`}
+                    aria-expanded={openIdx === i}
+                    aria-controls={`faq-answer-${i}`}
                     style={{
-                      width: "28px",
-                      height: "28px",
-                      borderRadius: "50%",
-                      border: "1px solid var(--line)",
+                      width: "100%",
+                      minHeight: "52px",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      fontSize: "16px",
-                      color: "var(--ink)",
-                      transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.2s ease",
-                      transform: openIdx === i ? "rotate(45deg)" : "rotate(0deg)",
-                      background: openIdx === i ? "var(--ink)" : "transparent",
+                      justifyContent: "space-between",
+                      padding: "12px 0",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      gap: "16px",
+                      textAlign: "left",
                     }}
-                    aria-hidden
                   >
-                    <span style={{ color: openIdx === i ? "var(--bg)" : "var(--ink)", lineHeight: 1 }}>+</span>
-                  </span>
-                </button>
+                    <span style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      color: "var(--ink)",
+                      lineHeight: 1.35,
+                      flex: 1,
+                    }}>
+                      {faq.q}
+                    </span>
+                    <span
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        minWidth: "40px",
+                        minHeight: "40px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--line)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        fontSize: "18px",
+                        color: "var(--ink)",
+                        transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.2s ease",
+                        transform: openIdx === i ? "rotate(45deg)" : "rotate(0deg)",
+                        background: openIdx === i ? "var(--ink)" : "transparent",
+                      }}
+                      aria-hidden
+                    >
+                      <span style={{ color: openIdx === i ? "var(--bg)" : "var(--ink)", lineHeight: 1 }}>+</span>
+                    </span>
+                  </button>
 
-                <div
-                  id={`faq-answer-${i}`}
-                  ref={(el) => { answerRefs.current[i] = el; }}
-                  role="region"
-                  aria-labelledby={`faq-btn-${i}`}
+                  <div
+                    id={`faq-answer-${i}`}
+                    ref={(el) => { answerRefs.current[i] = el; }}
+                    role="region"
+                    aria-labelledby={`faq-btn-${i}`}
+                    style={{
+                      height: openIdx === i ? "auto" : 0,
+                      overflow: "hidden",
+                      opacity: openIdx === i ? 1 : 0,
+                    }}
+                  >
+                    <p style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      lineHeight: 1.7,
+                      color: "var(--muted)",
+                      paddingBottom: "20px",
+                    }}>
+                      {faq.a}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+
+            {FAQS.length > 4 && (
+              <div className="md:hidden pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAllFaqs(!showAllFaqs)}
+                  aria-expanded={showAllFaqs}
                   style={{
-                    height: openIdx === i ? "auto" : 0,
-                    overflow: "hidden",
-                    opacity: openIdx === i ? 1 : 0,
+                    background: "none",
+                    border: "none",
+                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "var(--ink)",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "8px 0",
                   }}
                 >
-                  <p style={{
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    lineHeight: 1.7,
-                    color: "var(--muted)",
-                    paddingBottom: "24px",
-                  }}>
-                    {faq.a}
-                  </p>
-                </div>
+                  <span>{showAllFaqs ? "Show less" : "Show more"}</span>
+                  <span>{showAllFaqs ? "↑" : "↓"}</span>
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </SectionColumn>

@@ -29,7 +29,7 @@ export function useReveal(scopeRef?: React.RefObject<HTMLElement | null>) {
             stagger: 0.08,
             scrollTrigger: {
               trigger: line,
-              start: "top 85%",
+              start: () => window.innerWidth < 768 ? "top 95%" : "top 85%",
               toggleActions: "play none none none",
             },
           }

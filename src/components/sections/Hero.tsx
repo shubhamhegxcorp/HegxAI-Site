@@ -281,9 +281,10 @@ export default function Hero() {
         {/* ─── 1. HEADLINE (Single H1, 2 lines, Inter Tight 500, tight lime box on AUTOMATED.) ─── */}
         <h1
           id="hero-title"
+          className="hero-headline-h1"
           style={{
             fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-            fontSize: "clamp(44px, 5.5vw, 88px)",
+            fontSize: "clamp(40px, 12.5vw, 88px)",
             fontWeight: 500,
             letterSpacing: "-0.04em",
             lineHeight: 0.92,
@@ -314,9 +315,10 @@ export default function Hero() {
                 style={{
                   background: "#d7fd41",
                   color: "#141414",
-                  padding: "0 0.14em",
+                  padding: "0 0.12em",
                   display: "inline-block",
                   position: "relative",
+                  whiteSpace: "nowrap",
                   clipPath: "inset(0 100% 0 0)",
                   willChange: "clip-path",
                 }}
@@ -390,7 +392,7 @@ export default function Hero() {
             fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
             fontSize: "15px",
             color: "#5f5b52",
-            maxWidth: "460px",
+            maxWidth: "300px",
             margin: "0 auto 36px",
             lineHeight: 1.55,
             opacity: 0,
@@ -402,6 +404,7 @@ export default function Hero() {
         {/* ─── 3. CTA WITH CORNER BRACKETS ─── */}
         <div
           ref={ctaWrapRef}
+          className="hero-cta-wrapper"
           style={{
             position: "relative",
             zIndex: 10,
@@ -410,16 +413,18 @@ export default function Hero() {
             overflow: "hidden",
             display: "inline-block",
             padding: "4px",
+            width: "100%",
+            maxWidth: "320px",
           }}
         >
-          <Button href="#contact" variant="primary" brackets={true}>
+          <Button href="#contact" variant="primary" brackets={true} style={{ width: "100%", justifyContent: "center" }}>
             Book a free audit
           </Button>
         </div>
 
         {/* ─── 5. TWO THIN HORIZONTAL LINES WITH MONO LABELS ─── */}
         <div style={{ width: "100%", position: "relative", zIndex: 3 }}>
-          {/* Top Line 1 (1px ink at 25%) with 8px square nodes at both ends */}
+          {/* Top Line 1 (1px ink at 25%) with 10px square nodes at both ends */}
           <div
             style={{
               position: "relative",
@@ -432,9 +437,9 @@ export default function Hero() {
               style={{
                 position: "absolute",
                 left: 0,
-                top: "-3.5px",
-                width: "8px",
-                height: "8px",
+                top: "-4.5px",
+                width: "10px",
+                height: "10px",
                 background: "var(--ink)",
               }}
             />
@@ -442,9 +447,9 @@ export default function Hero() {
               style={{
                 position: "absolute",
                 right: 0,
-                top: "-3.5px",
-                width: "8px",
-                height: "8px",
+                top: "-4.5px",
+                width: "10px",
+                height: "10px",
                 background: "var(--ink)",
               }}
             />
@@ -452,6 +457,7 @@ export default function Hero() {
 
           {/* Strip between lines */}
           <div
+            className="hero-strip-bar"
             style={{
               height: "44px",
               display: "flex",
@@ -473,6 +479,7 @@ export default function Hero() {
               RELIABLE — SCALABLE — MEASURABLE
             </span>
             <span
+              className="hero-strip-item-2"
               style={{
                 fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                 fontSize: "11px",
@@ -486,7 +493,7 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Bottom Line 2 (1px ink at 25%) with 8px square nodes at both ends */}
+          {/* Bottom Line 2 (1px ink at 25%) with 10px square nodes at both ends */}
           <div
             style={{
               position: "relative",
@@ -499,9 +506,9 @@ export default function Hero() {
               style={{
                 position: "absolute",
                 left: 0,
-                top: "-3.5px",
-                width: "8px",
-                height: "8px",
+                top: "-4.5px",
+                width: "10px",
+                height: "10px",
                 background: "var(--ink)",
               }}
             />
@@ -509,9 +516,9 @@ export default function Hero() {
               style={{
                 position: "absolute",
                 right: 0,
-                top: "-3.5px",
-                width: "8px",
-                height: "8px",
+                top: "-4.5px",
+                width: "10px",
+                height: "10px",
                 background: "var(--ink)",
               }}
             />
@@ -523,6 +530,7 @@ export default function Hero() {
 
         {/* ─── 8. BIG CROSSHAIR (+) MARK (1px ink, 90px) CENTERED BELOW PANEL ─── */}
         <div
+          className="hero-crosshair"
           style={{
             position: "relative",
             width: "90px",
@@ -558,6 +566,7 @@ export default function Hero() {
         {/* ─── 5. STATIC HALFTONE BAND (Dots 3px, spacing 9px, two soft arch shapes with ink at 38% opacity, fading at top, with 8 small glyphs) ─── */}
         <div
           aria-hidden="true"
+          className="hero-halftone-band"
           style={{
             position: "absolute",
             bottom: 0,
@@ -636,6 +645,30 @@ export default function Hero() {
           ))}
         </Marquee>
       </div>
+
+      <style>{`
+        @media (max-width: 899px) {
+          .hero-headline-h1 {
+            font-size: clamp(40px, 12.5vw, 56px) !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .hero-strip-bar {
+            flex-direction: column !important;
+            height: auto !important;
+            padding: 8px 12px !important;
+            gap: 4px !important;
+            text-align: center !important;
+            justify-content: center !important;
+          }
+          .hero-halftone-band {
+            height: 120px !important;
+          }
+          .hero-crosshair {
+            margin: 16px auto 20px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

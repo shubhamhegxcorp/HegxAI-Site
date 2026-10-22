@@ -11,6 +11,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Pricing() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [mobilePlan, setMobilePlan] = useState<"starter" | "growth">("growth");
+  const [starterShowAll, setStarterShowAll] = useState(false);
+  const [growthShowAll, setGrowthShowAll] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const priceRollStarterRef = useRef<HTMLDivElement>(null);
   const priceRollGrowthRef = useRef<HTMLDivElement>(null);
@@ -63,7 +66,7 @@ export default function Pricing() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: "128px 0",
+        padding: "var(--section-py, 96px) 0",
         opacity: 0,
       }}
     >
@@ -72,30 +75,31 @@ export default function Pricing() {
 
         {/* Section Title & Optional Toggle */}
         <div
+          className="pricing-title-wrap"
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             textAlign: "center",
-            marginTop: "64px",
-            marginBottom: "64px",
+            marginTop: "var(--heading-content-gap, 40px)",
+            marginBottom: "var(--heading-content-gap, 40px)",
           }}
         >
           <h2
             id="pricing-title"
             style={{
               fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-              fontSize: "clamp(32px, 3.6vw, 56px)",
+              fontSize: "clamp(30px, 8.4vw, 56px)",
               fontWeight: 500,
               lineHeight: 1.04,
               letterSpacing: "-0.02em",
               color: "var(--ink)",
               maxWidth: "56ch",
-              margin: "0 0 32px",
+              margin: "0 0 24px",
             }}
           >
-            <span className="reveal-mask">
-              <span className="reveal-line" data-reveal-line>
+            <span className="reveal-mask" style={{ padding: "4px 0", overflow: "visible" }}>
+              <span className="reveal-line" data-reveal-line style={{ lineHeight: 1.15 }}>
                 Flexible AI solutions for every stage of growth
               </span>
             </span>
@@ -170,32 +174,84 @@ export default function Pricing() {
           )}
         </div>
 
+        {/* Mobile 2-Tab Switcher (<768px): 48px tall, square, active = ink bg / white text */}
+        <div
+          className="flex md:hidden w-full mb-4"
+          style={{
+            height: "48px",
+            background: "rgba(20,20,20,0.06)",
+            border: "1px solid var(--line)",
+            borderRadius: "var(--r-0, 0px)",
+            padding: "2px",
+            gap: "2px",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setMobilePlan("starter")}
+            style={{
+              flex: 1,
+              height: "100%",
+              borderRadius: "var(--r-0, 0px)",
+              border: "none",
+              background: mobilePlan === "starter" ? "var(--ink)" : "transparent",
+              color: mobilePlan === "starter" ? "#ffffff" : "var(--muted)",
+              fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+              fontSize: "14px",
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              transition: "all 0.25s ease",
+            }}
+          >
+            Starter
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobilePlan("growth")}
+            style={{
+              flex: 1,
+              height: "100%",
+              borderRadius: "var(--r-0, 0px)",
+              border: "none",
+              background: mobilePlan === "growth" ? "var(--ink)" : "transparent",
+              color: mobilePlan === "growth" ? "#ffffff" : "var(--muted)",
+              fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+              fontSize: "14px",
+              fontWeight: 600,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              transition: "all 0.25s ease",
+            }}
+          >
+            Growth
+          </button>
+        </div>
+
         {/* Pricing Cards Grid (Card radius 12px, aligned top) */}
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "32px",
-            alignItems: "stretch",
-          }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch"
         >
           {/* Card 1: Starter */}
           <div
+            className={`card pricing-card-mobile p-5 md:p-10 ${mobilePlan === "starter" ? "flex" : "hidden"} md:flex`}
             style={{
               background: "var(--surface)",
               border: "1px solid rgba(20,20,20,0.12)",
               borderRadius: "var(--r-card, 12px)",
-              padding: "48px 40px",
-              display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
               boxShadow: "none",
               position: "relative",
+              transition: "opacity 0.3s ease, transform 0.3s ease",
             }}
           >
             <div>
               {/* Top Bar with Reserved Height to perfectly align with Card 2 */}
               <div
+                className="pricing-top-bar"
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -221,6 +277,7 @@ export default function Pricing() {
               </div>
 
               <h3
+                className="pricing-card-title"
                 style={{
                   fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                   fontSize: "clamp(22px, 2vw, 30px)",
@@ -235,6 +292,7 @@ export default function Pricing() {
               </h3>
 
               <p
+                className="pricing-card-desc"
                 style={{
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "15px",
@@ -250,6 +308,7 @@ export default function Pricing() {
               {/* Price Slot */}
               <div
                 ref={priceRollStarterRef}
+                className="pricing-price-slot"
                 style={{
                   marginBottom: "36px",
                   paddingBottom: "28px",
@@ -282,55 +341,77 @@ export default function Pricing() {
               </div>
 
               {/* Features List */}
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <ul className="pricing-feat-list" style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: "14px" }}>
                 {[
                   "Workflow friction audit & process mapping",
                   "Custom AI agent development for primary tasks",
                   "Seamless integration with core CRM & messaging tools",
                   "Continuous reliability monitoring & error handling",
                   "Complete architectural documentation & team onboarding",
-                ].map((feat, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "12px",
-                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                      fontSize: "14px",
-                      lineHeight: 1.5,
-                      color: "var(--ink)",
-                    }}
-                  >
-                    <span
+                ].map((feat, i) => {
+                  const hideOnMobile = !starterShowAll && i >= 3;
+                  return (
+                    <li
+                      key={i}
+                      className={hideOnMobile ? "hidden md:flex" : "flex"}
                       style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        background: "rgba(20,20,20,0.06)",
+                        alignItems: "flex-start",
+                        gap: "12px",
+                        fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                        fontSize: "15px",
+                        lineHeight: 1.5,
                         color: "var(--ink)",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "9px",
-                        fontWeight: 700,
-                        flexShrink: 0,
-                        marginTop: "2px",
                       }}
                     >
-                      ✓
-                    </span>
-                    <span>{feat}</span>
-                  </li>
-                ))}
+                      <span
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          borderRadius: "50%",
+                          background: "rgba(20,20,20,0.06)",
+                          color: "var(--ink)",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "9px",
+                          fontWeight: 700,
+                          flexShrink: 0,
+                          marginTop: "3px",
+                        }}
+                      >
+                        ✓
+                      </span>
+                      <span>{feat}</span>
+                    </li>
+                  );
+                })}
               </ul>
+
+              {/* Mobile "Show all" toggle */}
+              <button
+                type="button"
+                onClick={() => setStarterShowAll(!starterShowAll)}
+                className="pricing-show-all-btn flex md:hidden items-center gap-1.5 text-xs uppercase tracking-wider font-semibold mb-6"
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: "4px 0",
+                  color: "var(--ink)",
+                  cursor: "pointer",
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                }}
+              >
+                <span>{starterShowAll ? "Show fewer" : "Show all (5)"}</span>
+                <span>{starterShowAll ? "↑" : "↓"}</span>
+              </button>
             </div>
 
             {/* CTA Button: Secondary */}
             <Button
               href="#process"
               variant="secondary"
-              style={{ width: "100%", color: "var(--ink)", borderColor: "var(--ink)" }}
+              className="btn-mobile-full"
+              style={{ width: "100%", minHeight: "52px", color: "var(--ink)", borderColor: "var(--ink)" }}
             >
               See how it works
             </Button>
@@ -338,17 +419,17 @@ export default function Pricing() {
 
           {/* Card 2: Growth (Dark Theme with RECOMMENDED Badge) */}
           <div
+            className={`card-dark pricing-card-mobile p-5 md:p-10 ${mobilePlan === "growth" ? "flex" : "hidden"} md:flex`}
             style={{
               background: "var(--ink)",
               border: "1px solid rgba(255,255,255,0.12)",
               borderRadius: "var(--r-card, 12px)",
-              padding: "48px 40px",
-              display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
               boxShadow: "none",
               position: "relative",
               overflow: "hidden",
+              transition: "opacity 0.3s ease, transform 0.3s ease",
             }}
           >
             {/* Background subtle dot texture */}
@@ -366,6 +447,7 @@ export default function Pricing() {
             <div style={{ position: "relative", zIndex: 1 }}>
               {/* Top Bar with RECOMMENDED Badge */}
               <div
+                className="pricing-top-bar"
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
@@ -406,6 +488,7 @@ export default function Pricing() {
               </div>
 
               <h3
+                className="pricing-card-title"
                 style={{
                   fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                   fontSize: "clamp(22px, 2vw, 30px)",
@@ -420,6 +503,7 @@ export default function Pricing() {
               </h3>
 
               <p
+                className="pricing-card-desc"
                 style={{
                   fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
                   fontSize: "15px",
@@ -435,6 +519,7 @@ export default function Pricing() {
               {/* Price Slot */}
               <div
                 ref={priceRollGrowthRef}
+                className="pricing-price-slot"
                 style={{
                   marginBottom: "36px",
                   paddingBottom: "28px",
@@ -467,57 +552,123 @@ export default function Pricing() {
               </div>
 
               {/* Features List */}
-              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <ul className="pricing-feat-list" style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: "14px" }}>
                 {[
                   "Full operational audit & systems architecture blueprint",
                   "Multi-agent autonomous systems with human-in-the-loop controls",
                   "Custom API integrations & legacy database synchronizations",
                   "Priority operational SLA & dedicated monitoring engineer",
                   "Quarterly automation reviews & roadmap expansion",
-                ].map((feat, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "12px",
-                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                      fontSize: "14px",
-                      lineHeight: 1.5,
-                      color: "rgba(255,255,255,0.85)",
-                    }}
-                  >
-                    <span
+                ].map((feat, i) => {
+                  const hideOnMobile = !growthShowAll && i >= 3;
+                  return (
+                    <li
+                      key={i}
+                      className={hideOnMobile ? "hidden md:flex" : "flex"}
                       style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        background: "rgba(215,253,65,0.2)",
-                        color: "#D7FD41",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "9px",
-                        fontWeight: 700,
-                        flexShrink: 0,
-                        marginTop: "2px",
+                        alignItems: "flex-start",
+                        gap: "12px",
+                        fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                        fontSize: "15px",
+                        lineHeight: 1.5,
+                        color: "rgba(255,255,255,0.85)",
                       }}
                     >
-                      ✓
-                    </span>
-                    <span>{feat}</span>
-                  </li>
-                ))}
+                      <span
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          borderRadius: "50%",
+                          background: "rgba(215,253,65,0.2)",
+                          color: "#D7FD41",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "9px",
+                          fontWeight: 700,
+                          flexShrink: 0,
+                          marginTop: "3px",
+                        }}
+                      >
+                        ✓
+                      </span>
+                      <span>{feat}</span>
+                    </li>
+                  );
+                })}
               </ul>
+
+              {/* Mobile "Show all" toggle */}
+              <button
+                type="button"
+                onClick={() => setGrowthShowAll(!growthShowAll)}
+                className="pricing-show-all-btn flex md:hidden items-center gap-1.5 text-xs uppercase tracking-wider font-semibold mb-6"
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: "4px 0",
+                  color: "#d7fd41",
+                  cursor: "pointer",
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                }}
+              >
+                <span>{growthShowAll ? "Show fewer" : "Show all (5)"}</span>
+                <span>{growthShowAll ? "↑" : "↓"}</span>
+              </button>
             </div>
 
             {/* CTA Button: Inverse */}
-            <Button href="#contact" variant="inverse" style={{ width: "100%" }}>
+            <Button
+              href="#contact"
+              variant="inverse"
+              className="btn-mobile-full"
+              style={{ width: "100%", minHeight: "52px" }}
+            >
               Book a free audit
             </Button>
           </div>
         </div>
       </SectionColumn>
+
+      <style>{`
+        @media (max-width: 767px) {
+          .pricing-title-wrap {
+            margin-top: 0px !important;
+            margin-bottom: 12px !important;
+          }
+          #pricing-title {
+            font-size: 26px !important;
+            margin-bottom: 0px !important;
+          }
+          .pricing-card-mobile {
+            padding: 20px !important;
+          }
+          .pricing-top-bar {
+            margin-bottom: 10px !important;
+          }
+          .pricing-card-title {
+            margin-bottom: 8px !important;
+            font-size: 22px !important;
+          }
+          .pricing-card-desc {
+            margin-bottom: 12px !important;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+          }
+          .pricing-price-slot {
+            margin-bottom: 14px !important;
+            padding-bottom: 12px !important;
+          }
+          .pricing-feat-list {
+            margin-bottom: 6px !important;
+            gap: 10px !important;
+          }
+          .pricing-show-all-btn {
+            margin-bottom: 12px !important;
+            min-height: 38px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

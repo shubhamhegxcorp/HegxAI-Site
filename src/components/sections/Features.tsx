@@ -1,9 +1,10 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import FeatureVisual from "./FeatureVisual";
 import { useIsMobile } from "@/lib/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,7 +16,6 @@ const FEATURES = [
     body: "Configure intelligent agents that handle repetitive tasks, answer customer queries, qualify leads, and escalate edge cases — all without human intervention.",
     agentType: "Customer Support Agent",
     tasks: ["Respond to FAQs", "Route complex tickets", "Log to CRM"],
-    status: "ACTIVE",
   },
   {
     tag: "WORKFLOW",
@@ -23,7 +23,6 @@ const FEATURES = [
     body: "Connect your tools into seamless pipelines. From inbound lead to closed deal — every step can be mapped, automated, and monitored in real-time.",
     agentType: "Sales Pipeline Workflow",
     tasks: ["Enrich lead data", "Schedule outreach", "Update Sheets"],
-    status: "ACTIVE",
   },
   {
     tag: "INTEGRATION",
@@ -31,7 +30,6 @@ const FEATURES = [
     body: "Sync data across your stack automatically. No more copy-pasting between tools — every system stays in sync without manual effort.",
     agentType: "Data Sync Integration",
     tasks: ["Bi-directional sync", "Conflict resolution", "Audit trail"],
-    status: "ACTIVE",
   },
 ];
 
@@ -41,51 +39,70 @@ export default function Features() {
   const [activeIdx, setActiveIdx] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const orbitRef = useRef<HTMLDivElement>(null);
-  const avatarNodesRef = useRef<(HTMLDivElement | null)[]>([]);
   const digitsRef = useRef<HTMLDivElement>(null);
   const leftPanelsRef = useRef<(HTMLDivElement | null)[]>([]);
   const rightPanelsRef = useRef<(HTMLDivElement | null)[]>([]);
   const stRef = useRef<ScrollTrigger | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const children = Array.from(el.children);
+      const scrollCenter = el.scrollLeft + el.clientWidth / 2;
+      let closestIdx = 0;
+      let minDiff = Infinity;
+      children.forEach((child, i) => {
+        const c = child as HTMLElement;
+        const center = c.offsetLeft + c.offsetWidth / 2;
+        const diff = Math.abs(scrollCenter - center);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIdx = i;
+        }
+      });
+      setMobileActive(closestIdx);
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollCarouselTo = (idx: number) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const children = Array.from(el.children);
+    const target = children[idx] as HTMLElement;
+    if (target) {
+      el.scrollTo({ left: target.offsetLeft - el.offsetLeft, behavior: "smooth" });
+    }
+    setMobileActive(idx);
+  };
 
   useGSAP(
     () => {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const isMobile = window.innerWidth < 768;
 
-      // 1. Continuous orbital rotation & counter-rotation to stay upright
-      if (orbitRef.current) {
-        gsap.to(orbitRef.current, {
-          rotation: 360,
-          duration: 40,
-          ease: "none",
-          repeat: -1,
-        });
-      }
-
-      avatarNodesRef.current.forEach((node) => {
-        if (node) {
-          gsap.to(node, {
-            rotation: -360,
-            duration: 40,
-            ease: "none",
-            repeat: -1,
-          });
-        }
-      });
-
       // 2. Skip pinning and scrub on mobile or reduced-motion
-      if (prefersReduced || isMobile) {
+      if (prefersReduced) {
+        leftPanelsRef.current.forEach((panel, i) => { if (panel) gsap.set(panel, { opacity: i === 0 ? 1 : 0 }); });
+        rightPanelsRef.current.forEach((panel, i) => { if (panel) gsap.set(panel, { opacity: i === 0 ? 1 : 0 }); });
+        return;
+      }
+      if (isMobile) {
         gsap.fromTo(
-          sectionRef.current,
-          { opacity: 0 },
+          ".features-mobile-card",
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
+            y: 0,
             duration: 0.8,
+            stagger: 0.15,
             ease: "power3.out",
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: "top 85%",
+              start: "top 95%",
               toggleActions: "play none none none",
             },
           }
@@ -114,7 +131,7 @@ export default function Features() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=180%",
+          end: "+=140%",
           pin: true,
           pinSpacing: true,
           scrub: 0.6,
@@ -226,6 +243,11 @@ export default function Features() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (isMobile || prefersReduced || !stRef.current) {
+      if (prefersReduced) {
+        leftPanelsRef.current.forEach((panel, i) => { if (panel) gsap.set(panel, { opacity: i === idx ? 1 : 0 }); });
+        rightPanelsRef.current.forEach((panel, i) => { if (panel) gsap.set(panel, { opacity: i === idx ? 1 : 0 }); });
+        gsap.set(digitsRef.current, { yPercent: -idx * 100 / FEATURES.length });
+      }
       setMobileActive(idx);
       return;
     }
@@ -243,19 +265,188 @@ export default function Features() {
       ref={sectionRef}
       style={{
         background: "var(--bg)",
-        padding: isMobile ? "80px 0" : "128px 0",
+        padding: "var(--section-py, 96px) 0",
         position: "relative",
       }}
     >
       <SectionColumn style={{ padding: "0 var(--col-pad, 24px)", width: "100%" }}>
         <SectionBar label="THE FEATURES" sectionId="features" />
 
+        {/* ─── MOBILE CAROUSEL (< 768px): Horizontal scroll-snap carousel ─── */}
+        <div className="flex flex-col md:hidden">
+          <div
+            ref={carouselRef}
+            className="features-carousel-container"
+            style={{
+              display: "flex",
+              overflowX: "auto",
+              scrollSnapType: "x mandatory",
+              gap: "12px",
+              paddingBottom: "4px",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+              width: "100%",
+            }}
+          >
+            {FEATURES.map((item, i) => (
+              <div
+                key={i}
+                className="features-slide"
+                style={{
+                  flex: "0 0 88%",
+                  width: "88%",
+                  scrollSnapAlign: "start",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
+              >
+                {/* Visual Card on top (min-height 200px) */}
+                <div
+                  style={{
+                    background: "var(--ink)",
+                    borderRadius: "var(--r-card, 12px)",
+                    padding: "16px",
+                    minHeight: "200px",
+                    height: "200px",
+                    position: "relative",
+                    overflow: "hidden",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      pointerEvents: "none",
+                      opacity: 0.25,
+                      maskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,0,0,1) 20%, transparent 90%)",
+                      WebkitMaskImage: "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0,0,0,1) 20%, transparent 90%)",
+                    }}
+                  >
+                    <svg width="100%" height="100%">
+                      <defs>
+                        <pattern id={`card-halftone-m-${i}`} width="10" height="10" patternUnits="userSpaceOnUse">
+                          <circle cx="5" cy="5" r="1.5" fill="#ffffff" />
+                        </pattern>
+                      </defs>
+                      <rect width="100%" height="100%" fill={`url(#card-halftone-m-${i})`} />
+                    </svg>
+                  </div>
+
+                  <div style={{ flex: 1, minHeight: 0, position: "relative", zIndex: 2 }}>
+                    <FeatureVisual index={i} />
+                  </div>
+
+                  <div style={{ position: "relative", zIndex: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span className="label-mono" style={{ color: "#d7fd41", fontSize: "11px" }}>{item.tag}</span>
+                    <span style={{ fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>{item.agentType}</span>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <h3
+                  style={{
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontSize: "18px",
+                    fontWeight: 500,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1.15,
+                    color: "var(--ink)",
+                    margin: 0,
+                  }}
+                >
+                  {item.title}
+                </h3>
+
+                {/* 2-line paragraph */}
+                <p
+                  style={{
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "14px",
+                    fontWeight: 400,
+                    lineHeight: 1.4,
+                    color: "var(--muted)",
+                    margin: 0,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {item.body}
+                </p>
+
+                {/* The 3 bullet rows collapsed into ONE line of text separated by " · " */}
+                <div
+                  style={{
+                    fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                    fontSize: "12px",
+                    color: "var(--ink)",
+                    paddingTop: "6px",
+                    borderTop: "1px solid var(--line)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    lineHeight: 1.25,
+                  }}
+                >
+                  {item.tasks.join(" · ")}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Dots under carousel (3 dots, active = ink) */}
+          <div
+            className="flex items-center justify-center gap-2"
+            style={{ marginTop: "10px", marginBottom: "12px" }}
+          >
+            {FEATURES.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => scrollCarouselTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                style={{
+                  width: mobileActive === i ? "20px" : "7px",
+                  height: "7px",
+                  borderRadius: "4px",
+                  background: mobileActive === i ? "var(--ink)" : "rgba(20,20,20,0.2)",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  transition: "all 0.25s ease",
+                }}
+              />
+            ))}
+          </div>
+
+          {/* ONE primary CTA below carousel */}
+          <div style={{ width: "100%" }}>
+            <Button
+              href="#contact"
+              variant="primary"
+              className="btn-mobile-full"
+              style={{ minHeight: "48px", width: "100%", justifyContent: "center" }}
+            >
+              Book a free audit
+            </Button>
+          </div>
+        </div>
+
+        {/* ─── DESKTOP PINNED SECTION (>= 768px) ─── */}
         <div
+          className="features-desktop-grid hidden md:grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1px 380px",
-            gap: isMobile ? "32px" : "48px",
-            marginTop: "64px",
+            gridTemplateColumns: "1fr 1px 380px",
+            gap: "48px",
+            marginTop: "var(--heading-content-gap, 40px)",
             alignItems: "stretch",
           }}
         >
@@ -298,89 +489,7 @@ export default function Features() {
               </svg>
             </div>
 
-            {/* Orbiting circles: centered bigger (160px) and vertically in the card's top half */}
-            <div
-              style={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                minHeight: "200px",
-                padding: "16px 0",
-                zIndex: 2,
-              }}
-            >
-              <div style={{ position: "relative", width: "160px", height: "160px" }}>
-                {/* Center circle */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "64px",
-                    height: "64px",
-                    borderRadius: "50%",
-                    background: "var(--accent)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 0 40px rgba(232,162,92,0.4)",
-                    zIndex: 2,
-                  }}
-                >
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 2L13.8 8.2H20L14.8 11.8L16.6 18L12 14.4L7.4 18L9.2 11.8L4 8.2H10.2L12 2Z"
-                      fill="var(--ink)"
-                    />
-                  </svg>
-                </div>
-
-                {/* Orbital ring (140px dashed ring) */}
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: "10px",
-                    borderRadius: "50%",
-                    border: "1px dashed rgba(255,255,255,0.15)",
-                  }}
-                />
-
-                {/* Rotating container for mini avatars (160px) */}
-                <div
-                  ref={orbitRef}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    borderRadius: "50%",
-                  }}
-                >
-                  {[
-                    { left: "137px", top: "67px", bg: "hsl(30, 60%, 65%)" },
-                    { left: "32px", top: "128px", bg: "hsl(70, 60%, 65%)" },
-                    { left: "32px", top: "6px", bg: "hsl(110, 60%, 65%)" },
-                  ].map((avatar, i) => (
-                    <div
-                      key={i}
-                      ref={(el) => {
-                        avatarNodesRef.current[i] = el;
-                      }}
-                      style={{
-                        position: "absolute",
-                        left: avatar.left,
-                        top: avatar.top,
-                        width: "26px",
-                        height: "26px",
-                        borderRadius: "50%",
-                        background: avatar.bg,
-                        border: "2px solid var(--ink)",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
+            <FeatureVisual index={activeIdx} />
 
             {/* Left feature details container (Desktop layered cross-fade) */}
             <div style={{ position: "relative", minHeight: "220px", zIndex: 3 }}>
@@ -436,10 +545,6 @@ export default function Features() {
                     >
                       {item.agentType}
                     </div>
-
-                    <Button href="#contact" variant="inverse" size="sm">
-                      Book a free audit
-                    </Button>
                   </div>
                 </div>
               ))}
@@ -669,6 +774,11 @@ export default function Features() {
             })()}
           </div>
         </div>
+        {!isMobile && (
+          <div className="feature-audit-cta hidden md:flex">
+            <Button href="#contact" variant="primary">Book a free audit</Button>
+          </div>
+        )}
       </SectionColumn>
     </section>
   );
