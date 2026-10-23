@@ -224,8 +224,7 @@ export default function Footer() {
           <svg
             viewBox="0 0 1200 170"
             width="100%"
-            height="auto"
-            style={{ display: "block" }}
+            style={{ display: "block", height: "auto" }}
             aria-hidden="true"
           >
             <text
