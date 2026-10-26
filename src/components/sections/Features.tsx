@@ -404,9 +404,9 @@ export default function Features() {
             ))}
           </div>
 
-          {/* Dots under carousel (3 dots, active = ink) */}
+          {/* Dots under carousel (3 dots, active = ink, 24x24px hit area with zero overlap) */}
           <div
-            className="flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-1"
             style={{ marginTop: "10px", marginBottom: "12px" }}
           >
             {FEATURES.map((_, i) => (
@@ -415,17 +415,30 @@ export default function Features() {
                 type="button"
                 onClick={() => scrollCarouselTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
+                className="features-carousel-dot"
                 style={{
-                  width: mobileActive === i ? "20px" : "7px",
-                  height: "7px",
-                  borderRadius: "4px",
-                  background: mobileActive === i ? "var(--ink)" : "rgba(20,20,20,0.2)",
+                  minWidth: "24px",
+                  minHeight: "24px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "transparent",
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  transition: "all 0.25s ease",
                 }}
-              />
+              >
+                <span
+                  style={{
+                    display: "block",
+                    width: mobileActive === i ? "20px" : "7px",
+                    height: "7px",
+                    borderRadius: "4px",
+                    background: mobileActive === i ? "var(--ink)" : "rgba(20,20,20,0.2)",
+                    transition: "all 0.25s ease",
+                  }}
+                />
+              </button>
             ))}
           </div>
 

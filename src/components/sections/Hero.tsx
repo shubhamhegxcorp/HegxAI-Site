@@ -599,6 +599,7 @@ export default function Hero() {
             height="100%"
             viewBox="0 0 1440 240"
             preserveAspectRatio="none"
+            aria-hidden="true"
             style={{ width: "100%", height: "100%", display: "block" }}
           >
             <defs>
@@ -617,14 +618,14 @@ export default function Hero() {
               fill="url(#hero-halftone-pattern)"
             />
             {/* Scattered glyph characters like Avande */}
-            <text x="120" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">?</text>
-            <text x="260" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">@</text>
-            <text x="380" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">?</text>
-            <text x="180" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">@</text>
-            <text x="1060" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">@</text>
-            <text x="1180" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">?</text>
-            <text x="1320" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">@</text>
-            <text x="1260" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.45)" fontWeight="600">?</text>
+            <text x="120" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
+            <text x="260" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
+            <text x="380" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
+            <text x="180" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
+            <text x="1060" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
+            <text x="1180" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
+            <text x="1320" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
+            <text x="1260" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
           </svg>
         </div>
       </div>
@@ -652,7 +653,7 @@ export default function Hero() {
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 color: word === "•" ? "var(--accent)" : "var(--ink)",
-                opacity: 0.4,
+                opacity: 0.7,
               }}
             >
               {word}

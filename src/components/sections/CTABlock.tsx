@@ -261,7 +261,7 @@ export default function CTABlock() {
                         fontSize: "11px",
                         fontWeight: 500,
                         letterSpacing: "0.08em",
-                        color: "rgba(20,20,20,0.45)",
+                        color: "var(--muted)",
                       }}
                     >
                       {step.num}
@@ -565,7 +565,7 @@ export default function CTABlock() {
                     style={{
                       fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                       fontSize: "11px",
-                      color: "rgba(20,20,20,0.5)",
+                      color: "var(--muted)",
                       margin: 0,
                       textAlign: "center",
                       letterSpacing: "0.02em",

@@ -134,7 +134,7 @@ export default function Footer() {
               fontWeight: 500,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.4)",
+              color: "var(--muted-dark, rgba(255,255,255,0.7))",
               display: "block",
               marginBottom: "16px",
             }}>
@@ -201,7 +201,7 @@ export default function Footer() {
               fontSize: "13px",
               fontWeight: 400,
               lineHeight: 1.6,
-              color: "rgba(255,255,255,0.35)",
+              color: "var(--muted-dark, rgba(255,255,255,0.7))",
             }}>
               Get the latest insights on AI automation, intelligent agents, workflow
               optimization, and practical strategies to help your business grow.

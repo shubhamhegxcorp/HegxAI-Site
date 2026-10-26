@@ -453,7 +453,7 @@ export default function Process() {
                   fontWeight: 600,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.45)",
+                  color: "var(--muted-dark, rgba(255,255,255,0.7))",
                   marginBottom: "4px",
                 }}
               >

@@ -6,10 +6,11 @@
   --bg: #F4EFE6;
   --surface: #FBF8F2;
   --ink: #141414;
-  --muted: rgba(20, 20, 20, 0.55);
+  --muted: rgba(20, 20, 20, 0.7);
+  --muted-dark: rgba(255, 255, 255, 0.7);
   --line: rgba(20, 20, 20, 0.1);
   --accent: #E8A25C;
-  --accent-text: #B8742A;
+  --accent-text: #975312;
   --accent-light: rgba(232, 162, 92, 0.15);
   --lime: #d7fd41;
   --lime-glow: rgba(215, 253, 65, 0.25);
@@ -200,7 +201,7 @@ h2, h3 {
 /* Dark variant */
 .section-bar-dark {
   background: var(--ink);
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.7);
   padding: 14px 24px;
   border: none;
 }
@@ -398,6 +399,31 @@ h2, h3 {
   border-radius: var(--r-card);
   border: 1px solid rgba(255,255,255,0.08);
   color: #fff;
+  --muted: rgba(255, 255, 255, 0.7);
+}
+
+/* ─── FEATURES CAROUSEL DOTS (WCAG 2.2 Target Size >= 24x24px, no overlap) ── */
+.features-carousel-dot {
+  position: relative;
+  min-width: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.features-carousel-dot::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-width: 24px;
+  min-height: 24px;
 }
 
 /* ─── SERVICE ROWS HOVER ────────────────────────────────────────────────── */

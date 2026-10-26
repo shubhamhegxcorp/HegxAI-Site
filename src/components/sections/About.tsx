@@ -90,8 +90,8 @@ export default function About() {
                 if (graySpanRef.current) {
                   gsap.fromTo(
                     graySpanRef.current,
-                    { color: "#e0ded6" },
-                    { color: "#b3b1a9", duration: 0.6, ease: "power2.out" }
+                    { color: "#8f8c83" },
+                    { color: "#757269", duration: 0.6, ease: "power2.out" }
                   );
                 }
               },
@@ -312,7 +312,7 @@ export default function About() {
                 <span
                   ref={graySpanRef}
                   className="headline-reveal-line"
-                  style={{ color: "#b3b1a9", transition: "color 0.4s ease" }}
+                  style={{ color: "#757269", transition: "color 0.4s ease" }}
                 >
                   advanced AI for modern,
                 </span>
@@ -320,7 +320,7 @@ export default function About() {
               <span className="headline-reveal-mask">
                 <span
                   className="headline-reveal-line"
-                  style={{ color: "#b3b1a9", transition: "color 0.4s ease" }}
+                  style={{ color: "#757269", transition: "color 0.4s ease" }}
                 >
                   high-growth businesses.
                 </span>

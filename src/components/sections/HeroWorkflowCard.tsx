@@ -676,7 +676,7 @@ export default function HeroWorkflowCard() {
               <span
                 style={{
                   fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                  fontSize: "9px",
+                  fontSize: "10px",
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                   color: "#141414",
@@ -1076,7 +1076,7 @@ export default function HeroWorkflowCard() {
                     fontSize: "10px",
                     fontWeight: 600,
                     letterSpacing: "0.08em",
-                    color: "rgba(255,255,255,0.45)",
+                    color: "rgba(255,255,255,0.7)",
                     textTransform: "uppercase",
                   }}
                 >
@@ -1173,8 +1173,8 @@ export default function HeroWorkflowCard() {
                     <span
                       style={{
                         fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                        fontSize: "9px",
-                        color: idx === 0 ? "#d7fd41" : "rgba(255,255,255,0.3)",
+                        fontSize: "10px",
+                        color: idx === 0 ? "#d7fd41" : "rgba(255,255,255,0.7)",
                         whiteSpace: "nowrap",
                         marginLeft: "4px",
                         flexShrink: 0,
@@ -1206,10 +1206,10 @@ export default function HeroWorkflowCard() {
                   key={chip}
                   style={{
                     fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                    fontSize: "8.5px",
+                    fontSize: "10px",
                     fontWeight: 500,
                     letterSpacing: "0.06em",
-                    color: "rgba(255,255,255,0.55)",
+                    color: "rgba(255,255,255,0.7)",
                   }}
                 >
                   {chip}
