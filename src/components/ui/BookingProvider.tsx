@@ -33,8 +33,17 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
         const cal = await getCalApi();
         cal("ui", {
           theme: "light",
-          styles: {
-            branding: { brandColor: "#141414" },
+          cssVarsPerTheme: {
+            light: {
+              "cal-brand": "#141414",
+              "cal-brand-accent": "#E8A25C",
+              "cal-text": "#141414",
+            },
+            dark: {
+              "cal-brand": "#E8A25C",
+              "cal-brand-accent": "#E8A25C",
+              "cal-text": "#ffffff",
+            },
           },
         });
         return cal;

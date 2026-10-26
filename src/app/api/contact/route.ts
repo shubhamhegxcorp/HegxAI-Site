@@ -1,4 +1,5 @@
 import { saveLead } from "@/lib/leads";
+import { escapeHtml, redactLead } from "@/lib/lead-utils";
 
 // In-memory rate limiter per IP: best-effort in serverless environments (isolated per lambda instance).
 // Migrate to Upstash / Redis with the future backend for distributed state across instances.
@@ -28,24 +29,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function redactLead(name: string, email: string): string {
-  const safeName = name ? `${name.charAt(0)}***` : "Unknown";
-  let safeEmail = "hidden";
-  if (email && email.includes("@")) {
-    const [user, domain] = email.split("@");
-    safeEmail = `${user.charAt(0)}***@${domain}`;
-  }
-  return `${safeName} <${safeEmail}>`;
-}
 
 function isOriginAllowed(origin: string | null, host: string | null): boolean {
   if (!origin) return true; // Direct non-browser requests or same-origin without Origin header

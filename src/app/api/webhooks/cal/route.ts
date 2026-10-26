@@ -1,6 +1,27 @@
 import crypto from "crypto";
 import { saveLead } from "@/lib/leads";
 
+interface CalWebhookPayload {
+  triggerEvent?: string;
+  type?: string;
+  payload?: {
+    name?: string;
+    email?: string;
+    startTime?: string;
+    start_time?: string;
+    description?: string;
+    attendees?: Array<{ name?: string; email?: string }>;
+    responses?: Record<string, { value?: string } | string | undefined>;
+  };
+}
+
+function extractResponseValue(entry: { value?: string } | string | undefined): string {
+  if (!entry) return "";
+  if (typeof entry === "string") return entry;
+  if (typeof entry === "object" && typeof entry.value === "string") return entry.value;
+  return "";
+}
+
 export async function POST(request: Request) {
   const secret = process.env.CAL_WEBHOOK_SECRET;
   if (!secret) {
@@ -49,20 +70,6 @@ export async function POST(request: Request) {
     });
   }
 
-interface CalWebhookPayload {
-  triggerEvent?: string;
-  type?: string;
-  payload?: {
-    name?: string;
-    email?: string;
-    startTime?: string;
-    start_time?: string;
-    description?: string;
-    attendees?: Array<{ name?: string; email?: string }>;
-    responses?: Record<string, { value?: string } | string | undefined>;
-  };
-}
-
   let data: CalWebhookPayload | null = null;
   try {
     data = JSON.parse(rawBody) as CalWebhookPayload;
@@ -80,13 +87,6 @@ interface CalWebhookPayload {
     const attendee = payload?.attendees?.[0] || {};
     const name = attendee?.name || payload?.name || "Cal.com Attendee";
     const email = attendee?.email || payload?.email || "";
-function extractResponseValue(entry: { value?: string } | string | undefined): string {
-  if (!entry) return "";
-  if (typeof entry === "string") return entry;
-  if (typeof entry === "object" && typeof entry.value === "string") return entry.value;
-  return "";
-}
-
     const company =
       extractResponseValue(payload?.responses?.company) ||
       extractResponseValue(payload?.responses?.organization) ||

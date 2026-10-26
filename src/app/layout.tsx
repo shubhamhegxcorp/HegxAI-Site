@@ -18,7 +18,6 @@ const anton = Anton({
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
   variable: "--font-body",
   display: "swap",
 });
