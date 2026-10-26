@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -10,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 // HARD RULE: NO invented dollar amounts, NO fake discounts
 
 export default function Pricing() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
   const [mobilePlan, setMobilePlan] = useState<"starter" | "growth">("growth");
   const [starterShowAll, setStarterShowAll] = useState(false);
@@ -619,10 +621,18 @@ export default function Pricing() {
 
             {/* CTA Button: Inverse */}
             <Button
-              href="#contact"
+              href={bookingUrl || "#contact"}
               variant="inverse"
               className="btn-mobile-full"
               style={{ width: "100%", minHeight: "52px" }}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
             >
               Book a free audit
             </Button>

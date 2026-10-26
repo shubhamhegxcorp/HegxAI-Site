@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import HeroWorkflowCard from "./HeroWorkflowCard";
 import { Button } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 import Marquee from "@/components/ui/Marquee";
 import { siteContent } from "@/content/site";
 
@@ -30,6 +31,7 @@ const MARQUEE_WORDS = [
 ];
 
 export default function Hero() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const sectionRef = useRef<HTMLElement>(null);
   const headlineLine1Ref = useRef<HTMLDivElement>(null);
   const headlineLine2Ref = useRef<HTMLDivElement>(null);
@@ -417,7 +419,20 @@ export default function Hero() {
             maxWidth: "320px",
           }}
         >
-          <Button href="#contact" variant="primary" brackets={true} style={{ width: "100%", justifyContent: "center" }}>
+          <Button
+            href={bookingUrl || "#contact"}
+            variant="primary"
+            brackets={true}
+            style={{ width: "100%", justifyContent: "center" }}
+            onClick={(e) => {
+              if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                openBooking();
+              }
+            }}
+            onPointerEnter={preloadBooking}
+            onFocus={preloadBooking}
+          >
             Book a free audit
           </Button>
         </div>

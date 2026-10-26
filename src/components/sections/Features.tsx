@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 import FeatureVisual from "./FeatureVisual";
 import { useIsMobile } from "@/lib/useIsMobile";
 
@@ -34,6 +35,7 @@ const FEATURES = [
 ];
 
 export default function Features() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const isMobile = useIsMobile();
   const [mobileActive, setMobileActive] = useState(0);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -430,10 +432,18 @@ export default function Features() {
           {/* ONE primary CTA below carousel */}
           <div style={{ width: "100%" }}>
             <Button
-              href="#contact"
+              href={bookingUrl || "#contact"}
               variant="primary"
               className="btn-mobile-full"
               style={{ minHeight: "48px", width: "100%", justifyContent: "center" }}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
             >
               Book a free audit
             </Button>
@@ -776,7 +786,20 @@ export default function Features() {
         </div>
         {!isMobile && (
           <div className="feature-audit-cta hidden md:flex">
-            <Button href="#contact" variant="primary">Book a free audit</Button>
+            <Button
+              href={bookingUrl || "#contact"}
+              variant="primary"
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
+            >
+              Book a free audit
+            </Button>
           </div>
         )}
       </SectionColumn>

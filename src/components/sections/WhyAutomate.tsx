@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { SectionBar, SectionColumn, Button, LimeTag } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -24,6 +25,7 @@ const WHY_ITEMS = [
 ];
 
 export default function WhyAutomate() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -249,7 +251,17 @@ export default function WhyAutomate() {
 
           {/* Bottom CTAs: lime tag + secondary button */}
           <div className="why-ctas-wrap" style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
-            <LimeTag href="#contact" />
+            <LimeTag
+              href={bookingUrl || "#contact"}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
+            />
 
             {/* Secondary square outline button in white */}
             <Button

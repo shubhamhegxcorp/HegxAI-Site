@@ -4,6 +4,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 ];
 
 export default function Nav() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const headerRef = useRef<HTMLElement>(null);
 
   // Line segment refs
@@ -510,10 +512,17 @@ export default function Nav() {
           {/* Row 1, Col 3: Right Button */}
           <div ref={buttonContentRef} style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
-              href="#contact"
+              href={bookingUrl || "#contact"}
               variant="primary"
               size="sm"
-              onClick={(e) => handleLinkClick(e, "#contact")}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
             >
               Book a free audit
             </Button>
@@ -749,10 +758,18 @@ export default function Nav() {
           {/* Bottom sharp ink CTA (min-height 52px, full width) */}
           <div>
             <Button
-              href="#contact"
+              href={bookingUrl || "#contact"}
               variant="primary"
               style={{ width: "100%", minHeight: "52px" }}
-              onClick={(e) => handleLinkClick(e, "#contact")}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  closeMobileMenu();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
             >
               Book a free audit
             </Button>

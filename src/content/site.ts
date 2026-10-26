@@ -54,13 +54,23 @@ export function getContactHref(): string {
   return "#contact";
 }
 
+export function getCalLink(url: string = siteContent.contact.bookingUrl): string {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    return parsed.pathname.replace(/^\/+/, "");
+  } catch {
+    return url.replace(/^https?:\/\/(www\.)?cal\.com\//i, "").replace(/^\/+/, "");
+  }
+}
+
 export const siteContent: SiteContent = {
   hero: {
     subtitle: "AI agents and workflows that run your repetitive business work.",
   },
   contact: {
-    email: "", // TODO: real email address (e.g. hello@hegxai.com)
-    bookingUrl: "", // TODO: real booking calendar URL (e.g. https://cal.com/hegxai) - opens booking CTA
+    email: "", // keep empty per task
+    bookingUrl: "https://cal.com/hegxai/free-audit",
     newsletterAction: "", // TODO: newsletter subscription endpoint (leave empty to hide form)
   },
   founder: {
@@ -75,3 +85,5 @@ export const siteContent: SiteContent = {
   socials: [], // Empty: hides social links until real social channels exist
   legal: [], // Empty: hides legal links until real policy pages exist
 };
+
+export const calLink = getCalLink(siteContent.contact.bookingUrl);

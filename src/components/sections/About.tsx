@@ -3,11 +3,13 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionBar, Button, LimeTag } from "@/components/ui/shared";
+import { useBooking } from "@/components/ui/BookingProvider";
 import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
+  const { openBooking, preloadBooking, bookingUrl } = useBooking();
   const sectionRef = useRef<HTMLElement>(null);
   const tagRef = useRef<HTMLAnchorElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
@@ -265,7 +267,18 @@ export default function About() {
         {/* ─── 3. CONTENT AREA (Height 632px starting at horizontal line, absolute coordinate grid desktop) ─── */}
         <div className="about-content-area">
           {/* ─── a) LIME TAG: size 102x144, bg #d7fd41, sans 14px BOOK / AUDIT ─── */}
-          <LimeTag tagRef={tagRef} href="#contact" />
+          <LimeTag
+            tagRef={tagRef}
+            href={bookingUrl || "#contact"}
+            onClick={(e) => {
+              if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                e.preventDefault();
+                openBooking();
+              }
+            }}
+            onPointerEnter={preloadBooking}
+            onFocus={preloadBooking}
+          />
 
           {/* ─── b) HEADLINE: left 537px, top 25px, width 560px, Inter Tight 500, 52px, lh 0.92, ls -0.03em ─── */}
           <div ref={headlineRef} className="about-headline-wrap">
@@ -367,7 +380,7 @@ export default function About() {
           {/* ─── d) CTA: left 537px, top 386px, Button variant primary height 50px ─── */}
           <div ref={ctaRef} className="about-cta-wrap">
             <Button
-              href="#contact"
+              href={bookingUrl || "#contact"}
               variant="primary"
               style={{
                 height: "50px",
@@ -375,6 +388,14 @@ export default function About() {
                 display: "inline-flex",
                 alignItems: "center",
               }}
+              onClick={(e) => {
+                if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                  e.preventDefault();
+                  openBooking();
+                }
+              }}
+              onPointerEnter={preloadBooking}
+              onFocus={preloadBooking}
             >
               Book a free audit
             </Button>

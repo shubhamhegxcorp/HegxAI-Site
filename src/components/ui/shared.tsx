@@ -237,20 +237,30 @@ export interface ButtonProps {
   brackets?: boolean;
   arrow?: string | false;
   className?: string;
-  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onPointerEnter?: (e: React.PointerEvent<HTMLElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLElement>) => void;
   style?: React.CSSProperties;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  id?: string;
 }
 
 export function Button({
   children,
-  href = "#",
+  href,
   variant = "primary",
   size = "md",
   brackets = false,
   arrow = "→",
   className = "",
   onClick,
+  onPointerEnter,
+  onFocus,
   style: propStyle,
+  type,
+  disabled = false,
+  id,
 }: ButtonProps) {
   const v = variant;
 
@@ -259,7 +269,8 @@ export function Button({
   const normalTextColor =
     propStyle?.color || (v === "primary" ? "#ffffff" : "#141414");
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement> | React.FocusEvent<HTMLAnchorElement>) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>) => {
+    if (disabled) return;
     const el = e.currentTarget;
     const wipe = el.querySelector(".btn-wipe") as HTMLElement;
     const arrowEl = el.querySelector(".btn-arrow") as HTMLElement;
@@ -286,7 +297,8 @@ export function Button({
     }
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement> | React.FocusEvent<HTMLAnchorElement>) => {
+  const handleMouseLeave = (e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>) => {
+    if (disabled) return;
     const el = e.currentTarget;
     const wipe = el.querySelector(".btn-wipe") as HTMLElement;
     const arrowEl = el.querySelector(".btn-arrow") as HTMLElement;
@@ -336,40 +348,33 @@ export function Button({
       ? "#e4ff6b"
       : "var(--ink)";
 
-  return (
-    <a
-      href={href}
-      onClick={onClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onFocus={handleMouseEnter}
-      onBlur={handleMouseLeave}
-      data-variant={v}
-      className={`btn-square ${className}`}
-      style={{
-        position: "relative",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "10px",
-        padding: isSmall ? "10px 18px" : "16px 24px",
-        borderRadius: "0px",
-        background: bgDefault,
-        border: `1px solid ${borderColorDefault}`,
-        color: textColorDefault,
-        fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-        fontSize: "13px",
-        fontWeight: 500,
-        letterSpacing: "0.04em",
-        textTransform: "uppercase",
-        textDecoration: "none",
-        cursor: "pointer",
-        whiteSpace: "nowrap",
-        overflow: brackets ? "visible" : "hidden",
-        transition: "border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
-        ...propStyle,
-      }}
-    >
+  const commonStyle: React.CSSProperties = {
+    position: "relative",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    padding: isSmall ? "10px 18px" : "16px 24px",
+    borderRadius: "0px",
+    background: bgDefault,
+    border: `1px solid ${borderColorDefault}`,
+    color: textColorDefault,
+    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+    fontSize: "13px",
+    fontWeight: 500,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    textDecoration: "none",
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.65 : 1,
+    whiteSpace: "nowrap",
+    overflow: brackets ? "visible" : "hidden",
+    transition: "border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease",
+    ...propStyle,
+  };
+
+  const innerContent = (
+    <>
       {/* Ink Wipe from bottom (0.35s) wrapped in overflow:hidden container so it never escapes */}
       <span
         aria-hidden="true"
@@ -490,9 +495,55 @@ export function Button({
           />
         </>
       )}
+    </>
+  );
+
+  if (type || !href) {
+    return (
+      <button
+        id={id}
+        type={type || "button"}
+        disabled={disabled}
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={(e) => {
+          handleMouseEnter(e);
+          onFocus?.(e);
+        }}
+        onBlur={handleMouseLeave}
+        onPointerEnter={onPointerEnter}
+        data-variant={v}
+        className={`btn-square ${className}`}
+        style={commonStyle}
+      >
+        {innerContent}
+      </button>
+    );
+  }
+
+  return (
+    <a
+      id={id}
+      href={href}
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={(e) => {
+        handleMouseEnter(e);
+        onFocus?.(e);
+      }}
+      onBlur={handleMouseLeave}
+      onPointerEnter={onPointerEnter}
+      data-variant={v}
+      className={`btn-square ${className}`}
+      style={commonStyle}
+    >
+      {innerContent}
     </a>
   );
 }
+
 
 // Keep PillButton mapped to the new square Button
 export const PillButton = Button;
@@ -502,16 +553,25 @@ export function LimeTag({
   className = "",
   style,
   tagRef,
+  onClick,
+  onPointerEnter,
+  onFocus,
 }: {
   href?: string;
   className?: string;
   style?: React.CSSProperties;
   tagRef?: React.Ref<HTMLAnchorElement>;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  onPointerEnter?: (e: React.PointerEvent<HTMLAnchorElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLAnchorElement>) => void;
 }) {
   return (
     <a
       ref={tagRef}
       href={href}
+      onClick={onClick}
+      onPointerEnter={onPointerEnter}
+      onFocus={onFocus}
       className={`about-lime-tag ${className}`}
       style={{
         display: "block",

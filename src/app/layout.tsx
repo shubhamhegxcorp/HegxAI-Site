@@ -63,6 +63,8 @@ const organizationJsonLd = {
   description: "AI agents and workflow automation for businesses",
 };
 
+import { BookingProvider } from "@/components/ui/BookingProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -84,7 +86,7 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {children}
+        <BookingProvider>{children}</BookingProvider>
       </body>
     </html>
   );
