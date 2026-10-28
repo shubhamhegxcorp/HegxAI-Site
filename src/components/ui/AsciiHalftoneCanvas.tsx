@@ -162,8 +162,8 @@ export default function AsciiHalftoneCanvas({
     const accentColor =
       customAccentColor ??
       (theme === "dark"
-        ? "rgba(215, 253, 65, 0.22)"
-        : "rgba(232, 162, 92, 0.35)");
+        ? "rgba(125, 147, 255, 0.12)"
+        : "rgba(81, 112, 255, 0.15)");
 
     const centerCrosshairColor =
       theme === "dark"

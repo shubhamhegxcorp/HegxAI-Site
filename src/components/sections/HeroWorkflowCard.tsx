@@ -38,9 +38,6 @@ export default function HeroWorkflowCard() {
   const toastLeftRef = useRef<HTMLDivElement>(null);
   const toastRightRef = useRef<HTMLDivElement>(null);
 
-  // 4 Icon Tiles refs
-  const tileRefs = useRef<(HTMLDivElement | null)[]>([]);
-
   // Workflow SVG path refs
   const inPathRefs = useRef<(SVGPathElement | null)[]>([]);
   const outPathRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -106,13 +103,13 @@ export default function HeroWorkflowCard() {
         }
       );
 
-      // Outer glow breathing: opacity 0.5 <-> 0.9, 4s cycle
+      // Outer glow breathing: opacity 0.2 <-> 0.4, 4s cycle (40% max per brand guidelines)
       if (glowRef.current) {
         gsap.fromTo(
           glowRef.current,
-          { opacity: 0.5 },
+          { opacity: 0.2 },
           {
-            opacity: 0.9,
+            opacity: 0.4,
             duration: 2,
             repeat: -1,
             yoyo: true,
@@ -121,26 +118,28 @@ export default function HeroWorkflowCard() {
         );
       }
 
-      // Icon tiles subtle floating entrance & idle
-      const validTiles = tileRefs.current.filter(Boolean) as HTMLDivElement[];
-      if (validTiles.length > 0) {
+      // Floating chips subtle floating entrance & gentle idle
+      const toastL = toastLeftRef.current;
+      const toastR = toastRightRef.current;
+      const toasts = [toastL, toastR].filter(Boolean) as HTMLDivElement[];
+      if (toasts.length > 0) {
         gsap.fromTo(
-          validTiles,
-          { scale: 0.8, opacity: 0 },
+          toasts,
+          { scale: 0.85, opacity: 0 },
           {
             scale: 1,
             opacity: 1,
             duration: 0.7,
-            stagger: 0.1,
+            stagger: 0.15,
             ease: "back.out(1.7)",
             delay: 0.5,
           }
         );
 
-        validTiles.forEach((tile, i) => {
-          gsap.to(tile, {
-            y: i % 2 === 0 ? 5 : -5,
-            duration: 3 + i * 0.7,
+        toasts.forEach((toast, i) => {
+          gsap.to(toast, {
+            y: i === 0 ? -5 : 5,
+            duration: 3 + i * 0.8,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
@@ -149,60 +148,6 @@ export default function HeroWorkflowCard() {
         });
       }
     }
-  }, []);
-
-  // ─── 2. FLOATING TOASTS (Alternating Left/Right every ~3s) ──────────
-  useEffect(() => {
-    if (isReducedMotionRef.current || (typeof window !== "undefined" && window.innerWidth < 768)) return;
-
-    const toastL = toastLeftRef.current;
-    const toastR = toastRightRef.current;
-    if (!toastL || !toastR) return;
-
-    gsap.set([toastL, toastR], { scale: 0.8, opacity: 0, pointerEvents: "none" });
-
-    let isLeftTurn = true;
-    let timer: NodeJS.Timeout | null = null;
-
-    const runToastCycle = () => {
-      if (typeof window !== "undefined" && window.innerWidth < 768) return;
-      if (!isVisibleRef.current) {
-        timer = setTimeout(runToastCycle, 2000);
-        return;
-      }
-
-      const activeToast = isLeftTurn ? toastL : toastR;
-      isLeftTurn = !isLeftTurn;
-
-      // Pop in
-      gsap.to(activeToast, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.4,
-        ease: "back.out(1.8)",
-        onComplete: () => {
-          // Hold 2.5s then pop out
-          gsap.to(activeToast, {
-            scale: 0.8,
-            opacity: 0,
-            duration: 0.35,
-            delay: 2.5,
-            ease: "power2.in",
-            onComplete: () => {
-              timer = setTimeout(runToastCycle, 1500);
-            },
-          });
-        },
-      });
-    };
-
-    // Initial delay before first toast pops
-    timer = setTimeout(runToastCycle, 1800);
-
-    return () => {
-      if (timer) clearTimeout(timer);
-      gsap.killTweensOf([toastL, toastR]);
-    };
   }, []);
 
   // ─── 3. 3D TILT FOLLOWING MOUSE & 1.5x PARALLAX ON TILES ───────────
@@ -224,14 +169,13 @@ export default function HeroWorkflowCard() {
     const quickRotateX = gsap.quickTo(panel, "rotationX", { duration: 0.5, ease: "power2.out" });
     const quickRotateY = gsap.quickTo(panel, "rotationY", { duration: 0.5, ease: "power2.out" });
 
-    // QuickTo for 1.5x parallax on icon tiles
-    const tileQuickSetters = tileRefs.current.map((tile) => {
-      if (!tile) return null;
-      return {
-        x: gsap.quickTo(tile, "x", { duration: 0.6, ease: "power2.out" }),
-        y: gsap.quickTo(tile, "y", { duration: 0.6, ease: "power2.out" }),
-      };
-    });
+    // QuickTo for subtle parallax on floating chips
+    const toastSetters = [toastLeftRef.current, toastRightRef.current]
+      .filter(Boolean)
+      .map((toast) => ({
+        x: gsap.quickTo(toast, "x", { duration: 0.6, ease: "power2.out" }),
+        y: gsap.quickTo(toast, "y", { duration: 0.6, ease: "power2.out" }),
+      }));
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!isVisibleRef.current) return;
@@ -247,23 +191,19 @@ export default function HeroWorkflowCard() {
       quickRotateY(normX * 4);
       quickRotateX(-normY * 4);
 
-      // 1.5x Parallax on tiles (up to 14px displacement)
-      tileQuickSetters.forEach((setters) => {
-        if (setters) {
-          setters.x(normX * 14);
-          setters.y(normY * 14);
-        }
+      // Subtle parallax on chips
+      toastSetters.forEach((setters) => {
+        setters.x(normX * 10);
+        setters.y(normY * 10);
       });
     };
 
     const handleMouseLeave = () => {
       quickRotateX(0);
       quickRotateY(0);
-      tileQuickSetters.forEach((setters) => {
-        if (setters) {
-          setters.x(0);
-          setters.y(0);
-        }
+      toastSetters.forEach((setters) => {
+        setters.x(0);
+        setters.y(0);
       });
     };
 
@@ -357,7 +297,7 @@ export default function HeroWorkflowCard() {
               if (actionNode) {
                 gsap.fromTo(
                   actionNode,
-                  { stroke: "#d7fd41", strokeWidth: 2, scale: 1.04, transformOrigin: "center" },
+                  { stroke: "var(--accent)", strokeWidth: 2, scale: 1.04, transformOrigin: "center" },
                   { stroke: "rgba(255,255,255,0.14)", strokeWidth: 1, scale: 1, duration: 0.45, ease: "power2.out" }
                 );
               }
@@ -432,35 +372,35 @@ export default function HeroWorkflowCard() {
         width: "100%",
       }}
     >
-      {/* ─── MAIN LIME PANEL WITH CORNER BRACKETS & 3D TILT ─── */}
+      {/* ─── MAIN ACCENT PANEL WITH CORNER BRACKETS & 3D TILT ─── */}
       <div
         ref={panelRef}
         style={{
           position: "relative",
-          background: "#d7fd41",
+          background: "var(--accent)",
           borderRadius: "var(--r-card, 12px)",
-          padding: "8px",
+          padding: "6px",
           transformStyle: "preserve-3d",
           willChange: "transform",
         }}
         className="hero-workflow-panel"
       >
-        {/* ─── FLOATING TOASTS (Positioned outside card edges, below header bar, never over text) ─── */}
-        {/* Toast Left: "Lead routed" at x: card.left - 24px, y: 96px */}
+        {/* ─── 2 MEANINGFUL FLOATING CHIPS (Clean, purposeful, no decorative icons) ─── */}
+        {/* Chip 1: "Lead routed" toast */}
         <div
           ref={toastLeftRef}
           style={{
             position: "absolute",
             left: "-24px",
-            top: "96px",
+            top: "84px",
             zIndex: 12,
-            background: "#ffffff",
+            background: "var(--ink-2)",
             borderRadius: "var(--r-pill, 999px)",
-            padding: "7px 16px 7px 10px",
+            padding: "6px 14px 6px 8px",
             alignItems: "center",
             gap: "8px",
-            boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
-            border: "1px solid rgba(20,20,20,0.06)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+            border: "1px solid var(--hairline-dark)",
             transform: "translateZ(30px)",
           }}
           className="hero-toast-item hidden md:flex"
@@ -470,8 +410,8 @@ export default function HeroWorkflowCard() {
               width: "18px",
               height: "18px",
               borderRadius: "50%",
-              background: "#d7fd41",
-              color: "#141414",
+              background: "rgba(125, 147, 255, 0.16)",
+              color: "var(--accent-on-dark)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -487,7 +427,7 @@ export default function HeroWorkflowCard() {
               fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
               fontSize: "12px",
               fontWeight: 600,
-              color: "#141414",
+              color: "#ffffff",
               letterSpacing: "0.01em",
               whiteSpace: "nowrap",
             }}
@@ -496,53 +436,58 @@ export default function HeroWorkflowCard() {
           </span>
         </div>
 
-        {/* Toast Right: "Report generated" at x: card.right - 80px, y: 140px */}
+        {/* Chip 2: "Pipeline active" status chip */}
         <div
           ref={toastRightRef}
           style={{
             position: "absolute",
-            right: "-80px",
-            top: "140px",
+            right: "-24px",
+            top: "132px",
             zIndex: 12,
-            background: "#ffffff",
+            background: "var(--ink-2)",
             borderRadius: "var(--r-pill, 999px)",
-            padding: "7px 16px 7px 10px",
+            padding: "6px 14px 6px 10px",
             alignItems: "center",
             gap: "8px",
-            boxShadow: "0 10px 28px rgba(0,0,0,0.22)",
-            border: "1px solid rgba(20,20,20,0.06)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+            border: "1px solid var(--hairline-dark)",
             transform: "translateZ(30px)",
           }}
           className="hero-toast-item hidden md:flex"
         >
           <span
             style={{
-              width: "18px",
-              height: "18px",
+              width: "8px",
+              height: "8px",
               borderRadius: "50%",
-              background: "#d7fd41",
-              color: "#141414",
+              background: "rgba(125, 147, 255, 0.2)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "10px",
-              fontWeight: 800,
-              lineHeight: 1,
             }}
           >
-            ✓
+            <span
+              style={{
+                width: "5px",
+                height: "5px",
+                borderRadius: "50%",
+                background: "var(--accent-on-dark)",
+                animation: "hero-live-pulse 1.8s ease-in-out infinite",
+              }}
+            />
           </span>
           <span
             style={{
-              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-              fontSize: "12px",
+              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+              fontSize: "11px",
               fontWeight: 600,
-              color: "#141414",
-              letterSpacing: "0.01em",
+              color: "#ffffff",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
               whiteSpace: "nowrap",
             }}
           >
-            Report generated
+            Pipeline active
           </span>
         </div>
         {/* Soft breathing outer glow (static blur 60px, opacity animated .5 <-> .9) */}
@@ -553,9 +498,9 @@ export default function HeroWorkflowCard() {
             position: "absolute",
             inset: 0,
             borderRadius: "var(--r-card, 12px)",
-            boxShadow: "0 0 60px rgba(215, 253, 65, 0.35)",
+            boxShadow: "0 0 60px color-mix(in srgb, var(--accent) 25%, transparent)",
             pointerEvents: "none",
-            opacity: 0.5,
+            opacity: 0.4,
             zIndex: -1,
           }}
         />
@@ -610,12 +555,12 @@ export default function HeroWorkflowCard() {
           }}
         />
 
-        {/* ─── INNER DARK CARD (#1c1c1c, ~560x400 desktop, ~440x360 tablet) ─── */}
+        {/* ─── INNER DARK CARD (--ink-2, ~560x400 desktop, ~440x360 tablet) ─── */}
         <div
           style={{
             width: "100%",
             height: "100%",
-            background: "#1c1c1c",
+            background: "var(--ink-2)",
             borderRadius: "var(--r-card, 12px)",
             padding: "14px 16px",
             display: "flex",
@@ -624,6 +569,7 @@ export default function HeroWorkflowCard() {
             boxSizing: "border-box",
             overflow: "hidden",
             position: "relative",
+            border: "1px solid var(--hairline-dark)",
           }}
         >
           {/* ─── 1. WHITE HEADER BAR ─── */}
@@ -655,7 +601,7 @@ export default function HeroWorkflowCard() {
             </span>
             <div
               style={{
-                background: "#d7fd41",
+                background: "var(--accent-strong)",
                 borderRadius: "var(--r-pill, 999px)",
                 padding: "2px 8px",
                 display: "flex",
@@ -668,7 +614,7 @@ export default function HeroWorkflowCard() {
                   width: "5px",
                   height: "5px",
                   borderRadius: "50%",
-                  background: "#141414",
+                  background: "#ffffff",
                   display: "inline-block",
                   animation: "hero-live-pulse 1.8s ease-in-out infinite",
                 }}
@@ -679,7 +625,7 @@ export default function HeroWorkflowCard() {
                   fontSize: "10px",
                   fontWeight: 700,
                   letterSpacing: "0.08em",
-                  color: "#141414",
+                  color: "#ffffff",
                   lineHeight: 1,
                 }}
               >
@@ -688,11 +634,11 @@ export default function HeroWorkflowCard() {
             </div>
           </div>
 
-          {/* ─── 2. MAIN BODY (LEFT 56% WORKFLOW + RIGHT 44% EVENT FEED) ─── */}
+          {/* ─── 2. MAIN BODY (LEFT REBALANCED WORKFLOW + RIGHT EVENT FEED) ─── */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1.27fr 1px 1fr",
+              gridTemplateColumns: "1.15fr 1px 1fr",
               gap: "14px",
               alignItems: "stretch",
               flex: 1,
@@ -714,7 +660,7 @@ export default function HeroWorkflowCard() {
               }}
             >
               <svg
-                viewBox="0 0 420 230"
+                viewBox="0 0 320 240"
                 width="100%"
                 height="100%"
                 style={{ display: "block", overflow: "visible" }}
@@ -727,7 +673,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[0] = el;
                     }}
-                    d="M 126 37 C 155 37, 165 115, 178 115"
+                    d="M 110 36 C 124 36, 126 120, 136 120"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -737,7 +683,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[1] = el;
                     }}
-                    d="M 126 115 C 148 115, 162 115, 178 115"
+                    d="M 110 120 L 136 120"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -747,7 +693,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       inPathRefs.current[2] = el;
                     }}
-                    d="M 126 193 C 155 193, 165 115, 178 115"
+                    d="M 110 204 C 124 204, 126 120, 136 120"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -759,7 +705,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[0] = el;
                     }}
-                    d="M 242 115 C 255 115, 265 37, 294 37"
+                    d="M 184 120 C 194 120, 196 36, 210 36"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -769,7 +715,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[1] = el;
                     }}
-                    d="M 242 115 C 258 115, 272 115, 294 115"
+                    d="M 184 120 L 210 120"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -779,7 +725,7 @@ export default function HeroWorkflowCard() {
                     ref={(el) => {
                       outPathRefs.current[2] = el;
                     }}
-                    d="M 242 115 C 255 115, 265 193, 294 193"
+                    d="M 184 120 C 194 120, 196 204, 210 204"
                     fill="none"
                     stroke="rgba(255,255,255,0.25)"
                     strokeWidth="1"
@@ -787,21 +733,21 @@ export default function HeroWorkflowCard() {
                   />
                 </g>
 
-                {/* ─── COLUMN 1: INPUT NODES (124x34, dark #262626, mono 11px label) ─── */}
+                {/* ─── COLUMN 1: INPUT NODES (106x44, dark #262626, mono 10.5-11px label) ─── */}
                 <g>
                   {/* Node 1: NEW LEAD */}
-                  <g transform="translate(2, 20)">
+                  <g transform="translate(4, 14)">
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
                       fontSize="11"
@@ -814,21 +760,21 @@ export default function HeroWorkflowCard() {
                   </g>
 
                   {/* Node 2: INBOUND EMAIL */}
-                  <g transform="translate(2, 98)">
+                  <g transform="translate(4, 98)">
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
-                      fontSize="11"
+                      fontSize="10.5"
                       fontWeight="500"
                       letterSpacing="0.02em"
                       textAnchor="middle"
@@ -838,18 +784,18 @@ export default function HeroWorkflowCard() {
                   </g>
 
                   {/* Node 3: FORM SUBMIT */}
-                  <g transform="translate(2, 176)">
+                  <g transform="translate(4, 182)">
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
                       fontSize="11"
@@ -862,12 +808,12 @@ export default function HeroWorkflowCard() {
                   </g>
                 </g>
 
-                {/* ─── COLUMN 2: CENTER AI AGENT (64px circle, lime ring, spark, halo, 10px mono label) ─── */}
-                <g transform="translate(210, 115)">
-                  {/* Soft pulsing halo (scale 1 -> 1.25, opacity .5 -> 0, 2s loop) */}
+                {/* ─── COLUMN 2: CENTER AI AGENT (centered at 160, 120) ─── */}
+                <g transform="translate(160, 120)">
+                  {/* Soft pulsing halo */}
                   <circle
-                    r="32"
-                    fill="rgba(215,253,65,0.3)"
+                    r="30"
+                    fill="color-mix(in srgb, var(--accent) 20%, transparent)"
                     style={{
                       transformBox: "fill-box",
                       transformOrigin: "center",
@@ -878,16 +824,16 @@ export default function HeroWorkflowCard() {
                   {/* Packet impact flash halo */}
                   <circle
                     ref={agentHaloRef}
-                    r="32"
-                    fill="rgba(215,253,65,0.4)"
+                    r="30"
+                    fill="color-mix(in srgb, var(--accent) 35%, transparent)"
                     style={{ transformBox: "fill-box", transformOrigin: "center", opacity: 0 }}
                   />
 
                   {/* Slowly rotating dashed ring (20s) */}
                   <circle
-                    r="37"
+                    r="33"
                     fill="none"
-                    stroke="rgba(215,253,65,0.4)"
+                    stroke="color-mix(in srgb, var(--accent) 35%, transparent)"
                     strokeWidth="1"
                     strokeDasharray="4 4"
                     style={{
@@ -897,28 +843,32 @@ export default function HeroWorkflowCard() {
                     }}
                   />
 
-                  {/* Inner Dark Circle with 2px Lime Ring */}
+                  {/* Inner Dark Circle with 2px Accent Ring */}
                   <circle
-                    r="28"
-                    fill="#1c1c1c"
-                    stroke="#d7fd41"
+                    r="24"
+                    fill="#141414"
+                    stroke="var(--accent)"
                     strokeWidth="2"
                   />
 
-                  {/* Spark / Asterisk Icon ✦ */}
-                  <path
-                    d="M 0 -8 L 2 -2 L 8 0 L 2 2 L 0 8 L -2 2 L -8 0 L -2 -2 Z"
-                    fill="#d7fd41"
+                  {/* Centre Logo Mark (Sparkle) */}
+                  <image
+                    href="/brand/hegxai-mark-color.png"
+                    x="-16"
+                    y="-16"
+                    width="32"
+                    height="32"
+                    preserveAspectRatio="xMidYMid meet"
                   />
 
-                  {/* Agent Tag (10px IBM Plex Mono 500) */}
+                  {/* Agent Tag (10px IBM Plex Mono 600) */}
                   <text
                     x="0"
-                    y="54"
-                    fill="#d7fd41"
+                    y="40"
+                    fill="var(--accent-on-dark)"
                     fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
                     fontSize="10"
-                    fontWeight="500"
+                    fontWeight="600"
                     letterSpacing="0.04em"
                     textAnchor="middle"
                   >
@@ -926,29 +876,29 @@ export default function HeroWorkflowCard() {
                   </text>
                 </g>
 
-                {/* ─── COLUMN 3: ACTION NODES (124x34, dark #262626, mono 11px label) ─── */}
+                {/* ─── COLUMN 3: ACTION NODES (106x44, dark #262626, mono 10-10.5px label) ─── */}
                 <g>
                   {/* Node 1: ROUTE TO OWNER */}
                   <g
-                    transform="translate(294, 20)"
+                    transform="translate(210, 14)"
                     ref={(el) => {
                       actionNodeRefs.current[0] = el;
                     }}
                   >
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
-                      fontSize="11"
+                      fontSize="10"
                       fontWeight="500"
                       letterSpacing="0.02em"
                       textAnchor="middle"
@@ -959,25 +909,25 @@ export default function HeroWorkflowCard() {
 
                   {/* Node 2: DRAFT REPLY */}
                   <g
-                    transform="translate(294, 98)"
+                    transform="translate(210, 98)"
                     ref={(el) => {
                       actionNodeRefs.current[1] = el;
                     }}
                   >
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
-                      fontSize="11"
+                      fontSize="10.5"
                       fontWeight="500"
                       letterSpacing="0.03em"
                       textAnchor="middle"
@@ -988,25 +938,25 @@ export default function HeroWorkflowCard() {
 
                   {/* Node 3: UPDATE CRM */}
                   <g
-                    transform="translate(294, 176)"
+                    transform="translate(210, 182)"
                     ref={(el) => {
                       actionNodeRefs.current[2] = el;
                     }}
                   >
                     <rect
-                      width="124"
-                      height="34"
+                      width="106"
+                      height="44"
                       rx="6"
                       fill="#262626"
                       stroke="rgba(255,255,255,0.12)"
                       strokeWidth="1"
                     />
                     <text
-                      x="62"
-                      y="21.5"
+                      x="53"
+                      y="26.5"
                       fill="rgba(255,255,255,0.88)"
                       fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)"
-                      fontSize="11"
+                      fontSize="10.5"
                       fontWeight="500"
                       letterSpacing="0.04em"
                       textAnchor="middle"
@@ -1016,7 +966,7 @@ export default function HeroWorkflowCard() {
                   </g>
                 </g>
 
-                {/* ─── PACKETS (5px lime dots with glow traveling along paths) ─── */}
+                {/* ─── PACKETS (5px accent dots with glow traveling along paths) ─── */}
                 <g>
                   {[0, 1, 2, 3].map((i) => (
                     <circle
@@ -1025,12 +975,12 @@ export default function HeroWorkflowCard() {
                         packetCircleRefs.current[i] = el;
                       }}
                       r="2.5"
-                      fill="#d7fd41"
+                      fill="var(--accent)"
                       stroke="#141414"
                       strokeWidth="0.5"
                       style={{
                         opacity: 0,
-                        filter: "drop-shadow(0 0 4px #d7fd41)",
+                        filter: "drop-shadow(0 0 4px var(--accent))",
                         pointerEvents: "none",
                       }}
                     />
@@ -1049,7 +999,7 @@ export default function HeroWorkflowCard() {
               }}
             />
 
-            {/* ─── RIGHT: EVENT FEED (4 ROWS, 44% WIDTH, FIXED 40PX HEIGHT, 8PX GAP) ─── */}
+            {/* ─── RIGHT: EVENT FEED (4 ROWS, EVENLY SPACED, NO TRUNCATION) ─── */}
             <div
               style={{
                 display: "flex",
@@ -1087,17 +1037,17 @@ export default function HeroWorkflowCard() {
                     width: "4px",
                     height: "4px",
                     borderRadius: "50%",
-                    background: "#d7fd41",
+                    background: "var(--accent)",
                   }}
                 />
               </div>
 
-              {/* 4 Event Rows: fixed 44px height, 8px gap, evenly spaced, text 13px (3 rows on mobile) */}
+              {/* 4 Event Rows: evenly spaced, text 12.5px, check 9.5px, timestamp "now" / "just now" */}
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "8px",
+                  gap: "6px",
                   flex: 1,
                   justifyContent: "space-between",
                 }}
@@ -1110,25 +1060,25 @@ export default function HeroWorkflowCard() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
-                      gap: "8px",
-                      height: "44px",
+                      gap: "6px",
+                      height: "42px",
                       padding: "0 8px",
                       borderRadius: "var(--r-0, 0px)",
                       background: idx === 0 ? "rgba(255,255,255,0.04)" : "transparent",
-                      border: idx === 0 ? "1px solid rgba(215,253,65,0.18)" : "1px solid transparent",
+                      border: idx === 0 ? "1px solid color-mix(in srgb, var(--accent) 30%, transparent)" : "1px solid transparent",
                       animation: row.isNew ? "hero-feed-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards" : undefined,
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
-                      {/* Icon: spinning ring for 0.6s or lime check */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "7px", minWidth: 0, flex: 1 }}>
+                      {/* Icon: spinning ring for 0.6s or accent check */}
                       {row.isNew ? (
                         <span
                           style={{
                             width: "14px",
                             height: "14px",
                             borderRadius: "50%",
-                            border: "1.5px solid rgba(215,253,65,0.3)",
-                            borderTopColor: "#d7fd41",
+                            border: "1.5px solid color-mix(in srgb, var(--accent) 30%, transparent)",
+                            borderTopColor: "var(--accent)",
                             animation: "hero-icon-spin 0.6s linear infinite",
                             flexShrink: 0,
                           }}
@@ -1139,12 +1089,12 @@ export default function HeroWorkflowCard() {
                             width: "14px",
                             height: "14px",
                             borderRadius: "50%",
-                            background: "#d7fd41",
-                            color: "#141414",
+                            background: "rgba(125, 147, 255, 0.16)",
+                            color: "var(--accent-on-dark)",
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            fontSize: "8.5px",
+                            fontSize: "9.5px",
                             fontWeight: 800,
                             lineHeight: 1,
                             flexShrink: 0,
@@ -1157,7 +1107,7 @@ export default function HeroWorkflowCard() {
                       <span
                         style={{
                           fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                          fontSize: "13px",
+                          fontSize: "12.5px",
                           fontWeight: idx === 0 ? 600 : 400,
                           color: idx === 0 ? "#ffffff" : "rgba(255,255,255,0.72)",
                           whiteSpace: "nowrap",
@@ -1169,18 +1119,18 @@ export default function HeroWorkflowCard() {
                       </span>
                     </div>
 
-                    {/* Timestamp: "just now" / "moments ago" (NO numbers) */}
+                    {/* Timestamp: "now" / "just now" */}
                     <span
                       style={{
                         fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                         fontSize: "10px",
-                        color: idx === 0 ? "#d7fd41" : "rgba(255,255,255,0.7)",
+                        color: idx === 0 ? "var(--accent-on-dark)" : "rgba(255,255,255,0.7)",
                         whiteSpace: "nowrap",
                         marginLeft: "4px",
                         flexShrink: 0,
                       }}
                     >
-                      {idx === 0 ? "just now" : "moments ago"}
+                      {idx === 0 ? "now" : "just now"}
                     </span>
                   </div>
                 ))}
@@ -1217,7 +1167,7 @@ export default function HeroWorkflowCard() {
               ))}
             </div>
 
-            {/* 12-Segment Progress Bar (loops fill with lime, 6s) */}
+            {/* 12-Segment Progress Bar (loops fill with accent, 6s) */}
             <div
               style={{
                 display: "flex",
@@ -1234,7 +1184,7 @@ export default function HeroWorkflowCard() {
                     width: "8px",
                     height: "3px",
                     borderRadius: "var(--r-0, 0px)",
-                    background: i <= progressStep ? "#d7fd41" : "rgba(255,255,255,0.12)",
+                    background: i <= progressStep ? "var(--accent)" : "rgba(255,255,255,0.12)",
                     transition: "background 0.2s ease",
                   }}
                 />
@@ -1243,120 +1193,6 @@ export default function HeroWorkflowCard() {
           </div>
         </div>
 
-        {/* ─── 4 DARK ROUNDED ICON TILES (56px, radius 8, with 1.5x parallax) ─── */}
-        {/* Tile 1: Top-Left (Arrow Up Right) */}
-        <div
-          ref={(el) => {
-            tileRefs.current[0] = el;
-          }}
-          style={{
-            position: "absolute",
-            top: "26px",
-            left: "-72px",
-            width: "56px",
-            height: "56px",
-            background: "#1c1c1c",
-            borderRadius: "var(--r-card, 12px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#d7fd41",
-            fontSize: "18px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            zIndex: 6,
-          }}
-          className="hero-tile-1 hidden sm:flex"
-        >
-          ↗
-        </div>
-
-        {/* Tile 2: Top-Right (Spark / Asterisk) */}
-        <div
-          ref={(el) => {
-            tileRefs.current[1] = el;
-          }}
-          style={{
-            position: "absolute",
-            top: "34px",
-            right: "-72px",
-            width: "56px",
-            height: "56px",
-            background: "#1c1c1c",
-            borderRadius: "var(--r-card, 12px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#e8a25c",
-            fontSize: "20px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            zIndex: 6,
-          }}
-          className="hero-tile-2 hidden sm:flex"
-        >
-          ✦
-        </div>
-
-        {/* Tile 3: Bottom-Left (Cube icon) */}
-        <div
-          ref={(el) => {
-            tileRefs.current[2] = el;
-          }}
-          style={{
-            position: "absolute",
-            bottom: "-22px",
-            left: "-52px",
-            width: "56px",
-            height: "56px",
-            background: "#1c1c1c",
-            borderRadius: "var(--r-card, 12px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "rgba(255,255,255,0.8)",
-            fontSize: "18px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            zIndex: 6,
-          }}
-          className="hero-tile-3 hidden sm:flex"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-            <line x1="12" y1="22.08" x2="12" y2="12" />
-          </svg>
-        </div>
-
-        {/* Tile 4: Bottom-Right (Chevron / C-mark) */}
-        <div
-          ref={(el) => {
-            tileRefs.current[3] = el;
-          }}
-          style={{
-            position: "absolute",
-            bottom: "-22px",
-            right: "-52px",
-            width: "56px",
-            height: "56px",
-            background: "#1c1c1c",
-            borderRadius: "var(--r-card, 12px)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#d7fd41",
-            fontSize: "18px",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
-            zIndex: 6,
-          }}
-          className="hero-tile-4 hidden sm:flex"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M16 18l-6-6 6-6" />
-          </svg>
-        </div>
       </div>
 
       {/* ─── SCOPED KEYFRAME ANIMATIONS ─── */}
@@ -1393,26 +1229,6 @@ export default function HeroWorkflowCard() {
             display: none !important;
           }
           .hero-feed-row:nth-child(n+4) {
-            display: none !important;
-          }
-          .hero-tile-1 {
-            display: flex !important;
-            width: 40px !important;
-            height: 40px !important;
-            top: -20px !important;
-            left: -8px !important;
-            font-size: 15px !important;
-          }
-          .hero-tile-2 {
-            display: flex !important;
-            width: 40px !important;
-            height: 40px !important;
-            top: -20px !important;
-            right: -8px !important;
-            font-size: 16px !important;
-          }
-          .hero-tile-3,
-          .hero-tile-4 {
             display: none !important;
           }
         }

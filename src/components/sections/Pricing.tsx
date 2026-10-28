@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionBar, SectionColumn, Button } from "@/components/ui/shared";
+import StarShape from "@/components/ui/StarShape";
 import { useBooking } from "@/components/ui/BookingProvider";
 import { siteContent } from "@/content/site";
 
@@ -369,19 +370,15 @@ export default function Pricing() {
                         style={{
                           width: "16px",
                           height: "16px",
-                          borderRadius: "50%",
-                          background: "rgba(20,20,20,0.06)",
-                          color: "var(--ink)",
                           display: "inline-flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: "9px",
-                          fontWeight: 700,
                           flexShrink: 0,
                           marginTop: "3px",
                         }}
+                        aria-hidden="true"
                       >
-                        ✓
+                        <StarShape size={8} variant="fill" color="var(--accent-text)" />
                       </span>
                       <span>{feat}</span>
                     </li>
@@ -423,8 +420,8 @@ export default function Pricing() {
           <div
             className={`card-dark pricing-card-mobile p-5 md:p-10 ${mobilePlan === "growth" ? "flex" : "hidden"} md:flex`}
             style={{
-              background: "var(--ink)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: "var(--ink-2)",
+              border: "1px solid var(--hairline-dark)",
               borderRadius: "var(--r-card, 12px)",
               flexDirection: "column",
               justifyContent: "space-between",
@@ -474,8 +471,8 @@ export default function Pricing() {
                 {/* RECOMMENDED Badge */}
                 <span
                   style={{
-                    background: "#D7FD41",
-                    color: "#141414",
+                    background: "var(--accent-strong)",
+                    color: "#ffffff",
                     fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
                     fontSize: "11px",
                     fontWeight: 600,
@@ -580,19 +577,15 @@ export default function Pricing() {
                         style={{
                           width: "16px",
                           height: "16px",
-                          borderRadius: "50%",
-                          background: "rgba(215,253,65,0.2)",
-                          color: "#D7FD41",
                           display: "inline-flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontSize: "9px",
-                          fontWeight: 700,
                           flexShrink: 0,
                           marginTop: "3px",
                         }}
+                        aria-hidden="true"
                       >
-                        ✓
+                        <StarShape size={8} variant="fill" color="var(--accent-on-dark)" />
                       </span>
                       <span>{feat}</span>
                     </li>
@@ -609,7 +602,7 @@ export default function Pricing() {
                   background: "none",
                   border: "none",
                   padding: "4px 0",
-                  color: "#d7fd41",
+                  color: "var(--accent-on-dark)",
                   cursor: "pointer",
                   fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                 }}
@@ -619,10 +612,10 @@ export default function Pricing() {
               </button>
             </div>
 
-            {/* CTA Button: Inverse */}
+            {/* CTA Button: Accent */}
             <Button
               href={bookingUrl || "#contact"}
-              variant="inverse"
+              variant="accent"
               className="btn-mobile-full"
               style={{ width: "100%", minHeight: "52px" }}
               onClick={(e) => {

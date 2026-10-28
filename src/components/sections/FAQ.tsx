@@ -201,20 +201,20 @@ export default function FAQ() {
                         minWidth: "40px",
                         minHeight: "40px",
                         borderRadius: "50%",
-                        border: "1px solid var(--line)",
+                        border: openIdx === i ? "1px solid var(--accent-text)" : "1px solid var(--line)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                         fontSize: "18px",
                         color: "var(--ink)",
-                        transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.2s ease",
+                        transition: "transform 0.35s cubic-bezier(0.16,1,0.3,1), background 0.2s ease, border-color 0.2s ease",
                         transform: openIdx === i ? "rotate(45deg)" : "rotate(0deg)",
-                        background: openIdx === i ? "var(--ink)" : "transparent",
+                        background: openIdx === i ? "var(--accent-text)" : "transparent",
                       }}
                       aria-hidden
                     >
-                      <span style={{ color: openIdx === i ? "var(--bg)" : "var(--ink)", lineHeight: 1 }}>+</span>
+                      <span style={{ color: openIdx === i ? "#ffffff" : "var(--ink)", lineHeight: 1 }}>+</span>
                     </span>
                   </button>
 

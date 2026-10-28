@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getSectionNumber } from "@/content/site";
+import StarShape from "@/components/ui/StarShape";
 
 gsap.registerPlugin(ScrollTrigger);
 export interface SectionBarProps {
@@ -12,6 +13,7 @@ export interface SectionBarProps {
   sectionId?: string;
   theme?: "light" | "dark";
   showLine?: boolean;
+  showNodes?: boolean;
   headingId?: string;
   inset?: number | string;
   height?: number | string;
@@ -28,6 +30,7 @@ export function SectionBar({
   sectionId,
   theme = "light",
   showLine,
+  showNodes = false,
   inset = 0,
   height = 34,
   padding = "0 12px",
@@ -72,7 +75,7 @@ export function SectionBar({
 
   return (
     <div style={{ position: "relative", width: "100%", marginBottom: mbVal, ...style }}>
-      {/* Full-width thin horizontal line with square nodes at ends (optional) */}
+      {/* Full-width thin horizontal line with optional square nodes at ends */}
       {shouldShowLine && (
         <div
           className="section-bar-line"
@@ -84,28 +87,32 @@ export function SectionBar({
             marginBottom: "12px",
           }}
         >
-          {/* Left node (at x=40px from viewport edge desktop, 16px mobile) */}
-          <span
-            style={{
-              position: "absolute",
-              left: "var(--section-node-edge, 40px)",
-              top: "-4.5px",
-              width: "10px",
-              height: "10px",
-              background: isDark ? "#ffffff" : "#2b2b2b",
-            }}
-          />
-          {/* Right node (at x=40px from viewport edge desktop, 16px mobile) */}
-          <span
-            style={{
-              position: "absolute",
-              right: "var(--section-node-edge, 40px)",
-              top: "-4.5px",
-              width: "10px",
-              height: "10px",
-              background: isDark ? "#ffffff" : "#2b2b2b",
-            }}
-          />
+          {showNodes && (
+            <>
+              {/* Left node (at x=40px from viewport edge desktop, 16px mobile) */}
+              <span
+                style={{
+                  position: "absolute",
+                  left: "var(--section-node-edge, 40px)",
+                  top: "-4.5px",
+                  width: "10px",
+                  height: "10px",
+                  background: isDark ? "#ffffff" : "#2b2b2b",
+                }}
+              />
+              {/* Right node (at x=40px from viewport edge desktop, 16px mobile) */}
+              <span
+                style={{
+                  position: "absolute",
+                  right: "var(--section-node-edge, 40px)",
+                  top: "-4.5px",
+                  width: "10px",
+                  height: "10px",
+                  background: isDark ? "#ffffff" : "#2b2b2b",
+                }}
+              />
+            </>
+          )}
         </div>
       )}
 
@@ -130,6 +137,9 @@ export function SectionBar({
         <span
           id={headingId}
           style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
             fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
             fontWeight: 500,
             fontSize: "var(--section-bar-fz, 13px)",
@@ -138,6 +148,7 @@ export function SectionBar({
             color: "#ffffff",
           }}
         >
+          <StarShape size={10} variant="fill" color="var(--bg)" />
           {label}
         </span>
         {displayNum && (
@@ -232,7 +243,7 @@ export function ScrollReveal({ children, className = "", delay = 0 }: ScrollReve
 export interface ButtonProps {
   children: React.ReactNode;
   href?: string;
-  variant?: "primary" | "secondary" | "inverse";
+  variant?: "primary" | "secondary" | "inverse" | "accent";
   size?: "sm" | "md";
   brackets?: boolean;
   arrow?: string | false;
@@ -267,7 +278,8 @@ export function Button({
   const isSmall = size === "sm";
 
   const normalTextColor =
-    propStyle?.color || (v === "primary" ? "#ffffff" : "#141414");
+    propStyle?.color ||
+    (v === "primary" ? "var(--bg, #F4EFE6)" : v === "accent" ? "#ffffff" : "#141414");
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLElement> | React.FocusEvent<HTMLElement>) => {
     if (disabled) return;
@@ -279,10 +291,10 @@ export function Button({
     if (wipe) wipe.style.transform = "translateY(0%)";
     if (arrowEl) {
       arrowEl.style.transform = arrow === "↑" ? "translateY(-3px)" : "translateX(4px)";
-      if (v === "secondary") arrowEl.style.color = "#ffffff";
+      if (v === "secondary" || v === "inverse" || v === "accent") arrowEl.style.color = "#ffffff";
     }
-    if (text && v === "secondary") {
-      text.style.color = "#ffffff";
+    if (text) {
+      if (v === "secondary" || v === "inverse" || v === "accent") text.style.color = "#ffffff";
     }
 
     if (brackets) {
@@ -329,7 +341,9 @@ export function Button({
     v === "primary"
       ? "var(--ink)"
       : v === "inverse"
-      ? "var(--lime)"
+      ? "var(--bg)"
+      : v === "accent"
+      ? "var(--accent-strong)"
       : "transparent";
 
   const textColorDefault = normalTextColor;
@@ -338,14 +352,18 @@ export function Button({
     v === "primary"
       ? "var(--ink)"
       : v === "inverse"
-      ? "var(--lime)"
+      ? "var(--bg)"
+      : v === "accent"
+      ? "var(--accent-strong)"
       : "var(--ink)";
 
   const wipeBg =
     v === "primary"
-      ? "#262626"
+      ? "var(--accent-strong)"
       : v === "inverse"
-      ? "#e4ff6b"
+      ? "var(--accent)"
+      : v === "accent"
+      ? "var(--accent-deep)"
       : "var(--ink)";
 
   const commonStyle: React.CSSProperties = {
@@ -405,7 +423,7 @@ export function Button({
         style={{
           position: "relative",
           zIndex: 1,
-          color: propStyle?.color || (v === "primary" ? "#ffffff" : "#141414"),
+          color: normalTextColor,
           transition: "color 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
@@ -420,7 +438,7 @@ export function Button({
             position: "relative",
             zIndex: 1,
             display: "inline-block",
-            color: propStyle?.color || (v === "primary" ? "#ffffff" : "#141414"),
+            color: normalTextColor,
             transition:
               "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
             lineHeight: 1,
@@ -441,8 +459,8 @@ export function Button({
               left: "-2px",
               width: "10px",
               height: "10px",
-              borderTop: "1.5px solid var(--ink)",
-              borderLeft: "1.5px solid var(--ink)",
+              borderTop: "1.5px solid var(--accent-text)",
+              borderLeft: "1.5px solid var(--accent-text)",
               pointerEvents: "none",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
               transform: "translate(-2px, -2px)",
@@ -456,8 +474,8 @@ export function Button({
               right: "-2px",
               width: "10px",
               height: "10px",
-              borderTop: "1.5px solid var(--ink)",
-              borderRight: "1.5px solid var(--ink)",
+              borderTop: "1.5px solid var(--accent-text)",
+              borderRight: "1.5px solid var(--accent-text)",
               pointerEvents: "none",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
               transform: "translate(2px, -2px)",
@@ -471,8 +489,8 @@ export function Button({
               left: "-2px",
               width: "10px",
               height: "10px",
-              borderBottom: "1.5px solid var(--ink)",
-              borderLeft: "1.5px solid var(--ink)",
+              borderBottom: "1.5px solid var(--accent-text)",
+              borderLeft: "1.5px solid var(--accent-text)",
               pointerEvents: "none",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
               transform: "translate(-2px, 2px)",
@@ -486,8 +504,8 @@ export function Button({
               right: "-2px",
               width: "10px",
               height: "10px",
-              borderBottom: "1.5px solid var(--ink)",
-              borderRight: "1.5px solid var(--ink)",
+              borderBottom: "1.5px solid var(--accent-text)",
+              borderRight: "1.5px solid var(--accent-text)",
               pointerEvents: "none",
               transition: "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
               transform: "translate(2px, 2px)",
@@ -548,8 +566,9 @@ export function Button({
 // Keep PillButton mapped to the new square Button
 export const PillButton = Button;
 
-export function LimeTag({
+export function StickyTag({
   href = "#contact",
+  label = "Book a free audit",
   className = "",
   style,
   tagRef,
@@ -558,6 +577,7 @@ export function LimeTag({
   onFocus,
 }: {
   href?: string;
+  label?: string;
   className?: string;
   style?: React.CSSProperties;
   tagRef?: React.Ref<HTMLAnchorElement>;
@@ -569,25 +589,27 @@ export function LimeTag({
     <a
       ref={tagRef}
       href={href}
+      aria-label={label || "Book a free audit"}
       onClick={onClick}
       onPointerEnter={onPointerEnter}
       onFocus={onFocus}
-      className={`about-lime-tag ${className}`}
+      className={`about-accent-tag ${className}`}
       style={{
         display: "block",
         position: "relative",
-        width: "102px",
+        width: "114px",
         height: "144px",
-        background: "#d7fd41",
-        color: "#141414",
+        background: "var(--accent-strong)",
+        color: "#ffffff",
         clipPath: "polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px))",
         textDecoration: "none",
         cursor: "pointer",
         flexShrink: 0,
+        boxShadow: "0 4px 16px color-mix(in srgb, var(--accent-strong) 30%, transparent)",
         ...style,
       }}
     >
-      {/* Top-left: 10px black square at (12px, 20px) */}
+      {/* Top-left: 10px white square at (12px, 20px) */}
       <span
         style={{
           position: "absolute",
@@ -595,7 +617,7 @@ export function LimeTag({
           top: "20px",
           width: "10px",
           height: "10px",
-          background: "#000000",
+          background: "#ffffff",
         }}
       />
 
@@ -612,36 +634,42 @@ export function LimeTag({
         }}
       >
         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" className="chevron-arrow">
-          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M1.5 1.5L6.5 7L1.5 12.5" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
 
-      {/* Bottom-right text: 2 lines, Inter Tight 500 14px uppercase: "BOOK" / "AUDIT" */}
+      {/* Bottom-right text: Inter Tight 600 14px uppercase: "BOOK A" / "FREE AUDIT" */}
       <div
         style={{
           position: "absolute",
           right: "12px",
-          bottom: "18px",
+          bottom: "16px",
           textAlign: "right",
           fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-          fontWeight: 500,
+          fontWeight: 600,
           fontSize: "14px",
           lineHeight: 1.15,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
-          color: "#000000",
+          color: "#ffffff",
         }}
       >
-        BOOK
-        <br />
-        AUDIT
+        {label === "Book a free audit" ? (
+          <>
+            BOOK A<br />FREE AUDIT
+          </>
+        ) : (
+          label
+        )}
       </div>
     </a>
   );
 }
+
+export const AccentTag = StickyTag;

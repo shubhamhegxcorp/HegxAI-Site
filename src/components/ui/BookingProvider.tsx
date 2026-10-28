@@ -35,13 +35,13 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
           theme: "light",
           cssVarsPerTheme: {
             light: {
-              "cal-brand": "#141414",
-              "cal-brand-accent": "#E8A25C",
+              "cal-brand": "#5170FF",
+              "cal-brand-accent": "#5170FF",
               "cal-text": "#141414",
             },
             dark: {
-              "cal-brand": "#E8A25C",
-              "cal-brand-accent": "#E8A25C",
+              "cal-brand": "#5170FF",
+              "cal-brand-accent": "#5170FF",
               "cal-text": "#ffffff",
             },
           },

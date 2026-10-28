@@ -7,27 +7,20 @@ import HeroWorkflowCard from "./HeroWorkflowCard";
 import { Button } from "@/components/ui/shared";
 import { useBooking } from "@/components/ui/BookingProvider";
 import Marquee from "@/components/ui/Marquee";
+import StarShape from "@/components/ui/StarShape";
 import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MARQUEE_WORDS = [
+const MARQUEE_ITEMS = [
   "WORKFLOWS",
-  "•",
   "AI AGENTS",
-  "•",
   "INTEGRATIONS",
-  "•",
   "PROCESS DESIGN",
-  "•",
   "WORKFLOWS",
-  "•",
   "AI AGENTS",
-  "•",
   "INTEGRATIONS",
-  "•",
   "PROCESS DESIGN",
-  "•",
 ];
 
 export default function Hero() {
@@ -35,8 +28,7 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineLine1Ref = useRef<HTMLDivElement>(null);
   const headlineLine2Ref = useRef<HTMLDivElement>(null);
-  const limeBoxRef = useRef<HTMLSpanElement>(null);
-  const dashRef = useRef<HTMLDivElement>(null);
+  const highlightBoxRef = useRef<HTMLSpanElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
   const ctaWrapRef = useRef<HTMLDivElement>(null);
 
@@ -44,20 +36,18 @@ export default function Hero() {
   const connectorPathRef = useRef<SVGPathElement>(null);
   const maskPathRef = useRef<SVGPathElement>(null);
   const dotRef = useRef<SVGCircleElement>(null);
-  const leftNodeRef = useRef<SVGRectElement>(null);
-  const rightNodeRef = useRef<SVGRectElement>(null);
 
   useGSAP(
     () => {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (prefersReduced) {
-        if (limeBoxRef.current) limeBoxRef.current.style.clipPath = "inset(0 0% 0 0)";
+        if (highlightBoxRef.current) highlightBoxRef.current.style.clipPath = "inset(0 0% 0 0)";
         if (maskPathRef.current) maskPathRef.current.style.strokeDashoffset = "0";
         return;
       }
 
-      // 1. Text entrance & Lime box clip-path reveal
+      // 1. Text entrance & Highlight box clip-path reveal
       const tl = gsap.timeline({ delay: 0.15 });
 
       tl.fromTo(
@@ -72,19 +62,13 @@ export default function Hero() {
           "-=0.7"
         )
         .to(
-          limeBoxRef.current,
+          highlightBoxRef.current,
           {
             clipPath: "inset(0 0% 0 0)",
             duration: 0.8,
             ease: "power3.out",
           },
           "-=0.4"
-        )
-        .fromTo(
-          dashRef.current,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.5"
         )
         .fromTo(
           subRef.current,
@@ -97,12 +81,6 @@ export default function Hero() {
           { opacity: 0, y: 18 },
           { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
           "-=0.4"
-        )
-        .fromTo(
-          [leftNodeRef.current, rightNodeRef.current],
-          { scale: 0, transformOrigin: "center center" },
-          { scale: 1, duration: 0.6, ease: "back.out(2)", stagger: 0.1 },
-          "-=0.5"
         );
 
       // 2. Dashed connector line progressive reveal using mask
@@ -122,7 +100,7 @@ export default function Hero() {
     { scope: sectionRef }
   );
 
-  // 6. Connector lime dot traveling along the path (gsap.ticker, paused when offscreen)
+  // 6. Connector accent dot traveling along the path (gsap.ticker, paused when offscreen)
   useEffect(() => {
     const path = connectorPathRef.current;
     const dot = dotRef.current;
@@ -187,6 +165,55 @@ export default function Hero() {
         width: "100%",
       }}
     >
+      {/* ─── STAGE 3: BACKGROUND STAR MOTIF (DECORATIVE) ─── */}
+      {/* 1. Large rotating outline star centred behind headline + card */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "440px",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "min(90vw, 900px)",
+          height: "min(90vw, 900px)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      >
+        <StarShape
+          size="100%"
+          strokeWidth={1}
+          variant="outline"
+          color="var(--ink)"
+          opacity={0.09}
+          className="spin-hero-star"
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
+
+      {/* 2. Smaller offset outline star (~340px) at 6% opacity to upper-right */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: "80px",
+          right: "5%",
+          width: "min(340px, 35vw)",
+          height: "min(340px, 35vw)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      >
+        <StarShape
+          size="100%"
+          strokeWidth={1}
+          variant="outline"
+          color="var(--ink)"
+          opacity={0.06}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </div>
+
       {/* ─── FULL-WIDTH HERO WRAPPER (No column vertical lines) ─── */}
       <div
         style={{
@@ -199,7 +226,7 @@ export default function Hero() {
           padding: "0 24px",
         }}
       >
-        {/* ─── 3. DASHED CONNECTOR SVG (Wraps subtitle + CTA, does NOT cross headline/lime box) ─── */}
+        {/* ─── 3. DASHED CONNECTOR SVG (Wraps subtitle + CTA, does NOT cross headline/highlight box) ─── */}
         <div
           style={{
             position: "absolute",
@@ -236,51 +263,29 @@ export default function Hero() {
               </mask>
             </defs>
 
-            {/* Left 10px square node at x=40, y=10 */}
-            <rect
-              ref={leftNodeRef}
-              x="35"
-              y="5"
-              width="10"
-              height="10"
-              fill="var(--ink)"
-            />
-
-            {/* Right 10px square node at x=1160, y=10 */}
-            <rect
-              ref={rightNodeRef}
-              x="1155"
-              y="5"
-              width="10"
-              height="10"
-              fill="var(--ink)"
-            />
-
             {/* Dashed connector path revealed through mask */}
             <path
               ref={connectorPathRef}
               d="M 40 10 L 280 10 C 360 10, 380 190, 460 190 L 740 190 C 820 190, 840 10, 920 10 L 1160 10"
               fill="none"
-              stroke="rgba(20, 20, 20, 0.55)"
+              stroke="rgba(20, 20, 20, 0.35)"
               strokeWidth="1"
               strokeDasharray="6 8"
               mask="url(#hero-connector-mask)"
             />
 
-            {/* Traveling 6px lime dot */}
+            {/* Traveling 6px accent dot */}
             <circle
               ref={dotRef}
               cx="40"
               cy="10"
               r="3"
-              fill="#d7fd41"
-              stroke="var(--ink)"
-              strokeWidth="1"
+              fill="var(--accent)"
             />
           </svg>
         </div>
 
-        {/* ─── 1. HEADLINE (Single H1, 2 lines, Inter Tight 500, tight lime box on AUTOMATED.) ─── */}
+        {/* ─── 1. HEADLINE (Single H1, 2 lines, Inter Tight 500, tight gradient box on AUTOMATED.) ─── */}
         <h1
           id="hero-title"
           className="hero-headline-h1"
@@ -311,18 +316,19 @@ export default function Hero() {
               ref={headlineLine2Ref}
               style={{ display: "block" }}
             >
-              {/* Tight lime box with 4 tiny 6px ink squares on corners */}
+              {/* Tight gradient box with 4 tiny 6px ink squares on corners */}
               <span
-                ref={limeBoxRef}
+                ref={highlightBoxRef}
                 style={{
-                  background: "#d7fd41",
-                  color: "#141414",
+                  background: "var(--accent-grad)",
+                  color: "#ffffff",
                   padding: "0 0.12em",
                   display: "inline-block",
                   position: "relative",
                   whiteSpace: "nowrap",
                   clipPath: "inset(0 100% 0 0)",
                   willChange: "clip-path",
+                  boxShadow: "0 4px 20px color-mix(in srgb, var(--accent) 35%, transparent)",
                 }}
               >
                 AUTOMATED.
@@ -377,26 +383,15 @@ export default function Hero() {
         </h1>
 
         {/* ─── 2. THIN INK DASH & SUBTITLE (Gap: 24px -> dash -> 20px -> sub -> 36px -> CTA) ─── */}
-        <div
-          ref={dashRef}
-          style={{
-            width: "24px",
-            height: "1.5px",
-            background: "var(--ink)",
-            margin: "24px auto 20px",
-            opacity: 0,
-          }}
-        />
-
         <p
           ref={subRef}
           style={{
             fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-            fontSize: "15px",
-            color: "#5f5b52",
-            maxWidth: "300px",
-            margin: "0 auto 36px",
-            lineHeight: 1.55,
+            fontSize: "clamp(18px, 1.6vw, 22px)",
+            color: "rgba(20, 20, 20, 0.72)",
+            maxWidth: "560px",
+            margin: "20px auto 32px",
+            lineHeight: 1.5,
             opacity: 0,
           }}
         >
@@ -439,7 +434,7 @@ export default function Hero() {
 
         {/* ─── 5. TWO THIN HORIZONTAL LINES WITH MONO LABELS ─── */}
         <div style={{ width: "100%", position: "relative", zIndex: 3 }}>
-          {/* Top Line 1 (1px ink at 25%) with 10px square nodes at both ends */}
+          {/* Top Line 1 (1px ink at 25%) */}
           <div
             style={{
               position: "relative",
@@ -447,28 +442,7 @@ export default function Hero() {
               height: "1px",
               background: "rgba(20,20,20,0.25)",
             }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                top: "-4.5px",
-                width: "10px",
-                height: "10px",
-                background: "var(--ink)",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "-4.5px",
-                width: "10px",
-                height: "10px",
-                background: "var(--ink)",
-              }}
-            />
-          </div>
+          />
 
           {/* Strip between lines */}
           <div
@@ -487,11 +461,11 @@ export default function Hero() {
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.08em",
-                color: "#5f5b52",
+                color: "rgba(20, 20, 20, 0.7)",
                 textTransform: "uppercase",
               }}
             >
-              RELIABLE — SCALABLE — MEASURABLE
+              LEAD ROUTING — REPORTING — OUTREACH
             </span>
             <span
               className="hero-strip-item-2"
@@ -500,7 +474,7 @@ export default function Hero() {
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.08em",
-                color: "#5f5b52",
+                color: "rgba(20, 20, 20, 0.7)",
                 textTransform: "uppercase",
               }}
             >
@@ -508,7 +482,7 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Bottom Line 2 (1px ink at 25%) with 10px square nodes at both ends */}
+          {/* Bottom Line 2 (1px ink at 25%) */}
           <div
             style={{
               position: "relative",
@@ -516,28 +490,7 @@ export default function Hero() {
               height: "1px",
               background: "rgba(20,20,20,0.25)",
             }}
-          >
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                top: "-4.5px",
-                width: "10px",
-                height: "10px",
-                background: "var(--ink)",
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: 0,
-                top: "-4.5px",
-                width: "10px",
-                height: "10px",
-                background: "var(--ink)",
-              }}
-            />
-          </div>
+          />
         </div>
 
         {/* ─── 6. LIVE WORKFLOW DASHBOARD CARD ─── */}
@@ -618,14 +571,14 @@ export default function Hero() {
               fill="url(#hero-halftone-pattern)"
             />
             {/* Scattered glyph characters like Avande */}
-            <text x="120" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
-            <text x="260" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
-            <text x="380" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
-            <text x="180" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
-            <text x="1060" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
-            <text x="1180" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
-            <text x="1320" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">@</text>
-            <text x="1260" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(20,20,20,0.7)" fontWeight="600">?</text>
+            <text x="120" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">?</text>
+            <text x="260" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">@</text>
+            <text x="380" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">?</text>
+            <text x="180" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">@</text>
+            <text x="1060" y="155" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">@</text>
+            <text x="1180" y="90" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">?</text>
+            <text x="1320" y="115" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">@</text>
+            <text x="1260" y="175" fontFamily="var(--ff-mono, 'IBM Plex Mono', monospace)" fontSize="11" fill="rgba(81, 112, 255, 0.16)" fontWeight="600">?</text>
           </svg>
         </div>
       </div>
@@ -642,21 +595,25 @@ export default function Hero() {
           zIndex: 4,
         }}
       >
-        <Marquee speed={0.8} gap={48}>
-          {MARQUEE_WORDS.map((word, i) => (
+        <Marquee speed={0.8} gap={36}>
+          {MARQUEE_ITEMS.map((item, i) => (
             <span
               key={i}
               style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "36px",
                 fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
-                color: word === "•" ? "var(--accent)" : "var(--ink)",
+                color: "var(--ink)",
                 opacity: 0.7,
               }}
             >
-              {word}
+              <span>{item}</span>
+              <StarShape size={6} variant="fill" color="var(--ink)" opacity={0.6} />
             </span>
           ))}
         </Marquee>

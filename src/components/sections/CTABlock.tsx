@@ -171,48 +171,50 @@ export default function CTABlock() {
           <div className="contact-grid">
             {/* ─── LEFT: HEADING + COPY + PRIMARY BOOKING BUTTON + 3-STEP LIST ─── */}
             <div className="contact-left">
-              <h2
-                id="contact-title"
-                style={{
-                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontSize: "clamp(28px, 5vw, 48px)",
-                  fontWeight: 500,
-                  lineHeight: 1.05,
-                  letterSpacing: "-0.02em",
-                  color: "var(--ink)",
-                  marginBottom: "16px",
-                }}
-              >
-                Transform your business with intelligent AI automation
-              </h2>
-
-              <p
-                style={{
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "15px",
-                  fontWeight: 400,
-                  lineHeight: 1.6,
-                  color: "#5f5b52",
-                  maxWidth: "48ch",
-                  marginBottom: "24px",
-                }}
-              >
-                Start with a free audit. We&apos;ll map your biggest automation opportunities and
-                show you exactly what&apos;s possible — no commitment required.
-              </p>
-
-              <div style={{ marginBottom: "36px" }}>
-                <Button
-                  href={bookingUrl || "#contact"}
-                  variant="primary"
-                  className="btn-mobile-full"
-                  style={{ minHeight: "52px" }}
-                  onClick={handleBookingClick}
-                  onPointerEnter={preloadBooking}
-                  onFocus={preloadBooking}
+              <div>
+                <h2
+                  id="contact-title"
+                  style={{
+                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                    fontSize: "clamp(28px, 5vw, 48px)",
+                    fontWeight: 500,
+                    lineHeight: 1.05,
+                    letterSpacing: "-0.02em",
+                    color: "var(--ink)",
+                    marginBottom: "16px",
+                  }}
                 >
-                  Book a free audit
-                </Button>
+                  Transform your business with intelligent AI automation
+                </h2>
+
+                <p
+                  style={{
+                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                    fontSize: "15px",
+                    fontWeight: 400,
+                    lineHeight: 1.6,
+                    color: "#5f5b52",
+                    maxWidth: "48ch",
+                    marginBottom: "24px",
+                  }}
+                >
+                  Start with a free audit. We&apos;ll map your biggest automation opportunities and
+                  show you exactly what&apos;s possible — no commitment required.
+                </p>
+
+                <div style={{ marginBottom: "36px" }}>
+                  <Button
+                    href={bookingUrl || "#contact"}
+                    variant="primary"
+                    className="btn-mobile-full"
+                    style={{ minHeight: "52px" }}
+                    onClick={handleBookingClick}
+                    onPointerEnter={preloadBooking}
+                    onFocus={preloadBooking}
+                  >
+                    Book a free audit
+                  </Button>
+                </div>
               </div>
 
               {/* 3-Step Process List */}
@@ -224,11 +226,8 @@ export default function CTABlock() {
                 ].map((step, idx) => (
                   <div
                     key={idx}
+                    className="contact-step-row"
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "16px 0",
                       borderTop: idx === 0 ? "1px solid rgba(20,20,20,0.12)" : "none",
                       borderBottom: "1px solid rgba(20,20,20,0.12)",
                     }}
@@ -293,7 +292,7 @@ export default function CTABlock() {
                       width: "44px",
                       height: "44px",
                       background: "var(--ink)",
-                      color: "#d7fd41",
+                      color: "var(--accent-text)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -587,10 +586,39 @@ export default function CTABlock() {
           gap: 36px;
           align-items: start;
         }
+        .contact-left {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+        .contact-steps-list {
+          display: flex;
+          flex-direction: column;
+        }
+        .contact-step-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 0;
+        }
         @media (min-width: 900px) {
           .contact-grid {
             grid-template-columns: 1.05fr 1fr;
             gap: 48px;
+            align-items: stretch;
+          }
+          .contact-left {
+            height: 100%;
+          }
+          .contact-steps-list {
+            margin-top: auto;
+            flex: 1;
+            justify-content: space-between;
+            min-height: 200px;
+          }
+          .contact-step-row {
+            flex: 1;
+            padding: 0;
           }
         }
         .contact-input {
@@ -611,9 +639,9 @@ export default function CTABlock() {
           border-color: rgba(20, 20, 20, 0.5);
         }
         .contact-input:focus-visible {
-          outline: 2px solid var(--ink);
-          outline-offset: 1px;
-          border-color: var(--ink);
+          outline: 2px solid var(--accent-text);
+          outline-offset: 2px;
+          border-color: var(--accent-text);
         }
         .contact-textarea {
           width: 100%;
@@ -634,9 +662,9 @@ export default function CTABlock() {
           border-color: rgba(20, 20, 20, 0.5);
         }
         .contact-textarea:focus-visible {
-          outline: 2px solid var(--ink);
-          outline-offset: 1px;
-          border-color: var(--ink);
+          outline: 2px solid var(--accent-text);
+          outline-offset: 2px;
+          border-color: var(--accent-text);
         }
       `}</style>
     </section>

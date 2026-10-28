@@ -205,7 +205,7 @@ export default function Process() {
                         width: "6px",
                         height: "6px",
                         borderRadius: "50%",
-                        background: "var(--accent, #e8a25c)",
+                        background: "var(--accent)",
                       }}
                     />
                   </div>
@@ -234,7 +234,7 @@ export default function Process() {
                         fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                         fontSize: "12px",
                         fontWeight: 600,
-                        color: isOpen ? "var(--accent-text, #B8742A)" : "var(--muted)",
+                        color: isOpen ? "var(--accent-text)" : "var(--muted)",
                         letterSpacing: "0.08em",
                       }}
                     >
@@ -330,7 +330,7 @@ export default function Process() {
                   left: 0,
                   width: "100%",
                   height: `${((activeStep + 1) / STEPS.length) * 100}%`,
-                  background: "var(--accent, #e8a25c)",
+                  background: "var(--accent)",
                   borderRadius: "var(--r-0, 0px)",
                   transition: "height 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
@@ -347,7 +347,7 @@ export default function Process() {
                     borderBottom: i < STEPS.length - 1 ? "1px solid var(--line)" : "none",
                     cursor: "pointer",
                     transition: "opacity 0.2s ease",
-                    opacity: activeStep === i ? 1 : 0.45,
+                    opacity: activeStep === i ? 1 : 0.72,
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
@@ -356,7 +356,7 @@ export default function Process() {
                         width: "8px",
                         height: "8px",
                         borderRadius: "50%",
-                        background: "var(--accent, #e8a25c)",
+                        background: "var(--accent)",
                         flexShrink: 0,
                         animation: "pulse-dot 1.6s ease-in-out infinite",
                       }} />
@@ -364,9 +364,9 @@ export default function Process() {
                     <span style={{
                       fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                       fontSize: "10px",
-                      fontWeight: 500,
+                      fontWeight: 600,
                       letterSpacing: "0.12em",
-                      color: activeStep === i ? "var(--accent-text, #B8742A)" : "var(--muted)",
+                      color: activeStep === i ? "var(--accent-text)" : "var(--ink)",
                     }}>
                       {s.num}
                     </span>
@@ -402,7 +402,7 @@ export default function Process() {
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.08em",
-                color: "var(--accent-text, #B8742A)",
+                color: "var(--accent-text)",
                 textTransform: "uppercase",
                 marginBottom: "16px",
               }}
@@ -437,10 +437,10 @@ export default function Process() {
             {/* Dark card (radius 12) showing that step's 3 deliverables as checklist rows */}
             <div
               style={{
-                background: "#141414",
+                background: "var(--ink-2)",
                 borderRadius: "var(--r-card, 12px)",
                 padding: "24px 28px",
-                border: "1px solid rgba(255,255,255,0.08)",
+                border: "1px solid var(--hairline-dark)",
                 display: "flex",
                 flexDirection: "column",
                 gap: "14px",
@@ -476,8 +476,8 @@ export default function Process() {
                       width: "16px",
                       height: "16px",
                       borderRadius: "var(--r-0, 0px)",
-                      background: "var(--lime, #d7fd41)",
-                      color: "#141414",
+                      background: "var(--accent-strong)",
+                      color: "#ffffff",
                       display: "inline-flex",
                       alignItems: "center",
                       justifyContent: "center",

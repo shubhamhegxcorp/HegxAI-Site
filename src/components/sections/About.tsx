@@ -2,7 +2,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SectionBar, Button, LimeTag } from "@/components/ui/shared";
+import { SectionBar, StickyTag } from "@/components/ui/shared";
+import StarShape from "@/components/ui/StarShape";
 import { useBooking } from "@/components/ui/BookingProvider";
 import { siteContent } from "@/content/site";
 
@@ -14,21 +15,17 @@ export default function About() {
   const tagRef = useRef<HTMLAnchorElement>(null);
   const headlineRef = useRef<HTMLDivElement>(null);
   const graySpanRef = useRef<HTMLSpanElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
   const col1LineRef = useRef<HTMLDivElement>(null);
-  const col1NodeRef = useRef<HTMLDivElement>(null);
   const col1TextRef = useRef<HTMLDivElement>(null);
   const col2LineRef = useRef<HTMLDivElement>(null);
-  const col2NodeRef = useRef<HTMLDivElement>(null);
   const col2TextRef = useRef<HTMLDivElement>(null);
-  const founderRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
     const ctx = gsap.context(() => {
-      // 1. Lime Tag entrance
+      // 1. Accent Tag entrance
       if (tagRef.current) {
         gsap.fromTo(
           tagRef.current,
@@ -40,7 +37,7 @@ export default function About() {
             ease: "back.out(1.4)",
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
+              start: () => (window.innerWidth < 768 ? "top 95%" : "top 80%"),
               toggleActions: "play none none none",
             },
           }
@@ -61,7 +58,7 @@ export default function About() {
               delay: 0.3,
               scrollTrigger: {
                 trigger: sectionRef.current,
-                start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
+                start: () => (window.innerWidth < 768 ? "top 95%" : "top 80%"),
                 toggleActions: "play none none none",
               },
             }
@@ -83,7 +80,7 @@ export default function About() {
               ease: "power3.out",
               scrollTrigger: {
                 trigger: headlineRef.current,
-                start: () => window.innerWidth < 768 ? "top 95%" : "top 82%",
+                start: () => (window.innerWidth < 768 ? "top 95%" : "top 82%"),
                 toggleActions: "play none none none",
               },
               onComplete: () => {
@@ -100,33 +97,13 @@ export default function About() {
         }
       }
 
-      // 3. CTA fade up
-      if (ctaRef.current) {
-        gsap.fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ctaRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      // 4. Text Columns: lines scaleY from top, nodes scale, text fades up
-      const lines = [col1LineRef.current, col2LineRef.current].filter(Boolean);
-      const nodes = [col1NodeRef.current, col2NodeRef.current].filter(Boolean);
+      // 3. Text Columns: lines scaleY from top, text fades up (no square handles)
+      const dividerLines = [col1LineRef.current, col2LineRef.current].filter(Boolean);
       const textBlocks = [col1TextRef.current, col2TextRef.current].filter(Boolean);
 
-      if (lines.length > 0) {
+      if (dividerLines.length > 0) {
         gsap.fromTo(
-          lines,
+          dividerLines,
           { scaleY: 0 },
           {
             scaleY: 1,
@@ -135,25 +112,7 @@ export default function About() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      if (nodes.length > 0) {
-        gsap.fromTo(
-          nodes,
-          { scale: 0 },
-          {
-            scale: 1,
-            duration: 0.5,
-            ease: "back.out(1.7)",
-            delay: 0.2,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
+              start: () => (window.innerWidth < 768 ? "top 95%" : "top 75%"),
               toggleActions: "play none none none",
             },
           }
@@ -170,29 +129,10 @@ export default function About() {
             duration: 0.7,
             stagger: 0.1,
             ease: "power3.out",
-            delay: 0.4,
+            delay: 0.35,
             scrollTrigger: {
               trigger: sectionRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 75%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      // 5. Founder avatar (if present)
-      if (founderRef.current) {
-        gsap.fromTo(
-          founderRef.current,
-          { opacity: 0, scale: 0.9 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: founderRef.current,
-              start: () => window.innerWidth < 768 ? "top 95%" : "top 80%",
+              start: () => (window.innerWidth < 768 ? "top 95%" : "top 75%"),
               toggleActions: "play none none none",
             },
           }
@@ -215,7 +155,7 @@ export default function About() {
         padding: "var(--section-py, 96px) 0",
       }}
     >
-      {/* ─── 5. TOP LOGO STRIP (rendered ONLY if logos array has items) ─── */}
+      {/* ─── TOP LOGO STRIP (rendered ONLY if logos array has items) ─── */}
       {siteContent.logos && siteContent.logos.length > 0 && (
         <div
           style={{
@@ -243,8 +183,9 @@ export default function About() {
         </div>
       )}
 
-      {/* ─── MAIN COLUMN WRAPPER (1320px wide, centered, 1px vertical lines at 25% ink) ─── */}
+      {/* ─── MAIN COLUMN WRAPPER (Frame with standard page container/margins --col-pad) ─── */}
       <div
+        className="about-container"
         style={{
           maxWidth: "1320px",
           width: "100%",
@@ -252,142 +193,48 @@ export default function About() {
           position: "relative",
           borderLeft: "1px solid rgba(20,20,20,0.25)",
           borderRight: "1px solid rgba(20,20,20,0.25)",
+          padding: "0 var(--col-pad, 24px)",
         }}
       >
-        {/* ─── 1. SECTION BAR: black #0f0f0f, height 34px, inset 24px from both column lines, with top line + nodes ─── */}
+        {/* ─── SECTION BAR: black "ABOUT US / 001" bar, no square handles ─── */}
         <SectionBar
           label="ABOUT US"
           sectionId="about"
-          inset={24}
+          showNodes={false}
           height={34}
           padding="0 12px"
-          marginBottom={16}
+          marginBottom={28}
         />
 
-        {/* ─── 3. CONTENT AREA (Height 632px starting at horizontal line, absolute coordinate grid desktop) ─── */}
-        <div className="about-content-area">
-          {/* ─── a) LIME TAG: size 102x144, bg #d7fd41, sans 14px BOOK / AUDIT ─── */}
-          <LimeTag
-            tagRef={tagRef}
-            href={bookingUrl || "#contact"}
-            onClick={(e) => {
-              if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
-                e.preventDefault();
-                openBooking();
-              }
-            }}
-            onPointerEnter={preloadBooking}
-            onFocus={preloadBooking}
-          />
-
-          {/* ─── b) HEADLINE: left 537px, top 25px, width 560px, Inter Tight 500, 52px, lh 0.92, ls -0.03em ─── */}
-          <div ref={headlineRef} className="about-headline-wrap">
-            <h2
-              id="about-title"
+        {/* ─── CONTENT GRID: Left ~25% (Accent Tag), Right ~75% (Headline + Two Columns) ─── */}
+        <div className="about-grid">
+          {/* Left Column: Accent Tag CTA ("Book a free audit" - single CTA in section) */}
+          <div className="about-accent-tag-wrap" style={{ position: "relative", overflow: "hidden" }}>
+            {/* Stage 3: Large decorative outline star bleeding off left */}
+            <div
+              aria-hidden="true"
               style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontWeight: 500,
-                fontSize: "52px",
-                lineHeight: 0.92,
-                letterSpacing: "-0.03em",
-                margin: 0,
+                position: "absolute",
+                top: "40px",
+                left: "-110px",
+                width: "360px",
+                height: "360px",
+                pointerEvents: "none",
+                zIndex: 0,
               }}
             >
-              <span className="headline-reveal-mask">
-                <span className="headline-reveal-line" style={{ color: "#0f0f0f" }}>
-                  Innovative automation
-                </span>
-              </span>
-              <span className="headline-reveal-mask">
-                <span className="headline-reveal-line" style={{ color: "#0f0f0f" }}>
-                  agency building intelligent
-                </span>
-              </span>
-              <span className="headline-reveal-mask">
-                <span className="headline-reveal-line" style={{ color: "#0f0f0f" }}>
-                  workflows powered by
-                </span>
-              </span>
-              <span className="headline-reveal-mask">
-                <span
-                  ref={graySpanRef}
-                  className="headline-reveal-line"
-                  style={{ color: "#757269", transition: "color 0.4s ease" }}
-                >
-                  advanced AI for modern,
-                </span>
-              </span>
-              <span className="headline-reveal-mask">
-                <span
-                  className="headline-reveal-line"
-                  style={{ color: "#757269", transition: "color 0.4s ease" }}
-                >
-                  high-growth businesses.
-                </span>
-              </span>
-            </h2>
-          </div>
-
-          {/* ─── c) FOUNDER (top-right): right 23px, top 25px, right-aligned (only if real data exists) ─── */}
-          {siteContent.founder.name && siteContent.founder.photo && (
-            <div ref={founderRef} className="about-founder-wrap">
-              <div
-                style={{
-                  width: "96px",
-                  height: "96px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "1px solid rgba(20,20,20,0.15)",
-                  background: "#e8c89c",
-                  marginBottom: "12px",
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={siteContent.founder.photo}
-                  alt={siteContent.founder.name}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-
-              <div
-                style={{
-                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                  fontWeight: 500,
-                  fontSize: "15px",
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: "var(--ink)",
-                  lineHeight: 1.2,
-                }}
-              >
-                {siteContent.founder.name}
-              </div>
-
-              <div
-                style={{
-                  fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                  fontSize: "12px",
-                  color: "#6f6c64",
-                  marginTop: "2px",
-                }}
-              >
-                {siteContent.founder.role}
-              </div>
+              <StarShape
+                size="100%"
+                variant="outline"
+                color="var(--ink)"
+                opacity={0.06}
+                strokeWidth={1}
+              />
             </div>
-          )}
-
-          {/* ─── d) CTA: left 537px, top 386px, Button variant primary height 50px ─── */}
-          <div ref={ctaRef} className="about-cta-wrap">
-            <Button
+            <StickyTag
+              tagRef={tagRef}
               href={bookingUrl || "#contact"}
-              variant="primary"
-              style={{
-                height: "50px",
-                padding: "0 28px",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
+              label={siteContent.about.ctaLabel}
               onClick={(e) => {
                 if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
                   e.preventDefault();
@@ -396,288 +243,250 @@ export default function About() {
               }}
               onPointerEnter={preloadBooking}
               onFocus={preloadBooking}
-            >
-              Book a free audit
-            </Button>
+            />
           </div>
 
-          {/* ─── e) TWO TEXT COLUMNS (bottom right): col 1 @ x=938px (71.1%), col 2 @ x=1119px (84.8%), top 391px, height 217px ─── */}
-          <div className="about-cols-wrap">
-            {/* Column 1 */}
-            <div className="about-col-1">
-              {/* 1px vertical line (ink 30%) on left edge */}
-              <div
-                ref={col1LineRef}
+          {/* Right Column: Two-Tone Headline + Two Text Columns */}
+          <div className="about-main-content">
+            {/* Headline: 3-4 lines on desktop */}
+            <div ref={headlineRef} className="about-headline-wrap">
+              <h2
+                id="about-title"
                 style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: "1px",
-                  background: "rgba(20,20,20,0.3)",
+                  fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                  fontWeight: 500,
+                  fontSize: "clamp(28px, 3.6vw, 46px)",
+                  lineHeight: 1.04,
+                  letterSpacing: "-0.03em",
+                  margin: 0,
                 }}
-              />
-              {/* 10px square node (#2b2b2b) centered on line at top */}
-              <div
-                ref={col1NodeRef}
-                style={{
-                  position: "absolute",
-                  left: "-4.5px",
-                  top: "-5px",
-                  width: "10px",
-                  height: "10px",
-                  background: "#2b2b2b",
-                  zIndex: 2,
-                }}
-              />
-              {/* Content: padding-left 22px, padding-top 22px */}
-              <div ref={col1TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
-                <div
-                  style={{
-                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                    fontWeight: 500,
-                    fontSize: "16px",
-                    color: "#0f0f0f",
-                    marginBottom: "8px",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  What we build
-                </div>
-                <p
-                  style={{
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "15px",
-                    lineHeight: 1.55,
-                    color: "#6f6c64",
-                    maxWidth: "260px",
-                    margin: 0,
-                  }}
-                >
-                  Intelligent AI agents and workflow systems that remove repetitive work and keep your team moving.
-                </p>
-              </div>
+              >
+                <span className="headline-reveal-mask">
+                  <span className="headline-reveal-line" style={{ color: "var(--ink, #141414)" }}>
+                    {siteContent.about.headlineLeadLine1}
+                  </span>
+                </span>
+                <span className="headline-reveal-mask">
+                  <span className="headline-reveal-line" style={{ color: "var(--ink, #141414)" }}>
+                    {siteContent.about.headlineLeadLine2}
+                  </span>
+                </span>
+                <span className="headline-reveal-mask">
+                  <span
+                    ref={graySpanRef}
+                    className="headline-reveal-line"
+                    style={{ color: "#757269", transition: "color 0.4s ease" }}
+                  >
+                    {siteContent.about.headlineMuted}
+                  </span>
+                </span>
+              </h2>
             </div>
 
-            {/* Column 2 */}
-            <div className="about-col-2">
-              {/* 1px vertical line (ink 30%) on left edge */}
-              <div
-                ref={col2LineRef}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: "1px",
-                  background: "rgba(20,20,20,0.3)",
-                }}
-              />
-              {/* 10px square node (#2b2b2b) centered on line at top */}
-              <div
-                ref={col2NodeRef}
-                style={{
-                  position: "absolute",
-                  left: "-4.5px",
-                  top: "-5px",
-                  width: "10px",
-                  height: "10px",
-                  background: "#2b2b2b",
-                  zIndex: 2,
-                }}
-              />
-              {/* Content: padding-left 22px, padding-top 22px */}
-              <div ref={col2TextRef} style={{ paddingLeft: "22px", paddingTop: "22px" }}>
+            {/* Two Columns: aligned to the same grid as headline, min 24px right padding from frame */}
+            <div className="about-cols-wrap">
+              {/* Column 1: What we build */}
+              <div className="about-col">
                 <div
+                  ref={col1LineRef}
                   style={{
-                    fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                    fontWeight: 500,
-                    fontSize: "16px",
-                    color: "#0f0f0f",
-                    marginBottom: "8px",
-                    lineHeight: 1.2,
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: "1px",
+                    background: "var(--hairline)",
                   }}
-                >
-                  How we build
+                />
+                <div ref={col1TextRef} className="about-col-text">
+                  <h3
+                    style={{
+                      fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                      fontWeight: 600,
+                      fontSize: "17px",
+                      color: "var(--ink, #141414)",
+                      marginBottom: "8px",
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    {siteContent.about.whatWeBuildTitle}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "16px",
+                      lineHeight: 1.55,
+                      color: "rgba(20, 20, 20, 0.72)",
+                      margin: 0,
+                    }}
+                  >
+                    {siteContent.about.whatWeBuildBody}
+                  </p>
                 </div>
-                <p
+              </div>
+
+              {/* Column 2: How we work */}
+              <div className="about-col">
+                <div
+                  ref={col2LineRef}
                   style={{
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "15px",
-                    lineHeight: 1.55,
-                    color: "#6f6c64",
-                    maxWidth: "260px",
-                    margin: 0,
+                    position: "absolute",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: "1px",
+                    background: "var(--hairline)",
                   }}
-                >
-                  From audit to custom agents and integrations, every system is mapped, tested and connected to your stack.
-                </p>
+                />
+                <div ref={col2TextRef} className="about-col-text">
+                  <h3
+                    style={{
+                      fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
+                      fontWeight: 600,
+                      fontSize: "17px",
+                      color: "var(--ink, #141414)",
+                      marginBottom: "8px",
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    {siteContent.about.howWeWorkTitle}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
+                      fontSize: "16px",
+                      lineHeight: 1.55,
+                      color: "rgba(20, 20, 20, 0.72)",
+                      margin: 0,
+                    }}
+                  >
+                    {siteContent.about.howWeWorkBody}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ─── 4. BOTTOM 1px LINE (at bottom of content area, y=632px) ─── */}
+        {/* ─── BOTTOM 1px LINE (Closes the section frame) ─── */}
         <div
           style={{
             width: "100%",
             height: "1px",
-            background: "rgba(20,20,20,0.25)",
+            background: "var(--hairline)",
+            marginTop: "56px",
           }}
         />
       </div>
 
-      {/* ─── SCOPED RESPONSIVE CSS & HOVER STYLES ─── */}
+      {/* ─── SCOPED RESPONSIVE CSS ─── */}
       <style>{`
-        /* Desktop (>= 1200px) exact pixel layout */
-        @media (min-width: 1200px) {
-          .about-content-area {
-            position: relative;
-            height: 632px;
-            width: 100%;
-          }
-
-          .about-lime-tag {
-            position: absolute;
-            left: 24px;
-            top: 25px;
-            width: 102px;
-            height: 144px;
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          }
-          .about-lime-tag:hover {
-            transform: translateX(4px);
-          }
-          .about-lime-tag:hover .about-chevrons {
-            transform: translateX(4px);
-          }
-          .about-chevrons {
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          }
-
-          .about-headline-wrap {
-            position: absolute;
-            left: 537px;
-            top: 25px;
-            width: 560px;
-          }
-
-          .about-founder-wrap {
-            position: absolute;
-            right: 23px;
-            top: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            text-align: right;
-          }
-
-          .about-cta-wrap {
-            position: absolute;
-            left: 537px;
-            top: 386px;
-          }
-
-          .about-col-1 {
-            position: absolute;
-            left: 938px;
-            top: 391px;
-            width: 181px;
-            height: 217px;
-          }
-
-          .about-col-2 {
-            position: absolute;
-            left: 1119px;
-            top: 391px;
-            width: 201px;
-            height: 217px;
-          }
+        .about-grid {
+          display: grid;
+          grid-template-columns: minmax(130px, 25%) 1fr;
+          column-gap: 40px;
+          align-items: start;
+          width: 100%;
         }
 
-        /* Line reveal wrappers */
-        .about-headline-wrap h2 { text-wrap: balance; }
+        .about-accent-tag-wrap {
+          display: flex;
+          justify-content: flex-start;
+          padding-top: 4px;
+        }
+
+        .about-accent-tag {
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .about-accent-tag:hover {
+          transform: translateX(4px);
+        }
+        .about-accent-tag:hover .about-chevrons {
+          transform: translateX(4px);
+        }
+        .about-chevrons {
+          transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .about-main-content {
+          display: flex;
+          flex-direction: column;
+          gap: 48px;
+          width: 100%;
+        }
+
+        .about-headline-wrap {
+          width: 100%;
+        }
+
         .headline-reveal-mask {
           display: block;
           overflow: hidden;
           padding-bottom: 0.14em;
           margin-bottom: -0.14em;
         }
+
         .headline-reveal-line {
           display: inline-block;
           will-change: transform;
         }
 
-        /* Below 1024px: Stack everything cleanly without absolute positioning */
-        @media (max-width: 1199px) {
-          .about-content-area {
-            position: relative !important;
-            height: auto !important;
-            padding: 24px 16px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 20px !important;
-          }
-          .about-lime-tag {
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
-            width: 102px !important;
-            height: 144px !important;
-            align-self: flex-start !important;
-          }
-          .about-headline-wrap {
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          .about-headline-wrap h2 {
-            font-size: 34px !important;
-            line-height: 1 !important;
-            letter-spacing: -0.03em !important;
-          }
-          .about-founder-wrap {
-            position: relative !important;
-            right: auto !important;
-            top: auto !important;
-            align-self: flex-start !important;
-            align-items: flex-start !important;
-            text-align: left !important;
-          }
-          .about-cta-wrap {
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
-            width: 100% !important;
-          }
-          .about-cta-wrap a {
-            width: 100% !important;
-            justify-content: center !important;
-            min-height: 52px !important;
+        .about-cols-wrap {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          column-gap: 40px;
+          width: 100%;
+        }
+
+        .about-col {
+          position: relative;
+          min-width: 0;
+        }
+
+        .about-col-text {
+          padding-left: 24px;
+          padding-top: 4px;
+        }
+
+        /* Tablet & Mobile Breakpoints */
+        @media (max-width: 1023px) and (min-width: 768px) {
+          .about-grid {
+            grid-template-columns: 140px 1fr;
+            column-gap: 28px;
           }
           .about-cols-wrap {
+            column-gap: 28px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .about-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 28px !important;
+          }
+          .about-main-content {
+            display: contents !important;
+          }
+          .about-headline-wrap {
+            order: 1 !important;
+          }
+          .about-headline-wrap h2 {
+            font-size: 28px !important;
+            line-height: 1.05 !important;
+          }
+          .about-cols-wrap {
+            order: 2 !important;
             display: flex !important;
             flex-direction: column !important;
             gap: 24px !important;
-            width: 100% !important;
           }
-          @media (min-width: 400px) {
-            .about-cols-wrap {
-              flex-direction: row !important;
-              gap: 24px !important;
-            }
-            .about-col-1, .about-col-2 {
-              flex: 1 !important;
-            }
+          .about-accent-tag-wrap {
+            order: 3 !important;
+            padding-top: 8px !important;
           }
-          .about-col-1, .about-col-2 {
-            position: relative !important;
-            left: auto !important;
-            top: auto !important;
-            width: 100% !important;
-            min-height: 140px !important;
+          .about-col-text {
+            padding-left: 18px !important;
           }
         }
       `}</style>

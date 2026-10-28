@@ -142,13 +142,13 @@ export default function Services() {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "20px", minWidth: 0 }}>
-                    {/* Arrow icon (ink at 60% when inactive, lime rotated 45deg when active) */}
+                    {/* Arrow icon (ink at 60% when inactive, accent rotated 45deg when active) */}
                     <span
                       className="service-row-arrow"
                       style={{
                         fontFamily: "sans-serif",
                         fontSize: "20px",
-                        color: isActive ? "#d7fd41" : "rgba(20,20,20,0.6)",
+                        color: isActive ? "var(--accent-on-dark)" : "rgba(20,20,20,0.6)",
                         transform: isActive ? "rotate(45deg)" : "rotate(0deg)",
                         transition:
                           "transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease",
@@ -189,7 +189,7 @@ export default function Services() {
                         fontWeight: 500,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
-                        color: "#d7fd41",
+                        color: "var(--accent-on-dark)",
                         textDecoration: "none",
                         alignItems: "center",
                         gap: "6px",
@@ -240,7 +240,7 @@ export default function Services() {
                         fontWeight: 500,
                         letterSpacing: "0.04em",
                         textTransform: "uppercase",
-                        color: "#d7fd41",
+                        color: "var(--accent-on-dark)",
                         textDecoration: "none",
                         display: "inline-flex",
                         alignItems: "center",

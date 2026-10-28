@@ -1,404 +1,443 @@
 "use client";
-import { useLayoutEffect, useRef, useState } from "react";
+
+import Link from "next/link";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
-import { Button } from "@/components/ui/shared";
 import { siteContent } from "@/content/site";
+import LogoMark from "@/components/ui/LogoMark";
+import StarShape from "@/components/ui/StarShape";
 
 const CURRENT_YEAR = 2026;
 
-export default function Footer() {
-  const footerRef = useRef<HTMLElement>(null);
-  const linksRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    const update = () => {
-      if (footerRef.current && linksRef.current) footerRef.current.style.setProperty("--footer-wordmark-end", `${linksRef.current.getBoundingClientRect().top - footerRef.current.getBoundingClientRect().top}px`);
-    };
-    const observer = new ResizeObserver(update);
-    if (footerRef.current) observer.observe(footerRef.current);
-    update();
-    return () => observer.disconnect();
-  }, []);
-  const [email, setEmail] = useState("");
-  const showNewsletter = Boolean(siteContent.contact.newsletterAction);
-  const socials = siteContent.socials ?? [];
-  const legal = siteContent.legal ?? [];
+const PAGES_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Process", href: "/#process" },
+  { label: "FAQ", href: "/#faq" },
+];
 
-  const footerCols = [
-    {
-      heading: "PAGES",
-      links: [
-        { label: "Home", href: "/" },
-        { label: "About", href: "#about" },
-        { label: "Services", href: "#services" },
-        { label: "Process", href: "#process" },
-        { label: "FAQ", href: "#faq" },
-      ],
-    },
-    ...(legal.length > 0
-      ? [
-          {
-            heading: "LEGAL",
-            links: legal,
-          },
-        ]
-      : []),
-    {
-      heading: "CONTACT",
-      links: [
-        ...(siteContent.contact.email
-          ? [{ label: siteContent.contact.email, href: `mailto:${siteContent.contact.email}` }]
-          : [{ label: "Contact Us", href: "#contact" }]),
-        { label: "hegxai.com", href: "/" },
-      ],
-    },
-  ];
+export default function Footer() {
+  const socials = siteContent.socials ?? [];
 
   return (
-    <footer ref={footerRef} className="site-footer" style={{
-      background: "var(--bg)",
-      borderTop: "1px solid var(--line)",
-      position: "relative",
-      overflow: "hidden",
-    }}>
-      {/* Background ASCII Halftone Matrix - reduced to 60% opacity with no orange */}
-      <AsciiHalftoneCanvas
-        theme="light"
-        density="sparse"
-        interactive={true}
-        color="rgba(20, 20, 20, 0.12)"
-        accentColor="rgba(20, 20, 20, 0.14)"
-        wrapperStyle={{ opacity: 0.6, maskImage: "var(--footer-ascii-mask, none)" }}
-      />
-
-      {/* Newsletter block (only rendered if newsletterAction is configured) */}
-      {showNewsletter && (
-        <div style={{
-          maxWidth: "1200px",
+    <footer
+      className="site-footer"
+      style={{
+        background: "var(--ink-2)",
+        borderTop: "2px solid var(--accent)",
+        color: "var(--bg, #F4EFE6)",
+        position: "relative",
+        overflow: "hidden",
+        width: "100%",
+        padding: "64px 0 36px",
+      }}
+    >
+      {/* ─── MAIN FOOTER CONTENT CONTAINER (Same container / --col-pad as Nav and Hero) ─── */}
+      <div
+        style={{
+          maxWidth: "1320px",
+          width: "100%",
           margin: "0 auto",
-          padding: "var(--col-pad, 24px)",
-          paddingTop: "64px",
-          paddingBottom: "48px",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "40px",
-          alignItems: "center",
-          borderBottom: "1px solid var(--line)",
+          padding: "0 var(--col-pad, 24px)",
           position: "relative",
           zIndex: 2,
-        }}>
-          <div>
-            <h3
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* ─── 2. COLUMNS: Brand line, Pages, Contact ─── */}
+        <div className="footer-columns-grid">
+          {/* Brand Column */}
+          <div className="footer-brand-column">
+            <Link
+              href="/"
+              aria-label="HEGXAI - home"
               style={{
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontSize: "clamp(22px, 2.2vw, 32px)",
-                fontWeight: 500,
-                letterSpacing: "-0.04em",
-                lineHeight: 1.15,
-                color: "var(--ink)",
-                marginBottom: "16px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                textDecoration: "none",
+                marginBottom: "14px",
               }}
             >
-              <span className="reveal-mask" style={{ padding: "4px 0", overflow: "visible" }}>
-                <span className="reveal-line" data-reveal-line>
-                  Stay ahead with AI insights and industry updates
+              <LogoMark height={36} isDark={true} aria-hidden={true} />
+              {siteContent.logo?.showWordmark && (
+                <span
+                  style={{
+                    fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
+                    fontSize: "26px",
+                    letterSpacing: "0.04em",
+                    color: "#F4EFE6",
+                    display: "block",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  HEGXAI
                 </span>
-              </span>
-            </h3>
+              )}
+              {!siteContent.logo?.showWordmark && (
+                <span style={{ position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+                  HEGXAI - home
+                </span>
+              )}
+            </Link>
             <p
               style={{
                 fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                fontSize: "15px",
+                fontSize: "16px",
                 fontWeight: 400,
-                lineHeight: 1.65,
-                color: "var(--muted)",
+                lineHeight: 1.55,
+                color: "rgba(244, 239, 230, 0.85)",
+                maxWidth: "320px",
+                margin: 0,
               }}
             >
-              <span className="reveal-mask" style={{ padding: "4px 0", overflow: "visible" }}>
-                <span className="reveal-line" data-reveal-line>
-                  Get the latest on AI automation, workflow optimization, and practical
-                  strategies to help your business grow.
-                </span>
-              </span>
+              {siteContent.hero.subtitle}
             </p>
           </div>
 
-          {/* Newsletter form */}
-          <div style={{
-            background: "var(--ink)",
-            borderRadius: "var(--r-card, 12px)",
-            padding: "24px",
-          }}>
-            <span style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "var(--muted-dark, rgba(255,255,255,0.7))",
-              display: "block",
-              marginBottom: "16px",
-            }}>
-              OUR NEWSLETTER
-            </span>
-
-            <form
-              action={siteContent.contact.newsletterAction}
-              onSubmit={(e) => { e.preventDefault(); setEmail(""); }}
-              style={{ marginBottom: "16px" }}
-            >
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                borderBottom: "1px solid rgba(255,255,255,0.12)",
-                paddingBottom: "12px",
-                gap: "12px",
-              }}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email"
-                  required
-                  style={{
-                    flex: 1,
-                    background: "none",
-                    border: "none",
-                    outline: "none",
-                    fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                    fontSize: "15px",
-                    fontWeight: 400,
-                    color: "#fff",
-                    caretColor: "var(--accent)",
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "rgba(255,255,255,0.6)",
-                    fontSize: "18px",
-                    minWidth: "44px",
-                    minHeight: "44px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "color 0.2s ease",
-                    flexShrink: 0,
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.color = "var(--accent)"}
-                  onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.6)"}
-                  aria-label="Subscribe"
-                >
-                  →
-                </button>
-              </div>
-            </form>
-
-            <p style={{
-              fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-              fontSize: "13px",
-              fontWeight: 400,
-              lineHeight: 1.6,
-              color: "var(--muted-dark, rgba(255,255,255,0.7))",
-            }}>
-              Get the latest insights on AI automation, intelligent agents, workflow
-              optimization, and practical strategies to help your business grow.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Main Footer Wrapper: Single column on mobile with wordmark above link columns */}
-      <div className="flex flex-col" style={{ maxWidth: "1200px", margin: "0 auto", position: "relative", zIndex: 2 }}>
-        
-        {/* Giant wordmark: Order 1 on mobile (above links), Order 2 on desktop */}
-        <div
-          className="order-1 md:order-2"
-          style={{
-            padding: "16px 0 8px",
-            width: "100%",
-          }}
-        >
-          <svg
-            viewBox="0 0 1200 170"
-            width="100%"
-            style={{ display: "block", height: "auto" }}
-            aria-hidden="true"
-          >
-            <text
-              x="0"
-              y="145"
-              textLength="1200"
-              lengthAdjust="spacingAndGlyphs"
-              fill="var(--ink)"
-              opacity="0.08"
-              fontFamily="var(--ff-logo, 'Anton', sans-serif)"
-              fontSize="170"
-              letterSpacing="-0.02em"
-            >
-              HEGXAI
-            </text>
-          </svg>
-        </div>
-
-        {/* Footer link columns: Order 2 on mobile (below wordmark), Order 1 on desktop */}
-        <div
-          ref={linksRef}
-          className="footer-links-area order-2 md:order-1"
-          style={{
-            position: "relative",
-            padding: "24px 0 28px",
-            borderBottom: "1px solid var(--line)",
-          }}
-        >
-          {/* Social (only rendered if non-empty) */}
-          {socials.length > 0 && (
-            <div style={{ marginBottom: "32px" }}>
-              <span style={{
+          {/* Pages Column */}
+          <div className="footer-nav-column">
+            <span
+              className="footer-column-label"
+              style={{
                 fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
                 fontSize: "11px",
                 fontWeight: 500,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "var(--muted)",
+                color: "var(--accent-on-dark)",
                 display: "block",
-                marginBottom: "16px",
-              }}>
-                OUR SOCIAL:
-              </span>
-              <div style={{ display: "flex", gap: "8px" }}>
-                {socials.map((s) => (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    aria-label={s.label}
-                    style={{
-                      width: "44px",
-                      height: "44px",
-                      borderRadius: "0",
-                      border: "1px solid var(--line)",
-                      background: "var(--surface)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                      fontSize: "13px",
-                      color: "var(--muted)",
-                      textDecoration: "none",
-                      transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease",
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "var(--ink)"; e.currentTarget.style.color = "var(--bg)"; e.currentTarget.style.borderColor = "var(--ink)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "var(--surface)"; e.currentTarget.style.color = "var(--muted)"; e.currentTarget.style.borderColor = "var(--line)"; }}
-                  >
-                    {s.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+                marginBottom: "18px",
+              }}
+            >
+              PAGES
+            </span>
+            <nav aria-label="Pages navigation" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              {PAGES_LINKS.map((link) => (
+                <Link key={link.label} href={link.href} className="footer-nav-link">
+                  <span>{link.label}</span>
+                  <span className="link-arrow" aria-hidden="true">→</span>
+                </Link>
+              ))}
+            </nav>
+          </div>
 
-          {/* Link columns in 2 columns grid on mobile (PAGES / CONTACT) */}
-          <div className="grid grid-cols-2 md:flex md:justify-between gap-8 md:gap-16 items-start">
-            {footerCols.map((col) => (
-              <div key={col.heading}>
-                <span style={{
-                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "var(--muted)",
-                  display: "block",
-                  marginBottom: "16px",
-                }}>
-                  {col.heading}
-                </span>
-                <nav aria-label={col.heading}>
-                  {col.links.map((link) => (
-                    <a
-                      key={link.label}
-                      className="footer-link"
-                      href={link.href}
-                      style={{
-                        display: "block",
-                        fontFamily: "var(--ff-body, 'DM Sans', sans-serif)",
-                        fontSize: "15px",
-                        fontWeight: 400,
-                        color: "var(--ink)",
-                        textDecoration: "none",
-                        padding: "4px 0",
-                        marginBottom: "6px",
-                        opacity: 0.75,
-                        transition: "opacity 0.2s ease",
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.opacity = "1"}
-                      onMouseLeave={e => e.currentTarget.style.opacity = "0.75"}
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </nav>
-              </div>
-            ))}
+          {/* Contact Column: Only renders existing contact items (no invented domain/email) */}
+          <div className="footer-nav-column">
+            <span
+              className="footer-column-label"
+              style={{
+                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--accent-on-dark)",
+                display: "block",
+                marginBottom: "18px",
+              }}
+            >
+              CONTACT
+            </span>
+            <nav aria-label="Contact navigation" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <Link href="/#contact" className="footer-nav-link">
+                <span>Contact Us</span>
+                <span className="link-arrow" aria-hidden="true">→</span>
+              </Link>
+
+              {siteContent.contact.email ? (
+                <a href={`mailto:${siteContent.contact.email}`} className="footer-nav-link">
+                  <span>{siteContent.contact.email}</span>
+                  <span className="link-arrow" aria-hidden="true">→</span>
+                </a>
+              ) : null}
+
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-nav-link"
+                >
+                  <span>{s.label}</span>
+                  <span className="link-arrow" aria-hidden="true">→</span>
+                </a>
+              ))}
+            </nav>
           </div>
         </div>
 
-        {/* Bottom bar: Order 3 */}
+        {/* ─── 3. GIANT WORDMARK WITH ACCENT ASCII HALFTONE TEXTURE & GIANT ROTATING STAR BEHIND IT ─── */}
         <div
-          className="order-3 flex flex-col md:flex-row items-center justify-between gap-4"
+          className="footer-wordmark-container"
           style={{
-            padding: "16px 0 0",
+            position: "relative",
+            width: "100%",
+            padding: "48px 0 28px",
+            overflow: "hidden",
+            userSelect: "none",
+            pointerEvents: "none",
           }}
         >
-          {/* Back to top button: full width on mobile */}
-          <div className="w-full md:w-auto order-1 md:order-2">
-            <Button
-              variant="secondary"
-              arrow="↑"
-              href="#main"
-              className="btn-mobile-full"
-              onClick={(e) => {
-                e.preventDefault();
-                const lenis = (window as unknown as { __lenis?: { scrollTo: (t: number) => void } }).__lenis;
-                if (lenis) lenis.scrollTo(0);
-                else window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
+          {/* Giant outline star (~70% of container width) behind wordmark with 120s rotation */}
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "min(70%, 750px)",
+              aspectRatio: "1/1",
+              pointerEvents: "none",
+              zIndex: 0,
+            }}
+          >
+            <StarShape
+              size="100%"
+              strokeWidth={1}
+              variant="outline"
+              color="var(--accent)"
+              opacity={0.35}
+              className="spin-footer-star"
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
+
+          {/* IO-gated ASCII/halftone glyph texture in accent at ~10-14% opacity */}
+          <AsciiHalftoneCanvas
+            theme="dark"
+            density="sparse"
+            interactive={true}
+            color="rgba(125, 147, 255, 0.12)"
+            accentColor="rgba(125, 147, 255, 0.14)"
+            wrapperStyle={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 1,
+              opacity: 0.9,
+              pointerEvents: "none",
+            }}
+          />
+
+          {/* Giant HEGXAI in Anton with dark fill (#171A2E) and 1px accent outline (45% opacity) */}
+          <div style={{ position: "relative", zIndex: 2, width: "100%" }}>
+            <svg
+              viewBox="0 0 760 170"
+              width="100%"
+              style={{ display: "block", height: "auto", overflow: "visible" }}
+              aria-hidden="true"
+            >
+              <text
+                x="380"
+                y="142"
+                textAnchor="middle"
+                fill="#171A2E"
+                stroke="rgba(81, 112, 255, 0.45)"
+                strokeWidth="1"
+                style={{
+                  fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
+                  fontSize: "170px",
+                  letterSpacing: "0.02em",
+                  textTransform: "uppercase",
+                  WebkitTextStroke: "1px rgba(81, 112, 255, 0.45)",
+                }}
+              >
+                HEGXAI
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        {/* ─── 4. BOTTOM ROW: Thin 1px cream@15% divider, Copyright, Legal, Back to top ─── */}
+        <div
+          className="footer-bottom-row"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "18px",
+            paddingTop: "24px",
+            borderTop: "1px solid rgba(244, 239, 230, 0.15)",
+          }}
+        >
+          {/* Left: Copyright & Legal links */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "16px",
+            }}
+          >
+            <span
               style={{
-                width: "100%",
-                minHeight: "44px",
-                padding: "10px 20px",
-                fontSize: "13px",
-                fontFamily: "var(--ff-display, 'Inter Tight', sans-serif)",
-                fontWeight: 500,
+                fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                fontSize: "12px",
+                color: "rgba(244, 239, 230, 0.7)",
                 letterSpacing: "0.04em",
               }}
             >
-              BACK TO TOP
-            </Button>
+              © {CURRENT_YEAR} HEGXAI. All rights reserved.
+            </span>
+
+            <span
+              aria-hidden="true"
+              style={{ color: "rgba(244, 239, 230, 0.3)", fontSize: "12px" }}
+            >
+              •
+            </span>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+              <Link
+                href="/privacy"
+                className="footer-legal-link"
+                style={{
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  fontSize: "12px",
+                  color: "rgba(244, 239, 230, 0.7)",
+                  textDecoration: "none",
+                  transition: "color 0.2s ease",
+                }}
+              >
+                Privacy
+              </Link>
+              <span
+                aria-hidden="true"
+                style={{ color: "rgba(244, 239, 230, 0.3)", fontSize: "12px" }}
+              >
+                /
+              </span>
+              <Link
+                href="/terms"
+                className="footer-legal-link"
+                style={{
+                  fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
+                  fontSize: "12px",
+                  color: "rgba(244, 239, 230, 0.7)",
+                  textDecoration: "none",
+                  transition: "color 0.2s ease",
+                }}
+              >
+                Terms
+              </Link>
+            </div>
           </div>
 
-          <span
-            className="order-2 md:order-1 text-center md:text-left"
-            style={{
-              fontFamily: "var(--ff-mono, 'IBM Plex Mono', monospace)",
-              fontSize: "12px",
-              color: "var(--muted)",
-              letterSpacing: "0.06em",
+          {/* Right: Outlined Button: cream text, 1px --accent border, hover: --accent-strong fill + white text */}
+          <button
+            type="button"
+            className="footer-back-to-top btn-mobile-full"
+            onClick={(e) => {
+              e.preventDefault();
+              const lenis = (window as unknown as { __lenis?: { scrollTo: (t: number) => void } }).__lenis;
+              if (lenis) lenis.scrollTo(0);
+              else window.scrollTo({ top: 0, behavior: "smooth" });
             }}
           >
-            © {CURRENT_YEAR} HEGXAI. All rights reserved.
-          </span>
+            <span>Back to top</span>
+            <span aria-hidden="true">↑</span>
+          </button>
         </div>
-
       </div>
+
       <style>{`
-        @media (max-width: 767px) {
-          footer.site-footer {
-            padding: 48px 16px 32px !important;
+        .footer-columns-grid {
+          display: grid;
+          grid-template-columns: minmax(280px, 360px) 1fr 1fr;
+          gap: 48px;
+          align-items: start;
+        }
+        .footer-nav-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-family: var(--ff-body, 'DM Sans', sans-serif);
+          fontSize: 15px;
+          font-weight: 400;
+          color: rgba(244, 239, 230, 0.85);
+          text-decoration: none;
+          transition: color 0.2s ease, transform 0.2s ease;
+          width: fit-content;
+        }
+        .footer-nav-link:hover {
+          color: var(--accent-on-dark) !important;
+        }
+        .footer-nav-link .link-arrow {
+          opacity: 0;
+          transform: translateX(-4px);
+          transition: opacity 0.2s ease, transform 0.2s ease;
+          font-size: 13px;
+          line-height: 1;
+          color: var(--accent-on-dark);
+        }
+        .footer-nav-link:hover .link-arrow {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        .footer-legal-link:hover {
+          color: var(--accent-on-dark) !important;
+        }
+        .footer-back-to-top {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          background: transparent;
+          border: 1px solid var(--accent);
+          color: var(--bg, #F4EFE6);
+          font-family: var(--ff-display, 'Inter Tight', sans-serif);
+          font-size: 12.5px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          min-height: 42px;
+          padding: 10px 20px;
+          border-radius: 0px;
+          cursor: pointer;
+          transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+        .footer-back-to-top:hover {
+          background: var(--accent-strong) !important;
+          border-color: var(--accent-strong) !important;
+          color: #ffffff !important;
+        }
+        @media (max-width: 900px) {
+          .footer-columns-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 36px;
           }
-          footer { --footer-ascii-mask: linear-gradient(to bottom, black var(--footer-wordmark-end, 100px), rgba(0,0,0,.583333) var(--footer-wordmark-end, 100px)); }
+          .footer-brand-column {
+            grid-column: 1 / -1;
+          }
+        }
+        @media (max-width: 767px) {
+          .footer-columns-grid {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 32px !important;
+          }
+          .footer-column-label {
+            font-size: 12px !important;
+          }
+          .footer-nav-link {
+            font-size: 16px !important;
+          }
+          .footer-wordmark-container {
+            padding: 32px 0 20px !important;
+          }
+          .footer-bottom-row {
+            flex-direction: column-reverse !important;
+            align-items: stretch !important;
+            gap: 20px !important;
+          }
+          .footer-bottom-row .btn-mobile-full {
+            width: 100% !important;
+            justify-content: center !important;
+          }
         }
       `}</style>
     </footer>

@@ -5,6 +5,9 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/shared";
 import { useBooking } from "@/components/ui/BookingProvider";
+import LogoMark from "@/components/ui/LogoMark";
+import StarShape from "@/components/ui/StarShape";
+import { siteContent } from "@/content/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -365,11 +368,11 @@ export default function Nav() {
         .hegxai-desktop-nav-grid {
           display: grid !important;
           grid-template-columns: auto 1fr auto !important;
-          grid-template-rows: auto 4px !important;
+          grid-template-rows: auto 1px !important;
           column-gap: 12px !important;
-          row-gap: 16px !important;
+          row-gap: 14px !important;
           align-items: center !important;
-          padding: 24px 40px 0 !important;
+          padding: 20px 40px 0 !important;
           width: 100% !important;
           height: var(--header-h, 92px) !important;
           box-sizing: border-box !important;
@@ -386,11 +389,11 @@ export default function Nav() {
             display: grid !important;
             grid-template-columns: auto auto !important;
             justify-content: space-between !important;
-            grid-template-rows: auto 4px !important;
+            grid-template-rows: auto 1px !important;
             column-gap: 12px !important;
-            row-gap: 14px !important;
+            row-gap: 12px !important;
             align-items: center !important;
-            padding: 16px 20px 0 !important;
+            padding: 14px 20px 0 !important;
             width: 100% !important;
             height: var(--header-h, 72px) !important;
             box-sizing: border-box !important;
@@ -433,31 +436,35 @@ export default function Nav() {
             <Link
               href="/"
               onClick={(e) => handleLinkClick(e, "/")}
+              aria-label="HEGXAI - home"
               style={{
-                fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
-                fontSize: "40px",
-                lineHeight: 1,
-                letterSpacing: "0.02em",
-                color: "var(--ink)",
-                textDecoration: "none",
-                textTransform: "uppercase",
                 display: "inline-flex",
-                alignItems: "flex-start",
+                alignItems: "center",
+                gap: "10px",
+                textDecoration: "none",
               }}
             >
-              HEGXAI
-              <span
-                style={{
-                  width: "9px",
-                  height: "9px",
-                  border: "1.5px solid var(--ink)",
-                  display: "inline-block",
-                  marginLeft: "6px",
-                  marginTop: "3px",
-                  flexShrink: 0,
-                }}
-                aria-hidden="true"
-              />
+              <LogoMark priority={true} aria-hidden={true} />
+              {siteContent.logo?.showWordmark && (
+                <span
+                  style={{
+                    fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
+                    fontSize: "40px",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                    color: "var(--ink)",
+                    textTransform: "uppercase",
+                    display: "inline-block",
+                  }}
+                >
+                  HEGXAI
+                </span>
+              )}
+              {!siteContent.logo?.showWordmark && (
+                <span style={{ position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+                  HEGXAI - home
+                </span>
+              )}
             </Link>
           </div>
 
@@ -494,14 +501,11 @@ export default function Nav() {
                     {link.label}
                   </a>
                   {idx < NAV_LINKS.length - 1 && (
-                    <span
-                      style={{
-                        width: "6px",
-                        height: "6px",
-                        background: "var(--ink)",
-                        display: "inline-block",
-                      }}
-                      aria-hidden="true"
+                    <StarShape
+                      size={6}
+                      variant="fill"
+                      color="var(--ink)"
+                      opacity={0.6}
                     />
                   )}
                 </div>
@@ -532,7 +536,7 @@ export default function Nav() {
           <div
             ref={line1Ref}
             style={{
-              height: "4px",
+              height: "1px",
               background: "var(--ink)",
               transformOrigin: "left",
               width: "100%",
@@ -543,7 +547,7 @@ export default function Nav() {
           <div
             ref={line2Ref}
             style={{
-              height: "4px",
+              height: "1px",
               background: "var(--ink)",
               transformOrigin: "left",
               width: "100%",
@@ -554,7 +558,7 @@ export default function Nav() {
           <div
             ref={line3Ref}
             style={{
-              height: "4px",
+              height: "1px",
               background: "var(--ink)",
               transformOrigin: "left",
               width: "100%",
@@ -569,31 +573,35 @@ export default function Nav() {
             <Link
               href="/"
               onClick={(e) => handleLinkClick(e, "/")}
+              aria-label="HEGXAI - home"
               style={{
-                fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
-                fontSize: "30px",
-                lineHeight: 1,
-                letterSpacing: "0.02em",
-                color: "var(--ink)",
-                textDecoration: "none",
-                textTransform: "uppercase",
                 display: "inline-flex",
-                alignItems: "flex-start",
+                alignItems: "center",
+                gap: "10px",
+                textDecoration: "none",
               }}
             >
-              HEGXAI
-              <span
-                style={{
-                  width: "7px",
-                  height: "7px",
-                  border: "1.5px solid var(--ink)",
-                  display: "inline-block",
-                  marginLeft: "4px",
-                  marginTop: "2px",
-                  flexShrink: 0,
-                }}
-                aria-hidden="true"
-              />
+              <LogoMark priority={true} aria-hidden={true} />
+              {siteContent.logo?.showWordmark && (
+                <span
+                  style={{
+                    fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
+                    fontSize: "26px",
+                    lineHeight: 1,
+                    letterSpacing: "0.02em",
+                    color: "var(--ink)",
+                    textTransform: "uppercase",
+                    display: "inline-block",
+                  }}
+                >
+                  HEGXAI
+                </span>
+              )}
+              {!siteContent.logo?.showWordmark && (
+                <span style={{ position: "absolute", width: "1px", height: "1px", padding: 0, margin: "-1px", overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}>
+                  HEGXAI - home
+                </span>
+              )}
             </Link>
           </div>
 
@@ -630,7 +638,7 @@ export default function Nav() {
           <div
             ref={mobileLine1Ref}
             style={{
-              height: "4px",
+              height: "1px",
               background: "var(--ink)",
               transformOrigin: "left",
               width: "100%",
@@ -641,7 +649,7 @@ export default function Nav() {
           <div
             ref={mobileLine2Ref}
             style={{
-              height: "4px",
+              height: "1px",
               background: "var(--ink)",
               transformOrigin: "left",
               width: "100%",
@@ -678,21 +686,27 @@ export default function Nav() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              borderBottom: "4px solid var(--ink)",
+              borderBottom: "1px solid var(--ink)",
               paddingBottom: "16px",
             }}
           >
-            <span
-              style={{
-                fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
-                fontSize: "30px",
-                color: "var(--ink)",
-                letterSpacing: "0.02em",
-                textTransform: "uppercase",
-              }}
-            >
-              HEGXAI
-            </span>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+              <LogoMark aria-hidden={true} />
+              {siteContent.logo?.showWordmark && (
+                <span
+                  style={{
+                    fontFamily: "var(--ff-logo, 'Anton', sans-serif)",
+                    fontSize: "26px",
+                    color: "var(--ink)",
+                    letterSpacing: "0.02em",
+                    textTransform: "uppercase",
+                    display: "inline-block",
+                  }}
+                >
+                  HEGXAI
+                </span>
+              )}
+            </div>
             <button
               onClick={closeMobileMenu}
               aria-label="Close Navigation Menu"

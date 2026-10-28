@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { SectionBar, SectionColumn, Button, LimeTag } from "@/components/ui/shared";
+import { SectionBar, SectionColumn, Button, StickyTag } from "@/components/ui/shared";
 import { useBooking } from "@/components/ui/BookingProvider";
 import AsciiHalftoneCanvas from "@/components/ui/AsciiHalftoneCanvas";
 
@@ -109,8 +109,8 @@ export default function WhyAutomate() {
       aria-labelledby="why-title"
       ref={sectionRef}
       style={{
-        background: "var(--ink)",
-        padding: "var(--section-py, 96px) 0",
+        background: "var(--ink-2)",
+        padding: "48px 0 var(--section-py, 96px) 0",
         position: "relative",
         overflow: "hidden",
       }}
@@ -122,7 +122,7 @@ export default function WhyAutomate() {
         interactive={true}
         fontSize={11}
         color="rgba(255, 255, 255, 0.14)"
-        accentColor="rgba(215, 253, 65, 0.22)"
+        accentColor="rgba(125, 147, 255, 0.12)"
         wrapperStyle={{
           position: "absolute",
           inset: 0,
@@ -249,9 +249,9 @@ export default function WhyAutomate() {
             ))}
           </div>
 
-          {/* Bottom CTAs: lime tag + secondary button */}
+          {/* Bottom CTAs: accent tag + secondary button */}
           <div className="why-ctas-wrap" style={{ marginTop: "64px", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "24px" }}>
-            <LimeTag
+            <StickyTag
               href={bookingUrl || "#contact"}
               onClick={(e) => {
                 if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {

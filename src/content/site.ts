@@ -2,9 +2,31 @@
 // HARD RULE: Only real data. If empty, components hide the section/block instead of showing fake placeholders.
 
 export interface SiteContent {
+  logo?: {
+    showWordmark: boolean;
+  };
   hero: {
     subtitle: string;
   };
+  about: {
+    headlineLead: string;
+    headlineLeadLine1: string;
+    headlineLeadLine2: string;
+    headlineMuted: string;
+    whatWeBuildTitle: string;
+    whatWeBuildBody: string;
+    howWeWorkTitle: string;
+    howWeWorkBody: string;
+    ctaLabel: string;
+  };
+  features: Array<{
+    tag: string;
+    title: string;
+    body: string;
+    agentType: string;
+    tasks: string[];
+    nodes: string[];
+  }>;
   contact: {
     email: string;
     bookingUrl: string;
@@ -65,9 +87,49 @@ export function getCalLink(url: string = siteContent.contact.bookingUrl): string
 }
 
 export const siteContent: SiteContent = {
+  logo: {
+    showWordmark: true,
+  },
   hero: {
     subtitle: "AI agents and workflows that run your repetitive business work.",
   },
+  about: {
+    headlineLead: "We find the repetitive work slowing your team down, build the agents and workflows that remove it,",
+    headlineLeadLine1: "We find the repetitive work slowing your team down,",
+    headlineLeadLine2: "build the agents and workflows that remove it,",
+    headlineMuted: "and connect them to the tools you already use.",
+    whatWeBuildTitle: "What we build",
+    whatWeBuildBody: "AI agents and workflows for lead handling, follow-ups, reporting and internal operations.",
+    howWeWorkTitle: "How we work",
+    howWeWorkBody: "We start with a free audit, map what to automate, then build, test and connect it to your stack.",
+    ctaLabel: "Book a free audit",
+  },
+  features: [
+    {
+      tag: "AI AGENT",
+      title: "Deploy an AI Agent in hours, not months",
+      body: "Configure intelligent agents that handle repetitive tasks, answer customer queries, qualify leads, and escalate edge cases — all without human intervention.",
+      agentType: "Customer Support Agent",
+      tasks: ["Respond to FAQs", "Route complex tickets", "Log to CRM"],
+      nodes: ["Inbound", "Classify", "Draft reply", "Log CRM"],
+    },
+    {
+      tag: "WORKFLOW",
+      title: "Automate multi-step workflows end to end",
+      body: "Connect your tools into seamless pipelines. From inbound lead to closed deal — every step can be mapped, automated, and monitored in real-time.",
+      agentType: "Sales Pipeline Workflow",
+      tasks: ["Enrich lead data", "Schedule outreach", "Update Sheets"],
+      nodes: ["Lead", "Enrich", "Outreach", "Sheet"],
+    },
+    {
+      tag: "INTEGRATION",
+      title: "One source of truth, no copy-pasting between tools",
+      body: "Sync data across your stack automatically. Every system stays in sync without manual effort or repetitive transfer.",
+      agentType: "Data Sync Integration",
+      tasks: ["Bi-directional sync", "Conflict resolution", "Audit trail"],
+      nodes: ["Trigger", "Validate", "Sync App", "Audit log"],
+    },
+  ],
   contact: {
     email: "", // keep empty per task
     bookingUrl: "https://cal.com/hegxai/free-audit",
@@ -83,7 +145,10 @@ export const siteContent: SiteContent = {
   logos: [],
   pricingTiers: [],
   socials: [], // Empty: hides social links until real social channels exist
-  legal: [], // Empty: hides legal links until real policy pages exist
+  legal: [
+    { label: "Privacy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+  ],
 };
 
 export const calLink = getCalLink(siteContent.contact.bookingUrl);
