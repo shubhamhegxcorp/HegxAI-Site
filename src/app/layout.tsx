@@ -3,7 +3,6 @@ import { Anton, Inter_Tight, DM_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
 const interTight = Inter_Tight({
-  weight: ["500", "600"],
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
